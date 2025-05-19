@@ -2,9 +2,11 @@ import React, { useEffect } from 'react';
 import './Onboarding.css';
 import { useAuth } from '../../context/AuthContext';
 import { authenticateTelegram } from '../../services/authService';
+import { useNavigate } from 'react-router-dom';
 
 const Onboarding = () => {
     const { user, loading, error, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
 
     // Handle manual authentication if needed
     const handleAuthenticate = async () => {
@@ -63,7 +65,7 @@ const Onboarding = () => {
                     Приложение не является медицинским средством или инструментом диагностики.
                 </p>
             </div>
-            <button className="onboarding-button">Далее</button>
+            <button className="onboarding-button" onClick={() => navigate('/onboarding/2')}>Далее</button>
         </div>
     );
 };
