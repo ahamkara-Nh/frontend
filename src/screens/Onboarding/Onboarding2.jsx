@@ -23,9 +23,11 @@ const Onboarding2 = () => {
 
     // Get user's first name from Telegram WebApp API, fallback to 'новый пользователь'
     let userName = 'новый пользователь';
+    let userId = null; // Variable to store user ID
     if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
         const user = window.Telegram.WebApp.initDataUnsafe.user;
         userName = user.first_name || user.username || 'новый пользователь';
+        userId = user.id; // Store user ID
     }
 
     const isButtonDisabled = selected === null;
@@ -87,6 +89,32 @@ const Onboarding2 = () => {
                             navigate('/onboarding/allergies');
                         } else if (selected === 2) {
                             // handle "Мне только посмотреть"
+                            if (userId) {
+                                fetch(`/users/${userId}/phase-tracking`, {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                    },
+                                    body: JSON.stringify({ current_phase: 0 }),
+                                })
+                                    .then(response => {
+                                        if (response.ok) {
+                                            navigate('/home/phase0'); // Navigate to placeholder
+                                        } else {
+                                            // Handle error, e.g., show a message to the user
+                                            console.error('Failed to update phase tracking');
+                                            // Optionally, navigate to an error page or show an alert
+                                        }
+                                    })
+                                    .catch(error => {
+                                        console.error('Error during phase tracking update:', error);
+                                        // Optionally, navigate to an error page or show an alert
+                                    });
+                            } else {
+                                console.error('User ID not available');
+                                // Handle cases where user ID is not available
+                                // Maybe navigate to an error page or show a message
+                            }
                         }
                     }
                 }}
