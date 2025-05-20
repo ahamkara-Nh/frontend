@@ -5,9 +5,14 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    allowedHosts: ['rnban-95-161-221-128.a.free.pinggy.link'],
+    allowedHosts: ['d2eff634c6a4ae4f0ebf2b34ead8b25c.serveo.net'],
     proxy: {
       '/auth': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/users': {
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         secure: false

@@ -6,6 +6,15 @@ const ALLERGY_OPTIONS = [
     'орехи', 'арахис', 'глютен', 'яйца', 'рыба', 'соя'
 ];
 
+const ALLERGY_MAP = {
+    'орехи': 'allergy_nuts',
+    'арахис': 'allergy_peanut',
+    'глютен': 'allergy_gluten',
+    'яйца': 'allergy_eggs',
+    'рыба': 'allergy_fish',
+    'соя': 'allergy_soy'
+};
+
 const OnboardingAllergies = () => {
     const navigate = useNavigate();
     const [selectedAllergies, setSelectedAllergies] = useState([]);
@@ -50,11 +59,67 @@ const OnboardingAllergies = () => {
         cursor: 'pointer',
     };
 
-    const handleNext = () => {
+    const handleNext = async () => {
         if (isNextButtonDisabled) return;
-        // TODO: Save selectedAllergies (e.g., to context or backend)
-        console.log('Selected allergies:', selectedAllergies);
-        navigate('/home'); // Navigate to the main app/home screen
+
+        let telegram_id = null;
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+            telegram_id = window.Telegram.WebApp.initDataUnsafe.user.id;
+        }
+
+        if (!telegram_id) {
+            console.error('Telegram user ID not found. Cannot update preferences.');
+            // Optionally, show an error message to the user
+            return;
+        }
+
+        const preferences = ALLERGY_OPTIONS.reduce((acc, option) => {
+            acc[ALLERGY_MAP[option]] = selectedAllergies.includes(option);
+            return acc;
+        }, {});
+
+        const requestUrl = `/users/${telegram_id}/preferences`;
+        console.log('Sending preferences to backend:');
+        console.log('URL:', requestUrl);
+        console.log('Method: PUT');
+        console.log('Payload:', JSON.stringify(preferences, null, 2));
+
+        try {
+            const response = await fetch(requestUrl, { // Ensure your API base URL is configured if this is a relative path
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(preferences),
+            });
+
+            if (!response.ok) {
+                // Handle API errors (e.g., show a notification to the user)
+                const errorText = await response.text();
+                console.error('Failed to update preferences. Status:', response.status);
+                console.error('Backend response:', errorText);
+                // Optionally, you might want to prevent navigation or show an error message
+                return;
+            }
+
+            // Try to parse as JSON, but fall back to text if it fails
+            let responseData;
+            try {
+                responseData = await response.json();
+                console.log('Preferences updated successfully. Backend response:');
+                console.log(responseData);
+            } catch (jsonError) {
+                console.warn('Could not parse backend response as JSON. Raw text:', await response.text());
+                // If response.text() was already read by the previous try for errorText, this might fail or be empty.
+                // For simplicity here, we assume .json() is the primary expected format on success.
+                // A more robust solution might involve cloning the response if you need to read the body multiple times.
+                responseData = 'Response body could not be parsed as JSON.';
+            }
+            navigate('/home'); // Navigate to the main app/home screen
+        } catch (error) {
+            console.error('Error sending preferences:', error);
+            // Handle network errors or other issues
+        }
     };
 
     const handleSkip = () => {

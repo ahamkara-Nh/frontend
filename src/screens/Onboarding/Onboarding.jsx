@@ -24,6 +24,15 @@ const Onboarding = () => {
             window.Telegram.WebApp.ready();
             // Expand the WebApp to fullscreen mode
             window.Telegram.WebApp.expand();
+
+            // Log Telegram user data
+            if (window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+                console.log('Telegram User Data (Onboarding.jsx):', window.Telegram.WebApp.initDataUnsafe.user);
+            } else {
+                console.log('Telegram User Data not found (Onboarding.jsx).');
+            }
+        } else {
+            console.log('Telegram WebApp not available (Onboarding.jsx).');
         }
     }, []);
 
