@@ -68,7 +68,7 @@ const OnboardingAllergies = () => {
         }
 
         if (!telegram_id) {
-            console.error('Telegram user ID not found. Cannot update preferences.');
+            console.error('Telegram user ID not found. Cannot proceed.');
             // Optionally, show an error message to the user
             return;
         }
@@ -78,14 +78,12 @@ const OnboardingAllergies = () => {
             return acc;
         }, {});
 
-        const requestUrl = `/users/${telegram_id}/preferences`;
-        console.log('Sending preferences to backend:');
-        console.log('URL:', requestUrl);
-        console.log('Method: PUT');
-        console.log('Payload:', JSON.stringify(preferences, null, 2));
+        const preferencesRequestUrl = `/users/${telegram_id}/preferences`;
+        const phaseTrackingRequestUrl = `/users/${telegram_id}/phase-tracking`;
 
         try {
-            const response = await fetch(requestUrl, { // Ensure your API base URL is configured if this is a relative path
+            // First, update preferences
+            const prefResponse = await fetch(preferencesRequestUrl, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -93,37 +91,76 @@ const OnboardingAllergies = () => {
                 body: JSON.stringify(preferences),
             });
 
-            if (!response.ok) {
-                // Handle API errors (e.g., show a notification to the user)
-                const errorText = await response.text();
-                console.error('Failed to update preferences. Status:', response.status);
-                console.error('Backend response:', errorText);
-                // Optionally, you might want to prevent navigation or show an error message
+            if (!prefResponse.ok) {
+                const errorText = await prefResponse.text();
+                console.error('Failed to update preferences. Status:', prefResponse.status, 'Response:', errorText);
+                // Optionally, show an error message
                 return;
             }
+            console.log('Preferences updated successfully.');
 
-            // Try to parse as JSON, but fall back to text if it fails
-            let responseData;
-            try {
-                responseData = await response.json();
-                console.log('Preferences updated successfully. Backend response:');
-                console.log(responseData);
-            } catch (jsonError) {
-                console.warn('Could not parse backend response as JSON. Raw text:', await response.text());
-                // If response.text() was already read by the previous try for errorText, this might fail or be empty.
-                // For simplicity here, we assume .json() is the primary expected format on success.
-                // A more robust solution might involve cloning the response if you need to read the body multiple times.
-                responseData = 'Response body could not be parsed as JSON.';
+            // Then, update phase tracking
+            const phaseResponse = await fetch(phaseTrackingRequestUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ current_phase: 1 }),
+            });
+
+            if (!phaseResponse.ok) {
+                const errorText = await phaseResponse.text();
+                console.error('Failed to update phase tracking. Status:', phaseResponse.status, 'Response:', errorText);
+                // Optionally, show an error message
+                return;
             }
-            navigate('/home'); // Navigate to the main app/home screen
+            console.log('Phase tracking updated successfully to phase 1.');
+
+            navigate('/home/phase1'); // Navigate after both calls succeed
+
         } catch (error) {
-            console.error('Error sending preferences:', error);
+            console.error('Error during API calls:', error);
             // Handle network errors or other issues
         }
     };
 
-    const handleSkip = () => {
-        navigate('/home'); // Navigate to the main app/home screen
+    const handleSkip = async () => {
+        let telegram_id = null;
+        if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+            telegram_id = window.Telegram.WebApp.initDataUnsafe.user.id;
+        }
+
+        if (!telegram_id) {
+            console.error('Telegram user ID not found. Cannot proceed.');
+            // Optionally, show an error message to the user
+            return;
+        }
+
+        const phaseTrackingRequestUrl = `/users/${telegram_id}/phase-tracking`;
+
+        try {
+            const phaseResponse = await fetch(phaseTrackingRequestUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ current_phase: 1 }),
+            });
+
+            if (!phaseResponse.ok) {
+                const errorText = await phaseResponse.text();
+                console.error('Failed to update phase tracking. Status:', phaseResponse.status, 'Response:', errorText);
+                // Optionally, show an error message
+                return;
+            }
+            console.log('Phase tracking updated successfully to phase 1 (skipped allergies).');
+
+            navigate('/home/phase1'); // Navigate after phase tracking update
+
+        } catch (error) {
+            console.error('Error updating phase tracking:', error);
+            // Handle network errors or other issues
+        }
     };
 
     return (
