@@ -21,6 +21,13 @@ const Onboarding2 = () => {
     const navigate = useNavigate();
     const [selected, setSelected] = useState(null);
 
+    // Get user's first name from Telegram WebApp API, fallback to 'новый пользователь'
+    let userName = 'новый пользователь';
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) {
+        const user = window.Telegram.WebApp.initDataUnsafe.user;
+        userName = user.first_name || user.username || 'новый пользователь';
+    }
+
     const isButtonDisabled = selected === null;
     const buttonStyle = isButtonDisabled
         ? {
@@ -38,7 +45,7 @@ const Onboarding2 = () => {
             <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column', gap: '36px', alignItems: 'flex-start' }}>
                 <div style={{ marginBottom: '16px' }}>
                     <div style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 600, fontSize: '32px', color: '#fff', lineHeight: '1.5em', letterSpacing: '-0.04em' }}>
-                        Привет, Nikita !
+                        {`Привет, ${userName} !`}
                     </div>
                     <div style={{ fontFamily: 'Manrope, sans-serif', fontWeight: 400, fontSize: '17px', color: '#C4C4C4', lineHeight: '1.5em', letterSpacing: '-0.04em', marginTop: '8px' }}>
                         Хотите ли вы подробнее узнать о low-FODMAP диете ?
@@ -73,7 +80,13 @@ const Onboarding2 = () => {
                 disabled={isButtonDisabled}
                 onClick={() => {
                     if (!isButtonDisabled) {
-                        // TODO: handle next
+                        if (selected === 0) {
+                            navigate('/onboarding/learn/1'); // "Изучить"
+                        } else if (selected === 1) {
+                            // handle "Пропустить"
+                        } else if (selected === 2) {
+                            // handle "Мне только посмотреть"
+                        }
                     }
                 }}
             >
