@@ -7,6 +7,7 @@ import OnboardingLearn3 from './screens/Onboarding/OnboardingLearn3';
 import OnboardingLearn4 from './screens/Onboarding/OnboardingLearn4';
 import OnboardingLearn5 from './screens/Onboarding/OnboardingLearn5';
 import OnboardingLearn6 from './screens/Onboarding/OnboardingLearn6';
+import OnboardingAllergies from './screens/Onboarding/OnboardingAllergies';
 import { AuthProvider } from './context/AuthContext';
 
 // Placeholder for where the app navigates after onboarding
@@ -24,6 +25,7 @@ function App() {
         <Route path="/onboarding/learn/4" element={<OnboardingLearn4 />} />
         <Route path="/onboarding/learn/5" element={<OnboardingLearn5 />} />
         <Route path="/onboarding/learn/6" element={<OnboardingLearn6 />} />
+        <Route path="/onboarding/allergies" element={<OnboardingAllergies />} />
         <Route path="/home" element={<HomePagePlaceholder />} />
         <Route path="*" element={<Navigate to="/onboarding" replace />} />
       </Routes>

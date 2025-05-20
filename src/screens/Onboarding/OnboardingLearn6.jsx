@@ -9,9 +9,8 @@ import stage3Image from '../../assets/images/onboarding_learn_6_stage3.png';
 const OnboardingLearn6 = () => {
     const navigate = useNavigate();
 
-    // TODO: Determine the correct final navigation path
     const handleFinishOnboarding = () => {
-        navigate('/home'); // Placeholder: navigate to a home/main screen
+        navigate('/onboarding/allergies'); // Navigate to the new allergies screen
     };
 
     return (
