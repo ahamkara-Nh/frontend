@@ -84,6 +84,7 @@ const Onboarding2 = () => {
                             navigate('/onboarding/learn/1'); // "Изучить"
                         } else if (selected === 1) {
                             // handle "Пропустить"
+                            navigate('/onboarding/allergies');
                         } else if (selected === 2) {
                             // handle "Мне только посмотреть"
                         }
