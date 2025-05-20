@@ -80,6 +80,7 @@ const OnboardingAllergies = () => {
 
         const preferencesRequestUrl = `/users/${telegram_id}/preferences`;
         const phaseTrackingRequestUrl = `/users/${telegram_id}/phase-tracking`;
+        const completeOnboardingRequestUrl = `/users/${telegram_id}/complete_onboarding`;
 
         try {
             // First, update preferences
@@ -116,7 +117,25 @@ const OnboardingAllergies = () => {
             }
             console.log('Phase tracking updated successfully to phase 1.');
 
-            navigate('/home/phase1'); // Navigate after both calls succeed
+            // Then, complete onboarding
+            const completeOnboardingResponse = await fetch(completeOnboardingRequestUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Add any other headers like Authorization if needed
+                },
+                // body: JSON.stringify({}), // Add body if your endpoint expects one
+            });
+
+            if (!completeOnboardingResponse.ok) {
+                const errorText = await completeOnboardingResponse.text();
+                console.error('Failed to complete onboarding. Status:', completeOnboardingResponse.status, 'Response:', errorText);
+                // Optionally, show an error message
+                return;
+            }
+            console.log('Onboarding completed successfully.');
+
+            navigate('/home/phase1'); // Navigate after all calls succeed
 
         } catch (error) {
             console.error('Error during API calls:', error);
@@ -137,8 +156,10 @@ const OnboardingAllergies = () => {
         }
 
         const phaseTrackingRequestUrl = `/users/${telegram_id}/phase-tracking`;
+        const completeOnboardingRequestUrl = `/users/${telegram_id}/complete_onboarding`;
 
         try {
+            // First, update phase tracking
             const phaseResponse = await fetch(phaseTrackingRequestUrl, {
                 method: 'POST',
                 headers: {
@@ -155,7 +176,24 @@ const OnboardingAllergies = () => {
             }
             console.log('Phase tracking updated successfully to phase 1 (skipped allergies).');
 
-            navigate('/home/phase1'); // Navigate after phase tracking update
+            // Then, complete onboarding
+            const completeOnboardingResponse = await fetch(completeOnboardingRequestUrl, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                // body: JSON.stringify({}), // Add body if your endpoint expects one
+            });
+
+            if (!completeOnboardingResponse.ok) {
+                const errorText = await completeOnboardingResponse.text();
+                console.error('Failed to complete onboarding. Status:', completeOnboardingResponse.status, 'Response:', errorText);
+                // Optionally, show an error message
+                return;
+            }
+            console.log('Onboarding completed successfully (skipped allergies).');
+
+            navigate('/home/phase1'); // Navigate after both calls succeed
 
         } catch (error) {
             console.error('Error updating phase tracking:', error);

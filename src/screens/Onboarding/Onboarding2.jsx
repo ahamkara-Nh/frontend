@@ -90,25 +90,50 @@ const Onboarding2 = () => {
                         } else if (selected === 2) {
                             // handle "Мне только посмотреть"
                             if (userId) {
-                                fetch(`/users/${userId}/phase-tracking`, {
+                                const phaseTrackingUrl = `/users/${userId}/phase-tracking`;
+                                const completeOnboardingUrl = `/users/${userId}/complete_onboarding`;
+
+                                // First, update phase tracking
+                                fetch(phaseTrackingUrl, {
                                     method: 'POST',
                                     headers: {
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({ current_phase: 0 }),
                                 })
-                                    .then(response => {
-                                        if (response.ok) {
-                                            navigate('/home/phase0'); // Navigate to placeholder
+                                    .then(phaseResponse => {
+                                        if (phaseResponse.ok) {
+                                            console.log('Phase tracking updated successfully to phase 0.');
+                                            // Then, complete onboarding
+                                            return fetch(completeOnboardingUrl, {
+                                                method: 'PUT',
+                                                headers: {
+                                                    'Content-Type': 'application/json',
+                                                },
+                                                // body: JSON.stringify({}), // Add body if needed
+                                            });
                                         } else {
-                                            // Handle error, e.g., show a message to the user
-                                            console.error('Failed to update phase tracking');
-                                            // Optionally, navigate to an error page or show an alert
+                                            // Handle phase tracking error
+                                            phaseResponse.text().then(text => {
+                                                console.error('Failed to update phase tracking. Status:', phaseResponse.status, 'Response:', text);
+                                            });
+                                            throw new Error('Failed to update phase tracking'); // Propagate error to skip next steps
+                                        }
+                                    })
+                                    .then(onboardingResponse => {
+                                        if (onboardingResponse.ok) {
+                                            console.log('Onboarding completed successfully.');
+                                            navigate('/home/phase0'); // Navigate after both succeed
+                                        } else {
+                                            // Handle onboarding completion error
+                                            onboardingResponse.text().then(text => {
+                                                console.error('Failed to complete onboarding. Status:', onboardingResponse.status, 'Response:', text);
+                                            });
                                         }
                                     })
                                     .catch(error => {
-                                        console.error('Error during phase tracking update:', error);
-                                        // Optionally, navigate to an error page or show an alert
+                                        console.error('Error during API calls for \"Мне только посмотреть\":', error);
+                                        // Optionally, show a user-friendly error message
                                     });
                             } else {
                                 console.error('User ID not available');
