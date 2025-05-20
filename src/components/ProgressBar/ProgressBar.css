@@ -1,0 +1,23 @@
+.progress-bar-container {
+    display: flex;
+    gap: 1vw;
+    /* Or a fixed gap like 4px based on original styling */
+    width: 100%;
+    /* maxWidth is handled by the parent div in OnboardingLearn2 for now */
+}
+
+.progress-segment {
+    flex: 1;
+    height: 7px;
+    border-radius: 4px;
+}
+
+.progress-segment.completed {
+    background-color: #325D45;
+    /* Green from original style */
+}
+
+.progress-segment.incomplete {
+    background-color: #323E5D;
+    /* Blue from original style */
+}
