@@ -1,0 +1,56 @@
+.story-detail-container {
+    padding: 0px 20px 0px 20px;
+    background-color: #222222;
+    /* Match Figma background */
+    color: #ffffff;
+    /* Match Figma text color */
+    /*min-height: 1px;*/
+    font-family: 'Manrope', sans-serif;
+    /* Match Figma font */
+}
+
+
+.story-detail-title {
+    font-size: 33px;
+    /* Match Figma font size */
+    font-weight: 600;
+    /* Match Figma font weight */
+    line-height: 1.5em;
+    /* Match Figma line height */
+    letter-spacing: -0.04em;
+    /* Match Figma letter spacing */
+    margin-bottom: 20px;
+}
+
+.story-detail-paragraph {
+    font-size: 16px;
+    /* Match Figma font size */
+    font-weight: 400;
+    /* Match Figma font weight */
+    line-height: 1.5em;
+    /* Match Figma line height */
+    letter-spacing: -0.04em;
+    /* Match Figma letter spacing */
+    color: #C4C4C4;
+    /* Match Figma paragraph text color */
+    margin-bottom: 20px;
+}
+
+.story-detail-image {
+    display: block;
+    /* Ensures margin auto works for centering */
+    margin-left: auto;
+    /* Centers the image */
+    margin-right: auto;
+    /* Centers the image */
+    width: auto;
+    /* Use intrinsic width, up to max-width */
+    max-width: 100%;
+    /* Ensures image is not wider than its container */
+    height: auto;
+    /* Maintain aspect ratio */
+    border-radius: 10px;
+    /* Match Figma border radius */
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

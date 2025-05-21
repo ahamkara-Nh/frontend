@@ -10,6 +10,7 @@ import OnboardingLearn5 from './screens/Onboarding/OnboardingLearn5';
 import OnboardingLearn6 from './screens/Onboarding/OnboardingLearn6';
 import HomePhase0 from './screens/Home/HomePhase0';
 import HomePhase1 from './screens/Home/HomePhase1';
+import StoryDetailScreen from './screens/StoryDetail/StoryDetailScreen';
 import OnboardingAllergies from './screens/Onboarding/OnboardingAllergies';
 import { AuthProvider } from './context/AuthContext';
 
@@ -33,6 +34,7 @@ function App() {
         <Route path="/home/phase0" element={<HomePhase0 />} />
         <Route path="/home/phase1" element={<HomePhase1 />} />
         <Route path="/diary" element={<HomePhase1 />} />
+        <Route path="/story/:storyId" element={<StoryDetailScreen />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>

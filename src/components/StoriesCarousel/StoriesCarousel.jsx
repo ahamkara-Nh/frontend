@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './StoriesCarousel.css';
 import storyBackgroundImage1 from '../../assets/images/stories_food.png'; // Import the image
 import storyBackgroundImage2 from '../../assets/images/stories_food2.png'; // Import the image
@@ -6,6 +7,11 @@ import storyBackgroundImage3 from '../../assets/images/stories_food3.png'; // Im
 import storyBackgroundImage4 from '../../assets/images/stories_food4.png'; // Import the image
 
 const StoriesCarousel = () => {
+    const navigate = useNavigate();
+    const handleStoryClick = (storyId) => {
+        navigate(`/story/${storyId}`);
+    };
+
     const stories = [
         { id: 1, title: 'Что значит исключение ?', image: storyBackgroundImage1 },
         { id: 2, title: 'Как выбрать продукты ?', image: storyBackgroundImage2 },
@@ -18,7 +24,7 @@ const StoriesCarousel = () => {
             {/* <h2>Stories</h2> Removed this heading */}
             <div className="stories-carousel">
                 {stories.map((story) => (
-                    <div key={story.id} className="story-card">
+                    <div key={story.id} className="story-card" onClick={() => handleStoryClick(story.id)}>
                         <img src={story.image} alt={story.title} className="story-image" />
                         <div className="story-title">{story.title}</div>
                     </div>
@@ -28,4 +34,4 @@ const StoriesCarousel = () => {
     );
 };
 
-export default StoriesCarousel; 
+export default StoriesCarousel;

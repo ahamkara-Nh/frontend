@@ -13,7 +13,7 @@ const OnboardingLearn1 = () => {
             <div style={{ display: 'flex', gap: '1vw', width: '100%', maxWidth: '600px', marginBottom: '5vh', marginTop: '2vh' }}>
                 <div style={{ flex: 1, height: '7px', borderRadius: '4px', background: '#325D45' }} />
                 {[...Array(5)].map((_, i) => (
-                    <div key={i} style={{ flex: 1, height: '7px', borderRadius: '4px', background: '#323E5D' }} />
+                    <div key={i} style={{ flex: 1, height: '7px', borderRadius: '4px', background: '#323232' }} />
                 ))}
             </div>
             {/* Content */}

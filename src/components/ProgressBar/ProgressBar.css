@@ -18,6 +18,5 @@
 }
 
 .progress-segment.incomplete {
-    background-color: #323E5D;
-    /* Blue from original style */
+    background-color: #323232;
 }
