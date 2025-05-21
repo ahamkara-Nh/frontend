@@ -21,7 +21,11 @@ const BottomNavBar = () => {
     return (
         <nav className="bottom-nav-bar">
             {navItems.map((item) => {
-                const isActive = location.pathname.startsWith(item.path);
+                // Special case for diary - consider both /diary and /home/phase1 as active states
+                const isActive = item.path === '/diary'
+                    ? (location.pathname === '/diary' || location.pathname === '/home/phase1')
+                    : location.pathname.startsWith(item.path);
+
                 return (
                     <Link to={item.path} key={item.path} className={`nav-item ${isActive ? 'active' : ''}`}>
                         <item.icon className="nav-icon" />
