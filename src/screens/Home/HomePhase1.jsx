@@ -4,6 +4,7 @@ import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import CurrentPhaseBar from '../../components/CurrentPhaseBar/CurrentPhaseBar';
 import StoriesCarousel from '../../components/StoriesCarousel/StoriesCarousel';
 import SymptomDaysCounter from '../../components/SymptomDaysCounter/SymptomDaysCounter';
+import ActionButtons from '../../components/ActionButtons/ActionButtons';
 import { usePhaseProgress } from '../../hooks/usePhaseProgress';
 import { usePhaseTracking } from '../../hooks/usePhaseTracking';
 
@@ -48,6 +49,7 @@ const HomePhase1 = () => {
             <CurrentPhaseBar phaseName="Этап 1: Исключение" week={week} day={day} />
             <StoriesCarousel />
             <SymptomDaysCounter completedDays={phase1_streak_days} />
+            <ActionButtons />
             <div style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}>
                 <BottomNavBar />
             </div>
