@@ -7,6 +7,7 @@ import SymptomDaysCounter from '../../components/SymptomDaysCounter/SymptomDaysC
 import ActionButtons from '../../components/ActionButtons/ActionButtons';
 import { usePhaseProgress } from '../../hooks/usePhaseProgress';
 import { usePhaseTracking } from '../../hooks/usePhaseTracking';
+import './HomePhase1.css';
 
 const HomePhase1 = () => {
     const navigate = useNavigate();
@@ -50,6 +51,7 @@ const HomePhase1 = () => {
             <StoriesCarousel />
             <SymptomDaysCounter completedDays={phase1_streak_days} />
             <ActionButtons />
+            <div className="divider"></div>
             <div style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}>
                 <BottomNavBar />
             </div>

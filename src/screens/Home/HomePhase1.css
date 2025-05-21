@@ -1,0 +1,11 @@
+.home-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.divider {
+    height: 1px;
+    background-color: #323232;
+    margin: 15px 50px;
+}
