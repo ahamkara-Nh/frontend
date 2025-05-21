@@ -22,7 +22,8 @@ export const AuthProvider = ({ children }) => {
                 // Check if we're in Telegram environment and have valid initData
                 if (isAuthenticated()) {
                     const authResult = await authenticateTelegram();
-                    setUser(authResult.user);
+                    console.log('[AuthContext] authResult from authenticateTelegram:', authResult);
+                    setUser(authResult);
                 }
             } catch (err) {
                 console.error('Authentication initialization error:', err);
