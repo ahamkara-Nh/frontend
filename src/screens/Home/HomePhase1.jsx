@@ -3,14 +3,17 @@ import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import CurrentPhaseBar from '../../components/CurrentPhaseBar/CurrentPhaseBar';
 import StoriesCarousel from '../../components/StoriesCarousel/StoriesCarousel';
+import SymptomDaysCounter from '../../components/SymptomDaysCounter/SymptomDaysCounter';
 import { usePhaseProgress } from '../../hooks/usePhaseProgress';
+import { usePhaseTracking } from '../../hooks/usePhaseTracking';
 
 const HomePhase1 = () => {
     const navigate = useNavigate();
 
     // Get user ID from Telegram WebApp
     const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
-    const { week, day, loading, error } = usePhaseProgress(telegramId);
+    const { week, day, loading: progressLoading, error: progressError } = usePhaseProgress(telegramId);
+    const { phase1_streak_days, loading: trackingLoading, error: trackingError } = usePhaseTracking(telegramId);
 
     const handleRandomAction = () => {
         // Placeholder for a random action
@@ -18,15 +21,24 @@ const HomePhase1 = () => {
         // Example: navigate('/some-feature');
     };
 
-
-    if (error) {
-        console.error('Error loading phase progress:', error);
+    if (progressError || trackingError) {
+        console.error('Error loading data:', { progressError, trackingError });
         // Fallback to default values if there's an error
         return (
             <div className="home-container">
                 <CurrentPhaseBar phaseName="Этап 1: Исключение" week={1} day={1} />
+                <SymptomDaysCounter completedDays={0} />
                 <p>Error loading progress. Using default values.</p>
                 {/* Rest of your component */}
+            </div>
+        );
+    }
+
+    if (progressLoading || trackingLoading) {
+        return (
+            <div className="home-container">
+                <CurrentPhaseBar phaseName="Этап 1: Исключение" week={1} day={1} />
+                <p>Loading...</p>
             </div>
         );
     }
@@ -35,6 +47,7 @@ const HomePhase1 = () => {
         <div className="home-container">
             <CurrentPhaseBar phaseName="Этап 1: Исключение" week={week} day={day} />
             <StoriesCarousel />
+            <SymptomDaysCounter completedDays={phase1_streak_days} />
             <div style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}>
                 <BottomNavBar />
             </div>

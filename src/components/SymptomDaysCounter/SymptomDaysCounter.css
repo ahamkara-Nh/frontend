@@ -1,0 +1,111 @@
+.symptom-days-counter-container {
+    background-color: #323232;
+    border-radius: 10px;
+    padding: 10px 10px 0px 10px;
+    margin-top: 15px;
+    margin-left: 4.1vw;
+    margin-right: 4.1vw;
+    overflow: hidden;
+    /* Or any other appropriate margin */
+}
+
+.symptom-days-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    margin: 0 0 10px 0;
+    /* Adjusted margin based on Figma (y:0, x:0 from parent, but y:39 for days-row) */
+}
+
+.days-row {
+    display: flex;
+    justify-content: left;
+    gap: 10px;
+    margin-bottom: 10px;
+    /* This will space out the boxes */
+}
+
+.day-box {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.day-box.completed {
+    background-color: #325D45;
+    /* Green from Figma */
+}
+
+.day-box.pending {
+    background-color: #4E4E4E;
+    /* Grey from Figma */
+}
+
+.checkmark-icon {
+    width: 20px;
+    /* As per Figma */
+    height: 15px;
+    /* As per Figma */
+}
+
+.symptom-days-success-message {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    /* Figma says 16px */
+    line-height: 1.5em;
+    /* Figma says 1.5em */
+    letter-spacing: -0.04em;
+    /* Figma says -4% */
+    color: #C4C4C4;
+    /* Light grey text from Figma */
+    margin-top: 10px;
+    margin-bottom: 10px;
+    /* Based on Figma (105px from top of component, title is 10+24+10=44, days-row is 36, so 105 - 44 - 36 = 25. Let's use 20px for now) */
+    /* text-align: left; is default */
+}
+
+.symptom-days-success-message.final-success {
+    margin-bottom: 10px;
+    /* Space before the button */
+}
+
+.next-phase-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: calc(100% + 20px);
+    /* To make it flush with container edges, considering container padding */
+    margin-left: -10px;
+    /* Counteract container padding */
+    margin-right: -10px;
+    /* Counteract container padding */
+    height: 48px;
+    background: linear-gradient(to right, #325D45, #2D594D, #2A5552, #295156, #294D58, #2A495B, #2D445D, #323E5D);
+    border-radius: 0 0 10px 10px;
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    cursor: pointer;
+    /* padding: 0; */
+    /* Removed to allow flex to center content */
+    /* margin-top: 10px; */
+    /* Removed, using margin on .final-success instead */
+}
+
+
+.next-phase-arrow {
+    width: 8px;
+    height: 14px;
+    margin-left: 10px;
+}
