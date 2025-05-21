@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
+import CurrentPhaseBar from '../../components/CurrentPhaseBar/CurrentPhaseBar';
 
 const HomePhase1 = () => {
     const navigate = useNavigate();
@@ -13,6 +14,7 @@ const HomePhase1 = () => {
 
     return (
         <div className="home-container">
+            <CurrentPhaseBar phaseName="Этап 1: Исключение" week={1} day={1} />
             <h1>Home - Phase 1 (Placeholder)</h1>
             <p>This is a placeholder screen for users starting Phase 1 of the diet.</p>
             <button onClick={handleRandomAction} className="home-button">

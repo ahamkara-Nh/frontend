@@ -1,0 +1,42 @@
+.current-phase-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: linear-gradient(to right, #325D45, #2D594D, #2A5552, #295156, #294D58, #2A495B, #2D445D, #323E5D);
+    color: white;
+    box-shadow: -1px 2px 12px 0px rgba(45, 68, 93, 1);
+    border-radius: 0 0 20px 20px;
+    /* Optional: if you want rounded bottom corners */
+}
+
+.phase-info {
+    text-align: left;
+}
+
+.phase-name {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    margin: 0;
+}
+
+.phase-date {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    margin: 0;
+}
+
+.arrow-icon {
+    /* If using an img tag, you might need to adjust size */
+    /* width: 10px; */
+    /* height: 18px; */
+    font-size: 24px;
+    /* Placeholder style for text arrow */
+    font-weight: bold;
+}
