@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import CurrentPhaseBar from '../../components/CurrentPhaseBar/CurrentPhaseBar';
+import StoriesCarousel from '../../components/StoriesCarousel/StoriesCarousel';
 import { usePhaseProgress } from '../../hooks/usePhaseProgress';
 
 const HomePhase1 = () => {
@@ -33,11 +34,7 @@ const HomePhase1 = () => {
     return (
         <div className="home-container">
             <CurrentPhaseBar phaseName="Этап 1: Исключение" week={week} day={day} />
-            <h1>Home - Phase 1 (Placeholder)</h1>
-            <p>This is a placeholder screen for users starting Phase 1 of the diet.</p>
-            <button onClick={handleRandomAction} className="home-button">
-                Do Something in Phase 1
-            </button>
+            <StoriesCarousel />
             <div style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}>
                 <BottomNavBar />
             </div>

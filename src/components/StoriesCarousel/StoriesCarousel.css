@@ -1,0 +1,78 @@
+.stories-carousel-container {
+    margin: 20px 4.1vw;
+    /* 20px top/bottom, 4.1vw left/right */
+}
+
+.stories-carousel {
+    display: flex;
+    overflow-x: auto;
+    /* Enables horizontal scrolling */
+    gap: 10px;
+    /* Space between cards */
+}
+
+.story-card {
+    width: 130px;
+    /* Width from Figma */
+    height: 190px;
+    /* Height from Figma */
+    border-radius: 10px;
+    /* Border radius from Figma */
+    overflow: hidden;
+    /* Ensures image stays within rounded corners */
+    position: relative;
+    /* For positioning the title */
+    flex-shrink: 0;
+    /* Prevents cards from shrinking */
+    background-color: #222222;
+    /* Placeholder background */
+}
+
+.story-card::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 90%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
+    pointer-events: none;
+    /* Ensures the overlay doesn't interfere with clicks */
+}
+
+.story-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Ensures the image covers the card */
+}
+
+.story-title {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    color: white;
+    /* Text color from Figma (assuming white for now) */
+    font-size: 16px;
+    /* Font size from Figma */
+    font-family: 'Manrope', sans-serif;
+    /* Font family from Figma */
+    /* Additional text styling from Figma can be added here */
+    text-align: left;
+    z-index: 1;
+    /* Ensures text appears above the gradient overlay */
+}
+
+/* Hide scrollbar for a cleaner look (optional) */
+.stories-carousel::-webkit-scrollbar {
+    display: none;
+    /* For Chrome, Safari, and Opera */
+}
+
+.stories-carousel {
+    -ms-overflow-style: none;
+    /* For Internet Explorer and Edge */
+    scrollbar-width: none;
+    /* For Firefox */
+}
