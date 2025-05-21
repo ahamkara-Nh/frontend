@@ -1,0 +1,69 @@
+.bottom-nav-bar {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #323232;
+    /* From Figma */
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 8vh;
+    /* Adjusted for responsiveness */
+    padding: 1vh 0;
+    box-sizing: border-box;
+    z-index: 1000;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    color: #C4C4C4;
+    /* Inactive text color from Figma */
+    flex-grow: 1;
+    height: 100%;
+}
+
+.nav-icon {
+    width: 3.5vh;
+    /* Adjusted for responsiveness */
+    height: 3.5vh;
+    /* Adjusted for responsiveness */
+    margin-bottom: 0.5vh;
+}
+
+.nav-icon path {
+    fill: #717171;
+    /* Inactive icon color from Figma */
+    transition: fill 0.2s ease;
+    /* Add smooth transition */
+}
+
+/* Ensure stroke properties are also handled if SVGs use them */
+.nav-icon path,
+.nav-icon line,
+.nav-icon circle {
+    stroke: #717171;
+}
+
+.nav-item.active .nav-icon path {
+    fill: #FFFFFF;
+    /* Active icon color from Figma */
+}
+
+.nav-item.active .nav-label {
+    color: #FFFFFF;
+    /* Active text color from Figma */
+}
+
+.nav-label {
+    font-size: clamp(0.6rem, 1.5vmin, 0.9rem);
+    /* Adjusted for responsiveness, using vmin for balance */
+    font-family: 'Inter', sans-serif;
+    /* From Figma */
+    font-weight: 300;
+    /* From Figma */
+}

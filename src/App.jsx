@@ -32,6 +32,7 @@ function App() {
         <Route path="/onboarding/allergies" element={<OnboardingAllergies />} />
         <Route path="/home/phase0" element={<HomePhase0 />} />
         <Route path="/home/phase1" element={<HomePhase1 />} />
+        <Route path="/diary" element={<HomePhase1 />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>

@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 
 const HomePhase1 = () => {
     const navigate = useNavigate();
@@ -17,6 +18,9 @@ const HomePhase1 = () => {
             <button onClick={handleRandomAction} className="home-button">
                 Do Something in Phase 1
             </button>
+            <div style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}>
+                <BottomNavBar />
+            </div>
         </div>
     );
 };
