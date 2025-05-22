@@ -53,11 +53,19 @@
 }
 
 .loading-message,
-.error-message {
+.error-message,
+.empty-state-message {
     padding: 20px;
     text-align: center;
     color: white;
     font-family: 'Manrope', sans-serif;
+}
+
+.empty-state-message {
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 40px;
+    color: #888;
 }
 
 .error-message {

@@ -53,33 +53,33 @@ const CategoryScreen = () => {
     };
 
     // Fetch products data
-    useEffect(() => {
-        const fetchProducts = async () => {
-            setLoading(true);
-            try {
-                // Get category ID based on the category name
-                const categoryId = CATEGORY_IDS[categoryName] || 1; // Default to 1 if not found
+    const fetchProducts = async () => {
+        setLoading(true);
+        try {
+            // Get category ID based on the category name
+            const categoryId = CATEGORY_IDS[categoryName] || 1; // Default to 1 if not found
 
-                // Get Telegram user ID or use a default for development
-                const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+            // Get Telegram user ID or use a default for development
+            const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
 
-                const response = await fetch(`/categories/${categoryId}/products/${telegramId}`);
+            const response = await fetch(`/categories/${categoryId}/products/${telegramId}`);
 
-                if (!response.ok) {
-                    throw new Error(`API request failed with status ${response.status}`);
-                }
-
-                const data = await response.json();
-                console.log(data);
-                setProducts(data.products);
-                setLoading(false);
-            } catch (err) {
-                console.error('Error fetching products:', err);
-                setError('Failed to load products. Please try again later.');
-                setLoading(false);
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
             }
-        };
 
+            const data = await response.json();
+            setProducts(data.products);
+            setLoading(false);
+        } catch (err) {
+            console.error('Error fetching products:', err);
+            setError('Failed to load products. Please try again later.');
+            setLoading(false);
+        }
+    };
+
+    // Initialize products data
+    useEffect(() => {
         fetchProducts();
     }, [categoryName]);
 
@@ -110,6 +110,11 @@ const CategoryScreen = () => {
 
     const toggleFilterMenu = () => {
         setIsFilterMenuOpen(!isFilterMenuOpen);
+
+        // Reload products when filter menu is closed
+        if (isFilterMenuOpen) {
+            fetchProducts();
+        }
     };
 
     return (
@@ -126,7 +131,7 @@ const CategoryScreen = () => {
                     <LoadingSpinner size="large" />
                 ) : error ? (
                     <div className="error-message">{error}</div>
-                ) : (
+                ) : products.length > 0 ? (
                     <div className="products-list">
                         {products.map(product => (
                             <ProductItem
@@ -136,6 +141,8 @@ const CategoryScreen = () => {
                             />
                         ))}
                     </div>
+                ) : (
+                    <div className="empty-state-message">С текущими фильтрами ничего не найдено</div>
                 )}
             </div>
 
