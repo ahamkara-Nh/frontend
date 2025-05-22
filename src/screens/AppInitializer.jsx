@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; // Adjust path if AuthContext is elsewhere
+import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
 
 const AppInitializer = () => {
     const { user, isAuthenticated, loading: authLoading, error: authError } = useAuth();
@@ -88,7 +89,7 @@ const AppInitializer = () => {
     if (authLoading || statusFetching) {
         return (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', backgroundColor: '#222222' }}>
-                {/* Loading text removed */}
+                <LoadingSpinner size="large" />
             </div>
         );
     }

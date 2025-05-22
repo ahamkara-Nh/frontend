@@ -5,6 +5,7 @@ import CurrentPhaseBar from '../../components/CurrentPhaseBar/CurrentPhaseBar';
 import StoriesCarousel from '../../components/StoriesCarousel/StoriesCarousel';
 import SymptomDaysCounter from '../../components/SymptomDaysCounter/SymptomDaysCounter';
 import ActionButtons from '../../components/ActionButtons/ActionButtons';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import { usePhaseProgress } from '../../hooks/usePhaseProgress';
 import { usePhaseTracking } from '../../hooks/usePhaseTracking';
 import './HomePhase1.css';
@@ -40,7 +41,7 @@ const HomePhase1 = () => {
         return (
             <div className="home-container">
                 <CurrentPhaseBar phaseName="Этап 1: Исключение" week={1} day={1} />
-                <p>Loading...</p>
+                <LoadingSpinner size="medium" />
             </div>
         );
     }

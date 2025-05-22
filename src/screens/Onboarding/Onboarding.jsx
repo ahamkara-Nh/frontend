@@ -3,6 +3,7 @@ import './Onboarding.css';
 import { useAuth } from '../../context/AuthContext';
 import { authenticateTelegram } from '../../services/authService';
 import { useNavigate } from 'react-router-dom';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 
 const Onboarding = () => {
     const { user, loading, error, isAuthenticated } = useAuth();
@@ -30,7 +31,7 @@ const Onboarding = () => {
         return (
             <div className="onboarding-container">
                 <div className="onboarding-text-blocks">
-                    <p className="onboarding-text main">Loading...</p>
+                    <LoadingSpinner size="medium" />
                 </div>
             </div>
         );
