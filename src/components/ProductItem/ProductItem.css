@@ -1,0 +1,42 @@
+.product-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 17px 16px 17px 16px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+}
+
+.product-info {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+.product-name {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: white;
+}
+
+.product-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+}
+
+.product-indicator.green {
+    background: linear-gradient(to right, #00FF00, #00AA00);
+}
+
+.product-indicator.red {
+    background: linear-gradient(to right, #FF0000, #CE20B7);
+}
+
+.product-indicator.yellow {
+    background: linear-gradient(to right, #FFD700, #FFA500);
+}

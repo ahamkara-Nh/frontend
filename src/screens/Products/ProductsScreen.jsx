@@ -2,36 +2,27 @@ import React, { useState, useEffect } from 'react';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import CategoryCard from '../../components/CategoryCard/CategoryCard';
-import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import FilterMenu from '../../components/FilterMenu/FilterMenu';
 import './ProductsScreen.css';
 
+const CATEGORIES = [
+    { name: "Масла", image_name: "oil" },
+    { name: "Молочные продукты", image_name: "milk" },
+    { name: "Мясо, рыба, яйца", image_name: "meat" },
+    { name: "Напитки", image_name: "beverages" },
+    { name: "Овощи", image_name: "vegetables" },
+    { name: "Орехи, бобовые, тофу", image_name: "nuts" },
+    { name: "Перекус, батончики, печенье", image_name: "snaks" },
+    { name: "Пищевые добавки", image_name: "addons" },
+    { name: "Приправы и соусы", image_name: "sauce" },
+    { name: "Сладости", image_name: "sweets" },
+    { name: "Фрукты", image_name: "fruits" },
+    { name: "Хлеб, хлопья, рис, макароны", image_name: "bread" }
+];
+
 const ProductsScreen = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [categories, setCategories] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
     const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
-
-    useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const response = await fetch('/categories');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch categories');
-                }
-                const data = await response.json();
-                setCategories(data.categories || []);
-            } catch (err) {
-                console.error('Error fetching categories:', err);
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchCategories();
-    }, []);
 
     // Add Telegram WebApp back button functionality
     useEffect(() => {
@@ -81,20 +72,14 @@ const ProductsScreen = () => {
                         path="/products/recipes"
                     />
 
-                    {loading ? (
-                        <LoadingSpinner size="medium" />
-                    ) : error ? (
-                        <p className="error-message">Error loading categories</p>
-                    ) : (
-                        categories.map((category, index) => (
-                            <CategoryCard
-                                key={index}
-                                title={category.name}
-                                backgroundImage={`/images/categories/${category.image_name}.png`}
-                                path={`/products/category/${category.name}`}
-                            />
-                        ))
-                    )}
+                    {CATEGORIES.map((category, index) => (
+                        <CategoryCard
+                            key={index}
+                            title={category.name}
+                            backgroundImage={`/images/categories/${category.image_name}.png`}
+                            path={`/products/category/${category.name}`}
+                        />
+                    ))}
                 </div>
             </div>
 
