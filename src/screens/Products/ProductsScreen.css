@@ -106,3 +106,21 @@
     background-color: #323232;
     margin: 15px 50px;
 }
+
+.search-results {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.empty-search-message,
+.error-message {
+    color: #C4C4C4;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+}

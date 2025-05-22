@@ -9,7 +9,7 @@ export default defineConfig({
     svgr()
   ],
   server: {
-    allowedHosts: ['84ba3582ad6e1f070168cd667ee66344.serveo.net'],
+    allowedHosts: ['580a7eb3f12191f4771579e52887f172.serveo.net'],
     proxy: {
       '/auth': {
         target: 'http://127.0.0.1:8000',
@@ -17,6 +17,11 @@ export default defineConfig({
         secure: false
       },
       '/users': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true,
+        secure: false
+      },
+      '/products': {
         target: 'http://127.0.0.1:8000',
         changeOrigin: true,
         secure: false

@@ -6,6 +6,10 @@ const SearchBar = ({ searchQuery, setSearchQuery, placeholder }) => {
         setSearchQuery(e.target.value);
     };
 
+    const handleClearSearch = () => {
+        setSearchQuery('');
+    };
+
     return (
         <div className="search-bar">
             <input
@@ -15,7 +19,17 @@ const SearchBar = ({ searchQuery, setSearchQuery, placeholder }) => {
                 onChange={handleSearchChange}
                 className="search-input"
             />
-            <img src="/icons/search-icon.svg" alt="Search" className="search-icon" />
+            {searchQuery ? (
+                <button
+                    className="clear-search-button"
+                    onClick={handleClearSearch}
+                    aria-label="Clear search"
+                >
+                    ✕
+                </button>
+            ) : (
+                <img src="/icons/search-icon.svg" alt="Search" className="search-icon" />
+            )}
         </div>
     );
 };
