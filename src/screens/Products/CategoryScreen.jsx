@@ -136,6 +136,7 @@ const CategoryScreen = () => {
                         {products.map(product => (
                             <ProductItem
                                 key={product.product_id}
+                                id={product.product_id}
                                 name={product.name}
                                 type={determineFodmapLevel(product)}
                             />

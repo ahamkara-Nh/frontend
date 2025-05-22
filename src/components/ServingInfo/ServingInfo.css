@@ -1,0 +1,87 @@
+.serving-info-container {
+    margin-top: 16px;
+    margin-bottom: 24px;
+    width: 100%;
+}
+
+.serving-selector {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 15px;
+    margin-top: 20px;
+    justify-content: flex-start;
+}
+
+.serving-option {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #777777;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.serving-option.active {
+    color: #C4C4C4;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.serving-size {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #C4C4C4;
+    margin-bottom: 15px;
+    margin-top: 20px;
+}
+
+.fodmap-indicators {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+}
+
+.fodmap-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+}
+
+.fodmap-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+.fodmap-name {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 18px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #C4C4C4;
+}
+
+/* FODMAP indicator colors */
+.fodmap-indicator.green {
+    background: linear-gradient(to right, #00FF09, #20CE97);
+}
+
+.fodmap-indicator.yellow {
+    background: linear-gradient(to right, #EEFF00, #CE8520);
+}
+
+.fodmap-indicator.red {
+    background: linear-gradient(to right, #FF0000, #CE20B7);
+}

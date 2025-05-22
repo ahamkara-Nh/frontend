@@ -5,6 +5,16 @@
     align-items: center;
     padding: 17px 16px 17px 16px;
     border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.product-item:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.product-item:active {
+    background-color: rgba(255, 255, 255, 0.1);
 }
 
 .product-info {
@@ -29,6 +39,7 @@
     border-radius: 50%;
     min-width: 20px;
     min-height: 20px;
+    margin-left: 10px;
 }
 
 .product-indicator.green {

@@ -14,6 +14,7 @@ import StoryDetailScreen from './screens/StoryDetail/StoryDetailScreen';
 import OnboardingAllergies from './screens/Onboarding/OnboardingAllergies';
 import ProductsScreen from './screens/Products/ProductsScreen';
 import CategoryScreen from './screens/Products/CategoryScreen';
+import ProductDetailScreen from './screens/Products/ProductDetailScreen';
 import { AuthProvider } from './context/AuthContext';
 
 // Placeholder for where the app navigates after onboarding
@@ -38,6 +39,7 @@ function App() {
         <Route path="/diary" element={<HomePhase1 />} />
         <Route path="/products" element={<ProductsScreen />} />
         <Route path="/products/category/:categoryName" element={<CategoryScreen />} />
+        <Route path="/products/:productId" element={<ProductDetailScreen />} />
         <Route path="/story/:storyId" element={<StoryDetailScreen />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

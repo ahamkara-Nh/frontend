@@ -1,0 +1,321 @@
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import ServingInfo from '../../components/ServingInfo/ServingInfo';
+import './ProductDetailScreen.css';
+
+const ProductDetailScreen = () => {
+    const { productId } = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
+    const productName = location.state?.productName;
+
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [isFavorite, setIsFavorite] = useState(false);
+    const [selectedServing, setSelectedServing] = useState(null);
+
+    // Fetch product data
+    useEffect(() => {
+        const fetchProductDetails = async () => {
+            setLoading(true);
+
+            try {
+                // Get Telegram user ID or use a default for development
+                const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+
+                let response;
+
+                // If we have the product name, use the POST /products/get-by-name endpoint
+                if (productName) {
+                    response = await fetch('/products/get-by-name', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: productName,
+                            telegramId: telegramId // Optional: if your API needs the telegram ID
+                        }),
+                    });
+                } else {
+                    // Fallback to fetch by ID if name is not available
+                    response = await fetch(`/products/${productId}/${telegramId}`);
+                }
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('API Response:', data);
+
+                // Handle the specific API response format
+                if (data.products && Array.isArray(data.products)) {
+                    if (data.products.length > 0) {
+                        // Use the first product from the products array
+                        const productData = data.products[0];
+                        setProduct(productData);
+
+                        // Create servings array from all products with the same name
+                        // Filter out duplicates based on serving_title
+                        const uniqueServingTitles = new Set();
+                        const servings = data.products
+                            .filter(prod => {
+                                const servingTitle = prod.serving_title || "1 порция";
+                                if (uniqueServingTitles.has(servingTitle)) {
+                                    return false; // Skip duplicates
+                                }
+                                uniqueServingTitles.add(servingTitle);
+                                return true;
+                            })
+                            .map((prod, index) => ({
+                                serving_id: index + 1,
+                                serving_size: prod.serving_title || "1 порция",
+                                serving_amount_grams: prod.serving_amount_grams,
+                                fructose_level: prod.fructose_level,
+                                lactose_level: prod.lactose_level,
+                                fructan_level: prod.fructan_level,
+                                mannitol_level: prod.mannitol_level,
+                                sorbitol_level: prod.sorbitol_level,
+                                gos_level: prod.gos_level
+                            }));
+
+                        // Add servings to the product data
+                        productData.servings = servings;
+
+                        // Set the first serving as the selected serving
+                        setSelectedServing(servings[0]);
+
+                        // Set favorite status (if available in the API)
+                        setIsFavorite(productData.is_favorite || false);
+                    } else {
+                        setError('No products found');
+                    }
+                } else if (data.product) {
+                    // Handle the original expected format
+                    const productData = data.product;
+                    setProduct(productData);
+
+                    // Set the first serving as the selected serving if available
+                    if (productData.servings && productData.servings.length > 0) {
+                        // Filter out duplicate servings
+                        const uniqueServingTitles = new Set();
+                        const uniqueServings = productData.servings.filter(serving => {
+                            const servingSize = serving.serving_size || "1 порция";
+                            if (uniqueServingTitles.has(servingSize)) {
+                                return false; // Skip duplicates
+                            }
+                            uniqueServingTitles.add(servingSize);
+                            return true;
+                        });
+
+                        productData.servings = uniqueServings;
+                        setSelectedServing(uniqueServings[0]);
+                    } else {
+                        // Create a serving from the product data if servings array doesn't exist
+                        const serving = {
+                            serving_id: 1,
+                            serving_size: productData.serving_title || "1 порция",
+                            serving_amount_grams: productData.serving_amount_grams,
+                            fructose_level: productData.fructose_level,
+                            lactose_level: productData.lactose_level,
+                            fructan_level: productData.fructan_level,
+                            mannitol_level: productData.mannitol_level,
+                            sorbitol_level: productData.sorbitol_level,
+                            gos_level: productData.gos_level
+                        };
+
+                        productData.servings = [serving];
+                        setSelectedServing(serving);
+                    }
+
+                    setIsFavorite(productData.is_favorite || false);
+                } else {
+                    // Handle direct product data
+                    const productData = data;
+                    setProduct(productData);
+
+                    // Set the first serving as the selected serving if available
+                    if (productData.servings && productData.servings.length > 0) {
+                        // Filter out duplicate servings
+                        const uniqueServingTitles = new Set();
+                        const uniqueServings = productData.servings.filter(serving => {
+                            const servingSize = serving.serving_size || "1 порция";
+                            if (uniqueServingTitles.has(servingSize)) {
+                                return false; // Skip duplicates
+                            }
+                            uniqueServingTitles.add(servingSize);
+                            return true;
+                        });
+
+                        productData.servings = uniqueServings;
+                        setSelectedServing(uniqueServings[0]);
+                    } else {
+                        // Create a serving from the product data if servings array doesn't exist
+                        const serving = {
+                            serving_id: 1,
+                            serving_size: productData.serving_title || "1 порция",
+                            serving_amount_grams: productData.serving_amount_grams,
+                            fructose_level: productData.fructose_level,
+                            lactose_level: productData.lactose_level,
+                            fructan_level: productData.fructan_level,
+                            mannitol_level: productData.mannitol_level,
+                            sorbitol_level: productData.sorbitol_level,
+                            gos_level: productData.gos_level
+                        };
+
+                        productData.servings = [serving];
+                        setSelectedServing(serving);
+                    }
+
+                    setIsFavorite(productData.is_favorite || false);
+                }
+
+                setLoading(false);
+            } catch (err) {
+                console.error('Error fetching product details:', err);
+                setError('Failed to load product details. Please try again later.');
+                setLoading(false);
+            }
+        };
+
+        fetchProductDetails();
+    }, [productId, productName]);
+
+    // Handle serving selection
+    const handleSelectServing = (serving) => {
+        setSelectedServing(serving);
+    };
+
+    // Handle going back
+    const handleGoBack = () => {
+        navigate(-1);
+    };
+
+    // Toggle favorite status
+    const handleToggleFavorite = async () => {
+        if (!product) return;
+
+        try {
+            const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+            const action = isFavorite ? 'remove' : 'add';
+
+            // Get the product ID from the product object or use the URL parameter
+            const productIdToUse = product.id || product.product_id || productId;
+
+            // Replace with your actual API endpoint
+            const response = await fetch(`/favorites/${action}/${productIdToUse}/${telegramId}`, {
+                method: 'POST',
+            });
+
+            if (!response.ok) {
+                throw new Error(`API request failed with status ${response.status}`);
+            }
+
+            setIsFavorite(!isFavorite);
+        } catch (err) {
+            console.error('Error updating favorite status:', err);
+        }
+    };
+
+    // Handle sharing
+    const handleShare = () => {
+        if (!product) return;
+
+        if (window.Telegram && window.Telegram.WebApp) {
+            // Use Telegram's native sharing if available
+            window.Telegram.WebApp.openTelegramLink(`https://t.me/share/url?url=Check out this low-FODMAP food: ${product.name}`);
+        } else {
+            // Fallback to Web Share API if available
+            if (navigator.share) {
+                navigator.share({
+                    title: product.name,
+                    text: `Check out this low-FODMAP food: ${product.name}`,
+                    url: window.location.href,
+                });
+            } else {
+                // Copy to clipboard as last resort
+                navigator.clipboard.writeText(window.location.href)
+                    .then(() => alert('Link copied to clipboard!'))
+                    .catch(err => console.error('Could not copy text: ', err));
+            }
+        }
+    };
+
+    // Handle info button click
+    const handleInfoClick = () => {
+        // This could open a modal with more information about FODMAP ratings
+        alert('This shows detailed FODMAP information for the product');
+    };
+
+    // Add Telegram WebApp back button functionality
+    useEffect(() => {
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.BackButton.show();
+            window.Telegram.WebApp.onEvent('backButtonClicked', handleGoBack);
+
+            return () => {
+                window.Telegram.WebApp.BackButton.hide();
+                window.Telegram.WebApp.offEvent('backButtonClicked', handleGoBack);
+            };
+        }
+    }, []);
+
+    return (
+        <div className="product-detail-container">
+            <div className="buttons-row">
+                <button className="icon-button" onClick={handleGoBack}>
+                    <img src="/icons/back-button.svg" alt="Back" />
+                </button>
+                <button className="icon-button" onClick={handleToggleFavorite}>
+                    <img
+                        src={`/icons/${isFavorite ? 'favorite-active' : 'favorite'}-button.svg`}
+                        alt={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                    />
+                </button>
+                <button className="icon-button" onClick={handleShare}>
+                    <img src="/icons/share-button.svg" alt="Share" />
+                </button>
+                <button className="icon-button" onClick={handleInfoClick}>
+                    <img src="/icons/info-button.svg" alt="Info" />
+                </button>
+            </div>
+
+            <div className="product-detail-content">
+                {loading ? (
+                    <LoadingSpinner size="large" />
+                ) : error ? (
+                    <div className="error-message">{error}</div>
+                ) : product ? (
+                    <div>
+                        <h1 className="product-name-heading">{product.name}</h1>
+
+                        {/* Display serving information */}
+                        {product.servings && product.servings.length > 0 && selectedServing && (
+                            <ServingInfo
+                                servings={product.servings}
+                                selectedServing={selectedServing}
+                                onSelectServing={handleSelectServing}
+                            />
+                        )}
+
+                        {/* More product details will be added later */}
+                    </div>
+                ) : (
+                    <div className="error-message">Product not found</div>
+                )}
+            </div>
+
+            <div className="nav-spacer"></div>
+
+            <div className="bottom-nav-container">
+                <BottomNavBar />
+            </div>
+        </div>
+    );
+};
+
+export default ProductDetailScreen; 
