@@ -52,6 +52,18 @@
     width: 100%;
 }
 
+.loading-message,
+.error-message {
+    padding: 20px;
+    text-align: center;
+    color: white;
+    font-family: 'Manrope', sans-serif;
+}
+
+.error-message {
+    color: #ff6b6b;
+}
+
 .nav-spacer {
     height: 60px;
 }
