@@ -1,0 +1,183 @@
+.filter-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* Semi-transparent background */
+    display: flex;
+    align-items: flex-end;
+    /* Align menu to the bottom */
+    justify-content: center;
+    z-index: 1000;
+    /* Ensure it's above other content */
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease-in-out, visibility 0.3s ease-in-out;
+}
+
+.filter-menu-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+
+.filter-menu-container {
+    background-color: #323232;
+    /* Figma: #323232 */
+    width: 100%;
+    /* Figma: width 366px, assuming this is the max for responsiveness */
+    border-radius: 20px 20px 0 0;
+    /* Figma: 20px 20px 0px 0px */
+    padding: 20px 15px;
+    /* Figma: padding around content (approximated) */
+    box-sizing: border-box;
+    transform: translateY(100%);
+    transition: transform 0.3s ease-in-out;
+    color: #FFFFFF;
+    /* Default text color based on Figma */
+    font-family: 'Manrope', sans-serif;
+    /* Figma: Manrope */
+}
+
+.filter-menu-overlay.open .filter-menu-container {
+    transform: translateY(0);
+}
+
+.filter-menu-header {
+    /* Styles for a potential header if needed later */
+    margin-bottom: 20px;
+    /* Space before FODMAP list, can adjust */
+}
+
+.fodmap-picker-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    /* Space between FODMAP rows, adjust as needed */
+    margin-bottom: 20px;
+    /* Space before save button */
+}
+
+.fodmap-picker-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.fodmap-name {
+    font-size: 16px;
+    /* Figma: 16px */
+    font-weight: 400;
+    /* Figma: 400 */
+    letter-spacing: -0.04em;
+    /* Figma: -4% */
+}
+
+.level-picker {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    /* Increased gap for larger dots */
+}
+
+.level-dot {
+    width: 34px;
+    /* Increased size */
+    height: 34px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+    /* Optional: subtle shadow for depth */
+}
+
+/* Gradient for Green Level Dot - Figma Node 626:2056 */
+.level-dot-green {
+    background: linear-gradient(to right, #00FF09, #06F825, #0BF13E, #10EA54, #14E368, #18DC7A, #1CD58A, #20CE97);
+}
+
+/* Gradient for Yellow/Orange Level Dot - Figma Node 626:2055 */
+.level-dot-yellow {
+    background: linear-gradient(to right, #EEFF00, #F8F706, #F1E00B, #EACB10, #E3B714, #DCA518, #D5941C, #CE8520);
+}
+
+/* Gradient for Red/Purple Level Dot - Figma Node 626:2053 / 626:2054 */
+.level-dot-red {
+    background: linear-gradient(to right, #FF0000, #F80624, #F10B44, #EA1061, #E3147B, #DC1892, #D51CA6, #CE20B7);
+}
+
+/* Style for the active indicator dot (4th dot) */
+.level-dot-active-indicator {
+    background-color: #4E4E4E;
+    /* Figma: Ellipse 11 fill #4E4E4E */
+}
+
+/* Style when any dot is selected - adds a border or makes it more prominent */
+.level-dot.selected {
+    /* Example: Add a white border to signify selection, can be customized */
+    outline: 2px solid white;
+    outline-offset: 2px;
+}
+
+/* If only the 4th dot (active indicator) shows the checkmark upon selection */
+.level-dot-active-indicator.selected img {
+    display: block;
+    /* Ensure img is displayed */
+}
+
+.level-dot img {
+    /* display: none; Remove this if you want the default state to be based on parent's .selected class */
+    width: 14px;
+    /* Adjusted for 24px dot, maintains aspect ratio of 13x10 */
+    height: 11px;
+}
+
+.save-filter-button {
+    background-color: #323E5D;
+    /* Figma: #323E5D */
+    color: #FFFFFF;
+    /* Figma text color */
+    font-family: 'Manrope', sans-serif;
+    /* Figma: Manrope */
+    font-size: 15px;
+    /* Figma: 15px */
+    font-weight: 600;
+    /* Figma: 600 */
+    padding: 11px 10px;
+    /* Figma: padding 11px 10px */
+    border-radius: 10px;
+    /* Figma: 10px */
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    /* Make button full width of its container */
+    text-align: center;
+    letter-spacing: -0.04em;
+    /* Figma: -4% */
+    /* Figma: boxShadow - this is a complex shadow, using a simpler one for now */
+    box-shadow: 0px 3px 7px 0px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.save-filter-button:hover {
+    opacity: 0.9;
+}
+
+.error-message {
+    color: #ff4d4d;
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 10px;
+    padding: 8px;
+    background-color: rgba(255, 77, 77, 0.1);
+    border-radius: 4px;
+}
+
+.save-filter-button:disabled {
+    background-color: #4E4E4E !important;
+    color: #C4C4C4 !important;
+    cursor: not-allowed !important;
+}
