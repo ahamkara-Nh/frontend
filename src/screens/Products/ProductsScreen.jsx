@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import SearchBar from '../../components/SearchBar/SearchBar';
+import CategoryCard from '../../components/CategoryCard/CategoryCard';
 import './ProductsScreen.css';
 
 const ProductsScreen = () => {
@@ -20,12 +21,23 @@ const ProductsScreen = () => {
             </div>
 
             <div className="products-content">
-                {/* Products will be listed here */}
-                <p className="placeholder-text">Список продуктов будет отображаться здесь</p>
+                <div className="categories-container">
+                    <CategoryCard
+                        title="Мои продукты и блюда"
+                        backgroundImage="/images/my-foods-bg.svg"
+                        path="/products/my-foods"
+                    />
+                    <CategoryCard
+                        title="Low-FODMAP рецепты"
+                        backgroundImage="/images/recipes-bg.svg"
+                        path="/products/recipes"
+                    />
+                </div>
             </div>
 
-            <div className="divider"></div>
-            <div style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}>
+            <div className="nav-spacer"></div>
+
+            <div className="bottom-nav-container">
                 <BottomNavBar />
             </div>
         </div>

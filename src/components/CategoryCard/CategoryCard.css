@@ -1,0 +1,20 @@
+.category-card {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    padding: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-start;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.category-title {
+    color: white;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+    letter-spacing: -0.04em;
+}

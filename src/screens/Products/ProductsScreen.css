@@ -7,8 +7,8 @@
 .products-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 12px 16px;
+    justify-content: center;
+    padding: 30px 44px;
     background-color: transparent;
 }
 
@@ -66,12 +66,39 @@
 
 .products-content {
     flex: 1;
-    padding: 20px;
+    padding: 20px 16px;
     overflow-y: auto;
+}
+
+.categories-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    gap: 16px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    justify-content: flex-start;
+}
+
+.categories-container::-webkit-scrollbar {
+    display: none;
+    /* Chrome, Safari, Opera */
+}
+
+.nav-spacer {
+    height: 70px;
+    /* Height of the bottom navbar */
+}
+
+.bottom-nav-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    background-color: #222222;
 }
 
 .placeholder-text {
