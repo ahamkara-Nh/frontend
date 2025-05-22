@@ -6,6 +6,22 @@ import ProductItem from '../../components/ProductItem/ProductItem';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import './CategoryScreen.css';
 
+// Map of category names to their respective IDs
+const CATEGORY_IDS = {
+    "Масла": 1,
+    "Молочные продукты": 2,
+    "Мясо, рыба, яйца": 3,
+    "Напитки": 4,
+    "Овощи": 5,
+    "Орехи, бобовые, тофу": 6,
+    "Перекус, батончики, печенье": 7,
+    "Пищевые добавки": 8,
+    "Приправы и соусы": 9,
+    "Сладости": 10,
+    "Фрукты": 11,
+    "Хлеб, хлопья, рис, макароны": 12
+};
+
 const CategoryScreen = () => {
     const { categoryName } = useParams();
     const navigate = useNavigate();
@@ -41,8 +57,8 @@ const CategoryScreen = () => {
         const fetchProducts = async () => {
             setLoading(true);
             try {
-                // Hardcoded category_id=1 for "Масла" as requested
-                const categoryId = 1;
+                // Get category ID based on the category name
+                const categoryId = CATEGORY_IDS[categoryName] || 1; // Default to 1 if not found
 
                 // Get Telegram user ID or use a default for development
                 const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
@@ -54,6 +70,7 @@ const CategoryScreen = () => {
                 }
 
                 const data = await response.json();
+                console.log(data);
                 setProducts(data.products);
                 setLoading(false);
             } catch (err) {
@@ -64,7 +81,7 @@ const CategoryScreen = () => {
         };
 
         fetchProducts();
-    }, []);
+    }, [categoryName]);
 
     // Handle going back to the products screen
     const handleGoBack = () => {
