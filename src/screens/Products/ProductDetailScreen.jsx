@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import ServingInfo from '../../components/ServingInfo/ServingInfo';
+import ReplacementMenu from '../../components/ReplacementMenu/ReplacementMenu';
 import './ProductDetailScreen.css';
 
 const ProductDetailScreen = () => {
@@ -300,6 +301,12 @@ const ProductDetailScreen = () => {
                                 selectedServing={selectedServing}
                                 onSelectServing={handleSelectServing}
                             />
+                        )}
+                        <div className="divider2"></div>
+
+                        {/* Display replacement menu if replacement_name exists */}
+                        {product.replacement_name && (
+                            <ReplacementMenu replacementName={product.replacement_name} />
                         )}
 
                         {/* More product details will be added later */}

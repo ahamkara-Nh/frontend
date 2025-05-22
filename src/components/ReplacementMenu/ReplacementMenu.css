@@ -1,0 +1,81 @@
+.replacement-menu-container {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    width: 100%;
+    height: 100%;
+}
+
+.replacement-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.replacement-items {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.replacement-item {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 17px 15px;
+    background-color: #323232;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.replacement-item:hover {
+    background-color: #3a3a3a;
+}
+
+.replacement-name {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+}
+
+.replacement-indicator {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    min-width: 20px;
+    min-height: 20px;
+}
+
+.replacement-icon {
+    display: flex;
+    justify-content: center;
+    margin: 15px 0;
+}
+
+.replacement-icon img {
+    width: 34px;
+    height: 31px;
+}
+
+/* FODMAP indicator colors */
+.replacement-indicator.green {
+    background: linear-gradient(to right, #00FF09, #20CE97);
+}
+
+.replacement-indicator.yellow {
+    background: linear-gradient(to right, #EEFF00, #CE8520);
+}
+
+.replacement-indicator.red {
+    background: linear-gradient(to right, #FF0000, #CE20B7);
+}

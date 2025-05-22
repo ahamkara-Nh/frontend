@@ -4,6 +4,7 @@
     height: 100vh;
     padding: 16px;
     background-color: #222222;
+    height: 100%;
 }
 
 .buttons-row {
@@ -34,7 +35,6 @@
 
 .product-detail-content {
     flex: 1;
-    overflow-y: auto;
 }
 
 .product-name-heading {
@@ -50,4 +50,10 @@
 
 .nav-spacer {
     height: 70px;
+}
+
+.divider2 {
+    height: 1px;
+    background-color: #323232;
+    margin: 20px 0px;
 }
