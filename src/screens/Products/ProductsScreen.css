@@ -72,14 +72,9 @@
 
 .categories-container {
     display: flex;
-    flex-direction: row;
-    gap: 16px;
-    overflow-x: auto;
-    scrollbar-width: none;
-    /* Firefox */
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    justify-content: flex-start;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
 }
 
 .categories-container::-webkit-scrollbar {
