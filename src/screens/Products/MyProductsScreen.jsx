@@ -13,8 +13,7 @@ const MyProductsScreen = () => {
     const navigate = useNavigate();
 
     const handleAddProduct = () => {
-        // TODO: Implement add product functionality
-        console.log('Add product clicked');
+        navigate('/products/add');
     };
 
     const handleCategoryClick = (listType) => {

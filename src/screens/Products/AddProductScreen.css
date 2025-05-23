@@ -1,0 +1,212 @@
+.add-product-screen {
+    background-color: #222222;
+    min-height: 100vh;
+    padding: 30px 15px;
+    color: #FFFFFF;
+}
+
+.add-product-content {
+    display: flex;
+    flex-direction: column;
+    margin-left: 16px;
+    margin-right: 16px;
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
+    padding: 17px 15px 17px 0;
+    width: 100%;
+}
+
+.product-input,
+.serving-input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+}
+
+.product-input::placeholder,
+.serving-input::placeholder {
+    color: #C4C4C4;
+}
+
+.divider3 {
+    height: 1px;
+    background-color: #C4C4C4;
+    width: 100%;
+    margin: 0 0 10px 0;
+}
+
+.fodmap-section {
+    margin-top: 30px;
+}
+
+.fodmap-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.fodmap-header h2 {
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+    margin: 0;
+}
+
+.ai-button {
+    background: linear-gradient(90deg, #325D45 0%, #323E5D 100%);
+    border-radius: 5px;
+    padding: 11px 20px;
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+    cursor: pointer;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.1),
+        0px 13px 13px rgba(0, 0, 0, 0.09),
+        0px 28px 17px rgba(0, 0, 0, 0.05),
+        0px 50px 20px rgba(0, 0, 0, 0.01);
+}
+
+.fodmap-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.fodmap-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 0;
+}
+
+.fodmap-name {
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+}
+
+.level-picker {
+    display: flex;
+    gap: 20px;
+}
+
+.level-button {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.level-0 {
+    background: linear-gradient(90deg, #FF0000 0%, #CE20B7 100%);
+}
+
+.level-1 {
+    background: linear-gradient(90deg, #EEFF00 0%, #CE8520 100%);
+}
+
+.level-2 {
+    background: linear-gradient(90deg, #00FF09 0%, #20CE97 100%);
+}
+
+.level-button.active {
+    border: 2px solid #FFFFFF;
+}
+
+.checkmark {
+    color: #ffffff;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.add-serving-button {
+    background: #323E5D;
+    border-radius: 10px;
+    padding: 15px;
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: 20px;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.1),
+        0px 13px 13px rgba(0, 0, 0, 0.09),
+        0px 28px 17px rgba(0, 0, 0, 0.05),
+        0px 50px 20px rgba(0, 0, 0, 0.01);
+}
+
+.plus-icon {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.cancel-button,
+.save-button2 {
+    flex: 1;
+    padding: 11px 0;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    cursor: pointer;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.1),
+        0px 13px 13px rgba(0, 0, 0, 0.09),
+        0px 28px 17px rgba(0, 0, 0, 0.05),
+        0px 50px 20px rgba(0, 0, 0, 0.01);
+}
+
+.cancel-button {
+    background-color: #4E4E4E;
+}
+
+.save-button2 {
+    background-color: #323E5D;
+}
+
+/* Focus styles */
+.product-input:focus,
+.serving-input:focus {
+    outline: none;
+}

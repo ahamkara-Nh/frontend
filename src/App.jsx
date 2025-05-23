@@ -17,6 +17,7 @@ import CategoryScreen from './screens/Products/CategoryScreen';
 import ProductDetailScreen from './screens/Products/ProductDetailScreen';
 import MyProductsScreen from './screens/Products/MyProductsScreen';
 import ProductListScreen from './screens/Products/ProductListScreen';
+import AddProductScreen from './screens/Products/AddProductScreen';
 import InfoScreen from './screens/Info/InfoScreen';
 import InfoDetailScreen from './screens/InfoDetail/InfoDetailScreen';
 import ProfileScreen from './screens/Profile/ProfileScreen';
@@ -47,6 +48,7 @@ function App() {
         <Route path="/products/:productId" element={<ProductDetailScreen />} />
         <Route path="/products/my-products" element={<MyProductsScreen />} />
         <Route path="/products/lists/:listType" element={<ProductListScreen />} />
+        <Route path="/products/add" element={<AddProductScreen />} />
         <Route path="/story/:storyId" element={<StoryDetailScreen />} />
         <Route path="/info" element={<InfoScreen />} />
         <Route path="/info/:infoId" element={<InfoDetailScreen />} />
