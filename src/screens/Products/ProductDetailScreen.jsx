@@ -25,6 +25,34 @@ const ProductDetailScreen = () => {
     const [isFavorite, setIsFavorite] = useState(false);
     const [selectedServing, setSelectedServing] = useState(null);
     const [addingToList, setAddingToList] = useState(false);
+    const [productLists, setProductLists] = useState([]);
+
+    // Check which lists contain the product
+    const checkProductLists = async (productData) => {
+        try {
+            const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+            const productIdToUse = productData.id || productData.product_id || productId;
+
+            const response = await fetch(`/users/${telegramId}/lists/check-product`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: productIdToUse
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to check product lists');
+            }
+
+            const data = await response.json();
+            setProductLists(data.exists_in_lists || []);
+        } catch (err) {
+            console.error('Error checking product lists:', err);
+        }
+    };
 
     // Fetch product data
     useEffect(() => {
@@ -46,7 +74,7 @@ const ProductDetailScreen = () => {
                         },
                         body: JSON.stringify({
                             name: productName,
-                            telegramId: telegramId // Optional: if your API needs the telegram ID
+                            telegramId: telegramId
                         }),
                     });
                 } else {
@@ -64,9 +92,9 @@ const ProductDetailScreen = () => {
                 // Handle the specific API response format
                 if (data.products && Array.isArray(data.products)) {
                     if (data.products.length > 0) {
-                        // Use the first product from the products array
                         const productData = data.products[0];
                         setProduct(productData);
+                        await checkProductLists(productData);
 
                         // Create servings array from all products with the same name
                         // Filter out duplicates based on serving_title
@@ -104,9 +132,9 @@ const ProductDetailScreen = () => {
                         setError('No products found');
                     }
                 } else if (data.product) {
-                    // Handle the original expected format
                     const productData = data.product;
                     setProduct(productData);
+                    await checkProductLists(productData);
 
                     // Set the first serving as the selected serving if available
                     if (productData.servings && productData.servings.length > 0) {
@@ -143,9 +171,9 @@ const ProductDetailScreen = () => {
 
                     setIsFavorite(productData.is_favorite || false);
                 } else {
-                    // Handle direct product data
                     const productData = data;
                     setProduct(productData);
+                    await checkProductLists(productData);
 
                     // Set the first serving as the selected serving if available
                     if (productData.servings && productData.servings.length > 0) {
@@ -204,7 +232,7 @@ const ProductDetailScreen = () => {
         navigate(-1);
     };
 
-    // Add product to a specific list
+    // Add or remove product from a specific list
     const addProductToList = async (listType) => {
         if (!product || addingToList) return;
 
@@ -216,9 +244,13 @@ const ProductDetailScreen = () => {
             }
 
             const productIdToUse = product.id || product.product_id || productId;
+            const isInList = productLists.includes(listType);
 
-            const response = await fetch(`/users/${telegramId}/lists/add-product`, {
-                method: 'POST',
+            const endpoint = isInList ? 'remove-product' : 'add-product';
+            const method = isInList ? 'DELETE' : 'POST';
+
+            const response = await fetch(`/users/${telegramId}/lists/${endpoint}`, {
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -229,30 +261,18 @@ const ProductDetailScreen = () => {
             });
 
             if (!response.ok) {
-                throw new Error(`Failed to add product to ${listType} list`);
+                throw new Error(`Failed to ${isInList ? 'remove from' : 'add to'} ${listType} list`);
             }
 
-            // Show success feedback
-            const listNames = {
-                [ProductListTypes.FAVORITES]: 'избранное',
-                [ProductListTypes.PHASE1]: 'список 1 этапа',
-                [ProductListTypes.PHASE2]: 'список 2 этапа',
-                [ProductListTypes.PHASE3]: 'список 3 этапа'
-            };
+            // Refresh product lists after successful operation
+            await checkProductLists(product);
 
-            if (window.Telegram?.WebApp) {
-                window.Telegram.WebApp.showPopup({
-                    title: 'Успешно',
-                    message: `Продукт добавлен в ${listNames[listType]}`,
-                    buttons: [{ type: 'ok' }]
-                });
-            }
         } catch (err) {
-            console.error('Error adding product to list:', err);
+            console.error('Error modifying product list:', err);
             if (window.Telegram?.WebApp) {
                 window.Telegram.WebApp.showPopup({
                     title: 'Ошибка',
-                    message: 'Не удалось добавить продукт в список',
+                    message: 'Не удалось изменить список',
                     buttons: [{ type: 'ok' }]
                 });
             }
@@ -314,19 +334,32 @@ const ProductDetailScreen = () => {
         <div className="product-detail-container">
             <div className="buttons-row">
                 <button className="icon-button" onClick={handleFavorites} disabled={addingToList}>
-                    <img src="/icons/back-button.svg" alt="Add to Favorites" />
+                    <img
+                        src="/icons/back-button.svg"
+                        alt="Add to Favorites"
+                        style={{ filter: productLists.includes(ProductListTypes.FAVORITES) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
+                    />
                 </button>
                 <button className="icon-button" onClick={handlePhase1} disabled={addingToList}>
                     <img
-                        src={`/icons/${isFavorite ? 'favorite-active' : 'favorite'}-button.svg`}
+                        src="/icons/favorite-button.svg"
                         alt="Add to Phase 1"
+                        style={{ filter: productLists.includes(ProductListTypes.PHASE1) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
                     />
                 </button>
                 <button className="icon-button" onClick={handlePhase2} disabled={addingToList}>
-                    <img src="/icons/share-button.svg" alt="Add to Phase 2" />
+                    <img
+                        src="/icons/share-button.svg"
+                        alt="Add to Phase 2"
+                        style={{ filter: productLists.includes(ProductListTypes.PHASE2) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
+                    />
                 </button>
                 <button className="icon-button" onClick={handlePhase3} disabled={addingToList}>
-                    <img src="/icons/info-button.svg" alt="Add to Phase 3" />
+                    <img
+                        src="/icons/info-button.svg"
+                        alt="Add to Phase 3"
+                        style={{ filter: productLists.includes(ProductListTypes.PHASE3) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
+                    />
                 </button>
             </div>
 
