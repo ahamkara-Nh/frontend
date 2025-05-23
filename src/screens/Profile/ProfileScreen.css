@@ -1,0 +1,132 @@
+.profile-container {
+    min-height: 100vh;
+    background-color: #222222;
+    display: flex;
+    flex-direction: column;
+}
+
+.profile-content {
+    flex: 1;
+    padding: 30px 15px;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+}
+
+.profile-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+}
+
+.heading {
+    font-weight: 600;
+    font-size: 22px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    margin-right: 10px;
+}
+
+.value {
+    font-weight: 400;
+    font-size: 22px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #C4C4C4;
+}
+
+.edit-button {
+    margin-left: 10px;
+    max-height: 30px;
+    max-width: 150px;
+    background: #323E5D;
+    border-radius: 5px;
+    padding: 2px 10px;
+    border: none;
+    color: #FFFFFF;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    cursor: pointer;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.1),
+        0px 13px 13px rgba(0, 0, 0, 0.09),
+        0px 28px 17px rgba(0, 0, 0, 0.05),
+        0px 50px 20px rgba(0, 0, 0, 0.01);
+}
+
+.notifications-section {
+    margin-bottom: 20px;
+}
+
+.notification-row {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+    padding: 12px 0;
+}
+
+.notification-text {
+    flex: 1;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #C4C4C4;
+    margin-right: 5px;
+}
+
+.notification-toggle {
+    width: 36px;
+    height: 36px;
+    background: #325D45;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.check-icon {
+    width: 20px;
+    height: 15px;
+}
+
+.download-section {
+    margin-top: 20px;
+}
+
+.download-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.download-button {
+    flex: 1;
+    background: #323E5D;
+    border-radius: 10px;
+    padding: 11px 0;
+    border: none;
+    color: #FFFFFF;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    cursor: pointer;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.1),
+        0px 13px 13px rgba(0, 0, 0, 0.09),
+        0px 28px 17px rgba(0, 0, 0, 0.05),
+        0px 50px 20px rgba(0, 0, 0, 0.01);
+}
+
+.nav-spacer {
+    height: 83px;
+}
+
+.bottom-nav-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #222222;
+}

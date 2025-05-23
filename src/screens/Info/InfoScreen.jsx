@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import InfoCard from '../../components/InfoCard/InfoCard';
 import './InfoScreen.css';
@@ -15,6 +16,8 @@ import infoImage8 from '../../assets/images/info_food8.png';
 import infoImage9 from '../../assets/images/info_food9.png';
 
 const InfoScreen = () => {
+    const navigate = useNavigate();
+
     // Sample info cards data
     const infoCards = [
         { id: 1, title: 'Расшифровка FODMAP: Понимание основных компонентов', image: infoImage1 },
@@ -30,7 +33,7 @@ const InfoScreen = () => {
 
     const handleCardClick = (cardId) => {
         console.log(`Info card ${cardId} clicked`);
-        // Add navigation or other actions here
+        navigate(`/info/${cardId}`);
     };
 
     return (
