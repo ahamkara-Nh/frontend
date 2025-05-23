@@ -80,6 +80,7 @@ const RecipesScreen = () => {
                 {recipes.map(recipe => (
                     <RecipeCard
                         key={recipe.recipe_id}
+                        id={recipe.recipe_id}
                         title={recipe.name}
                         image={`/src/assets/recipe_images/${recipe.image_name}.png`}
                         duration="15 мин" // TODO: Add duration to API response

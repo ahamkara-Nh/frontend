@@ -1,10 +1,17 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { useNavigate } from 'react-router-dom';
 import './RecipeCard.css';
 
-const RecipeCard = ({ title, image, duration, difficulty }) => {
+const RecipeCard = ({ id, title, image, duration, difficulty }) => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate(`/products/recipes/${id}`);
+    };
+
     return (
-        <div className="recipe-card">
+        <div className="recipe-card" onClick={handleClick}>
             <div className="recipe-image-container">
                 <img src={image} alt={title} className="recipe-image" />
             </div>
@@ -16,6 +23,7 @@ const RecipeCard = ({ title, image, duration, difficulty }) => {
 };
 
 RecipeCard.propTypes = {
+    id: PropTypes.number.isRequired,
     title: PropTypes.string.isRequired,
     image: PropTypes.string.isRequired,
     duration: PropTypes.string.isRequired,
