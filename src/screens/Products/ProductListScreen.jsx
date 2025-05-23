@@ -20,6 +20,28 @@ const ProductListScreen = () => {
         'user_created': 'Мои продукты'
     };
 
+    // Determine FODMAP level indicator type based on the highest FODMAP value
+    const determineFodmapLevel = (product) => {
+        const fodmapLevels = [
+            product.fructose_level,
+            product.lactose_level,
+            product.fructan_level,
+            product.mannitol_level,
+            product.sorbitol_level,
+            product.gos_level
+        ];
+
+        const maxLevel = Math.max(...fodmapLevels);
+
+        if (maxLevel <= 1) {
+            return 'green';
+        } else if (maxLevel === 2) {
+            return 'yellow';
+        } else {
+            return 'red';
+        }
+    };
+
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
@@ -83,7 +105,7 @@ const ProductListScreen = () => {
                                 key={product.id}
                                 id={product.id}
                                 name={product.name}
-                                type={product.type}
+                                type={determineFodmapLevel(product)}
                             />
                         ))}
                     </div>

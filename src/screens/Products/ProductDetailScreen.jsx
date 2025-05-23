@@ -111,19 +111,20 @@ const ProductDetailScreen = () => {
                             .map((prod, index) => ({
                                 serving_id: index + 1,
                                 serving_size: prod.serving_title || "1 порция",
-                                serving_amount_grams: prod.serving_amount_grams,
+                                serving_amount_grams: prod.serving_amount_grams || 0,
                                 fructose_level: prod.fructose_level,
                                 lactose_level: prod.lactose_level,
                                 fructan_level: prod.fructan_level,
                                 mannitol_level: prod.mannitol_level,
                                 sorbitol_level: prod.sorbitol_level,
                                 gos_level: prod.gos_level
-                            }));
+                            }))
+                            .sort((a, b) => (a.serving_amount_grams || 0) - (b.serving_amount_grams || 0));
 
                         // Add servings to the product data
                         productData.servings = servings;
 
-                        // Set the first serving as the selected serving
+                        // Set the first (smallest) serving as the selected serving
                         setSelectedServing(servings[0]);
 
                         // Set favorite status (if available in the API)
@@ -140,14 +141,16 @@ const ProductDetailScreen = () => {
                     if (productData.servings && productData.servings.length > 0) {
                         // Filter out duplicate servings
                         const uniqueServingTitles = new Set();
-                        const uniqueServings = productData.servings.filter(serving => {
-                            const servingSize = serving.serving_size || "1 порция";
-                            if (uniqueServingTitles.has(servingSize)) {
-                                return false; // Skip duplicates
-                            }
-                            uniqueServingTitles.add(servingSize);
-                            return true;
-                        });
+                        const uniqueServings = productData.servings
+                            .filter(serving => {
+                                const servingSize = serving.serving_size || "1 порция";
+                                if (uniqueServingTitles.has(servingSize)) {
+                                    return false; // Skip duplicates
+                                }
+                                uniqueServingTitles.add(servingSize);
+                                return true;
+                            })
+                            .sort((a, b) => (a.serving_amount_grams || 0) - (b.serving_amount_grams || 0));
 
                         productData.servings = uniqueServings;
                         setSelectedServing(uniqueServings[0]);
@@ -179,14 +182,16 @@ const ProductDetailScreen = () => {
                     if (productData.servings && productData.servings.length > 0) {
                         // Filter out duplicate servings
                         const uniqueServingTitles = new Set();
-                        const uniqueServings = productData.servings.filter(serving => {
-                            const servingSize = serving.serving_size || "1 порция";
-                            if (uniqueServingTitles.has(servingSize)) {
-                                return false; // Skip duplicates
-                            }
-                            uniqueServingTitles.add(servingSize);
-                            return true;
-                        });
+                        const uniqueServings = productData.servings
+                            .filter(serving => {
+                                const servingSize = serving.serving_size || "1 порция";
+                                if (uniqueServingTitles.has(servingSize)) {
+                                    return false; // Skip duplicates
+                                }
+                                uniqueServingTitles.add(servingSize);
+                                return true;
+                            })
+                            .sort((a, b) => (a.serving_amount_grams || 0) - (b.serving_amount_grams || 0));
 
                         productData.servings = uniqueServings;
                         setSelectedServing(uniqueServings[0]);
