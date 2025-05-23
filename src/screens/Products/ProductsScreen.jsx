@@ -174,9 +174,9 @@ const ProductsScreen = () => {
                 ) : (
                     <div className="categories-container">
                         <CategoryCard
-                            title="Мои продукты и блюда"
+                            title="Мои продукты"
                             backgroundImage="/images/my-foods-bg.svg"
-                            path="/products/my-foods"
+                            path="/products/my-products"
                         />
                         <CategoryCard
                             title="Low-FODMAP рецепты"

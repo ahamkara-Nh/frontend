@@ -9,7 +9,7 @@ export default defineConfig({
     svgr()
   ],
   server: {
-    allowedHosts: ['bf116f4639c826221beeec4596fb1350.serveo.net'],
+    allowedHosts: ['0cdbaba295c784afd7c97b29a1c993a8.serveo.net'],
     proxy: {
       '/auth': {
         target: 'http://127.0.0.1:8000',
