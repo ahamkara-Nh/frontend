@@ -6,6 +6,13 @@ import ServingInfo from '../../components/ServingInfo/ServingInfo';
 import ReplacementMenu from '../../components/ReplacementMenu/ReplacementMenu';
 import './ProductDetailScreen.css';
 
+const ProductListTypes = {
+    FAVORITES: 'favourites',
+    PHASE1: 'phase1',
+    PHASE2: 'phase2',
+    PHASE3: 'phase3'
+};
+
 const ProductDetailScreen = () => {
     const { productId } = useParams();
     const navigate = useNavigate();
@@ -17,6 +24,7 @@ const ProductDetailScreen = () => {
     const [error, setError] = useState(null);
     const [isFavorite, setIsFavorite] = useState(false);
     const [selectedServing, setSelectedServing] = useState(null);
+    const [addingToList, setAddingToList] = useState(false);
 
     // Fetch product data
     useEffect(() => {
@@ -196,31 +204,68 @@ const ProductDetailScreen = () => {
         navigate(-1);
     };
 
-    // Toggle favorite status
-    const handleToggleFavorite = async () => {
-        if (!product) return;
+    // Add product to a specific list
+    const addProductToList = async (listType) => {
+        if (!product || addingToList) return;
 
         try {
-            const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
-            const action = isFavorite ? 'remove' : 'add';
+            setAddingToList(true);
+            const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+            if (!telegramId) {
+                throw new Error('Telegram user ID not found');
+            }
 
-            // Get the product ID from the product object or use the URL parameter
             const productIdToUse = product.id || product.product_id || productId;
 
-            // Replace with your actual API endpoint
-            const response = await fetch(`/favorites/${action}/${productIdToUse}/${telegramId}`, {
+            const response = await fetch(`/users/${telegramId}/lists/add-product`, {
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    product_id: productIdToUse,
+                    list_type: listType
+                })
             });
 
             if (!response.ok) {
-                throw new Error(`API request failed with status ${response.status}`);
+                throw new Error(`Failed to add product to ${listType} list`);
             }
 
-            setIsFavorite(!isFavorite);
+            // Show success feedback
+            const listNames = {
+                [ProductListTypes.FAVORITES]: 'избранное',
+                [ProductListTypes.PHASE1]: 'список 1 этапа',
+                [ProductListTypes.PHASE2]: 'список 2 этапа',
+                [ProductListTypes.PHASE3]: 'список 3 этапа'
+            };
+
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.showPopup({
+                    title: 'Успешно',
+                    message: `Продукт добавлен в ${listNames[listType]}`,
+                    buttons: [{ type: 'ok' }]
+                });
+            }
         } catch (err) {
-            console.error('Error updating favorite status:', err);
+            console.error('Error adding product to list:', err);
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.showPopup({
+                    title: 'Ошибка',
+                    message: 'Не удалось добавить продукт в список',
+                    buttons: [{ type: 'ok' }]
+                });
+            }
+        } finally {
+            setAddingToList(false);
         }
     };
+
+    // Button handlers for each list type
+    const handleFavorites = () => addProductToList(ProductListTypes.FAVORITES);
+    const handlePhase1 = () => addProductToList(ProductListTypes.PHASE1);
+    const handlePhase2 = () => addProductToList(ProductListTypes.PHASE2);
+    const handlePhase3 = () => addProductToList(ProductListTypes.PHASE3);
 
     // Handle sharing
     const handleShare = () => {
@@ -268,20 +313,20 @@ const ProductDetailScreen = () => {
     return (
         <div className="product-detail-container">
             <div className="buttons-row">
-                <button className="icon-button" onClick={handleGoBack}>
-                    <img src="/icons/back-button.svg" alt="Back" />
+                <button className="icon-button" onClick={handleFavorites} disabled={addingToList}>
+                    <img src="/icons/back-button.svg" alt="Add to Favorites" />
                 </button>
-                <button className="icon-button" onClick={handleToggleFavorite}>
+                <button className="icon-button" onClick={handlePhase1} disabled={addingToList}>
                     <img
                         src={`/icons/${isFavorite ? 'favorite-active' : 'favorite'}-button.svg`}
-                        alt={isFavorite ? "Remove from favorites" : "Add to favorites"}
+                        alt="Add to Phase 1"
                     />
                 </button>
-                <button className="icon-button" onClick={handleShare}>
-                    <img src="/icons/share-button.svg" alt="Share" />
+                <button className="icon-button" onClick={handlePhase2} disabled={addingToList}>
+                    <img src="/icons/share-button.svg" alt="Add to Phase 2" />
                 </button>
-                <button className="icon-button" onClick={handleInfoClick}>
-                    <img src="/icons/info-button.svg" alt="Info" />
+                <button className="icon-button" onClick={handlePhase3} disabled={addingToList}>
+                    <img src="/icons/info-button.svg" alt="Add to Phase 3" />
                 </button>
             </div>
 

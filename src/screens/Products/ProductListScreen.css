@@ -1,0 +1,78 @@
+.product-list-container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    max-width: 100%;
+    overflow: hidden;
+    background-color: #1E1E1E;
+}
+
+.product-list-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    background-color: #1E1E1E;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
+}
+
+.product-list-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    letter-spacing: -0.04em;
+    color: white;
+    margin: 0;
+}
+
+.product-list-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 60px;
+}
+
+.products-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.empty-state-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    text-align: center;
+    color: #888;
+    font-family: 'Manrope', sans-serif;
+    padding: 20px;
+}
+
+.empty-state-message p {
+    margin: 5px 0;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+}
+
+.empty-state-message p:first-child {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: #ff6b6b;
+    text-align: center;
+    padding: 20px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    letter-spacing: -0.04em;
+}
+
+.nav-spacer {
+    height: 60px;
+}

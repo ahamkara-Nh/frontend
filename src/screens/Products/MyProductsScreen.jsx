@@ -17,6 +17,10 @@ const MyProductsScreen = () => {
         console.log('Add product clicked');
     };
 
+    const handleCategoryClick = (listType) => {
+        navigate(`/products/lists/${listType}`);
+    };
+
     const handleBack = () => {
         navigate(-1); // Go back to the previous page
     };
@@ -35,11 +39,11 @@ const MyProductsScreen = () => {
     }, [navigate]);
 
     const categories = [
-        { id: 1, name: 'Список - 1 этап', icon: list1Icon },
-        { id: 2, name: 'Список - 2 этап', icon: list2Icon },
-        { id: 3, name: 'Список - 3 этап', icon: list3Icon },
-        { id: 4, name: 'Избранное', icon: favoritesIcon },
-        { id: 5, name: 'Мои продукты', icon: myProductsIcon },
+        { id: 1, name: 'Список - 1 этап', icon: list1Icon, type: 'phase1' },
+        { id: 2, name: 'Список - 2 этап', icon: list2Icon, type: 'phase2' },
+        { id: 3, name: 'Список - 3 этап', icon: list3Icon, type: 'phase3' },
+        { id: 4, name: 'Избранное', icon: favoritesIcon, type: 'favourites' },
+        { id: 5, name: 'Мои продукты', icon: myProductsIcon, type: 'user_created' },
     ];
 
     return (
@@ -51,7 +55,11 @@ const MyProductsScreen = () => {
 
                 <div className="category-grid">
                     {categories.map((category) => (
-                        <div key={category.id} className="category-button">
+                        <div
+                            key={category.id}
+                            className="category-button"
+                            onClick={() => handleCategoryClick(category.type)}
+                        >
                             <img src={category.icon} alt={category.name} className="category-icon" />
                             <span className="category-name">{category.name}</span>
                         </div>
