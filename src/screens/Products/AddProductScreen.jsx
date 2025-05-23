@@ -147,9 +147,6 @@ const AddProductScreen = () => {
                 <div className="fodmap-section">
                     <div className="fodmap-header">
                         <h2>FODMAP</h2>
-                        <button className="ai-button" onClick={handleAISearch} disabled={loading}>
-                            Найти с помощью ИИ
-                        </button>
                     </div>
 
                     <div className="fodmap-grid">

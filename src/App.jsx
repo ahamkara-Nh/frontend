@@ -21,6 +21,7 @@ import AddProductScreen from './screens/Products/AddProductScreen';
 import InfoScreen from './screens/Info/InfoScreen';
 import InfoDetailScreen from './screens/InfoDetail/InfoDetailScreen';
 import ProfileScreen from './screens/Profile/ProfileScreen';
+import RecipesScreen from './screens/Recipes/RecipesScreen';
 import { AuthProvider } from './context/AuthContext';
 
 // Placeholder for where the app navigates after onboarding
@@ -49,6 +50,7 @@ function App() {
         <Route path="/products/my-products" element={<MyProductsScreen />} />
         <Route path="/products/lists/:listType" element={<ProductListScreen />} />
         <Route path="/products/add" element={<AddProductScreen />} />
+        <Route path="/products/recipes" element={<RecipesScreen />} />
         <Route path="/story/:storyId" element={<StoryDetailScreen />} />
         <Route path="/info" element={<InfoScreen />} />
         <Route path="/info/:infoId" element={<InfoDetailScreen />} />

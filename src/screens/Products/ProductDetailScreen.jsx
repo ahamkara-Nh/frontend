@@ -306,6 +306,49 @@ const ProductDetailScreen = () => {
         navigate(-1);
     };
 
+    // Handle delete product
+    const handleDeleteProduct = async () => {
+        if (!product || !isUserCreated) return;
+
+        try {
+            const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+
+            // Show confirmation popup using Telegram WebApp
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.showPopup({
+                    title: 'Подтверждение',
+                    message: 'Вы уверены, что хотите удалить этот продукт?',
+                    buttons: [
+                        { id: 'delete', type: 'destructive', text: 'Удалить' },
+                        { id: 'cancel', type: 'cancel' }
+                    ]
+                }, async (buttonId) => {
+                    if (buttonId === 'delete') {
+                        const response = await fetch(`/users/${telegramId}/products/${encodeURIComponent(product.name)}`, {
+                            method: 'DELETE',
+                        });
+
+                        if (!response.ok) {
+                            throw new Error('Failed to delete product');
+                        }
+
+                        // Navigate back after successful deletion
+                        navigate(-1);
+                    }
+                });
+            }
+        } catch (err) {
+            console.error('Error deleting product:', err);
+            if (window.Telegram?.WebApp) {
+                window.Telegram.WebApp.showPopup({
+                    title: 'Ошибка',
+                    message: 'Не удалось удалить продукт',
+                    buttons: [{ type: 'ok' }]
+                });
+            }
+        }
+    };
+
     // Add or remove product from a specific list
     const addProductToList = async (listType) => {
         if (!product || addingToList) return;
@@ -448,6 +491,7 @@ const ProductDetailScreen = () => {
                     <div>
                         <h1 className="product-name-heading">{product.name}</h1>
 
+
                         {/* Display serving information */}
                         {product.servings && product.servings.length > 0 && selectedServing && (
                             <ServingInfo
@@ -457,6 +501,16 @@ const ProductDetailScreen = () => {
                             />
                         )}
                         <div className="divider2"></div>
+                        {isUserCreated && (
+                            <div className="delete-button-container">
+                                <button
+                                    className="delete-button"
+                                    onClick={handleDeleteProduct}
+                                >
+                                    Удалить продукт
+                                </button>
+                            </div>
+                        )}
 
                         {/* Display replacement menu if replacement_name exists and not a user-created product */}
                         {!isUserCreated && product.replacement_name && (
