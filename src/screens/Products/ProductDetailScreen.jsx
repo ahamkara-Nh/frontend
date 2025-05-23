@@ -13,11 +13,46 @@ const ProductListTypes = {
     PHASE3: 'phase3'
 };
 
+// Helper function to convert FODMAP levels for user-created products
+const convertUserCreatedFodmapLevels = (product) => {
+    if (!product) return product;
+
+    // Convert each FODMAP level: 0 -> 3 (high), 1 -> 2 (medium), 2 -> 1 (low)
+    const convertLevel = (level) => {
+        switch (level) {
+            case 0: return 3; // high
+            case 1: return 2; // medium
+            case 2: return 1; // low
+            default: return level;
+        }
+    };
+
+    return {
+        ...product,
+        fructose_level: convertLevel(product.fructose_level),
+        lactose_level: convertLevel(product.lactose_level),
+        fructan_level: convertLevel(product.fructan_level),
+        mannitol_level: convertLevel(product.mannitol_level),
+        sorbitol_level: convertLevel(product.sorbitol_level),
+        gos_level: convertLevel(product.gos_level),
+        servings: product.servings?.map(serving => ({
+            ...serving,
+            fructose_level: convertLevel(serving.fructose_level),
+            lactose_level: convertLevel(serving.lactose_level),
+            fructan_level: convertLevel(serving.fructan_level),
+            mannitol_level: convertLevel(serving.mannitol_level),
+            sorbitol_level: convertLevel(serving.sorbitol_level),
+            gos_level: convertLevel(serving.gos_level)
+        }))
+    };
+};
+
 const ProductDetailScreen = () => {
     const { productId } = useParams();
     const navigate = useNavigate();
     const location = useLocation();
     const productName = location.state?.productName;
+    const isUserCreated = location.state?.isUserCreated;
 
     const [product, setProduct] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -65,8 +100,11 @@ const ProductDetailScreen = () => {
 
                 let response;
 
-                // If we have the product name, use the POST /products/get-by-name endpoint
-                if (productName) {
+                if (isUserCreated) {
+                    // Use the user-created products endpoint
+                    response = await fetch(`/users/${telegramId}/products`);
+                } else if (productName) {
+                    // If we have the product name, use the POST /products/get-by-name endpoint
                     response = await fetch('/products/get-by-name', {
                         method: 'POST',
                         headers: {
@@ -89,8 +127,39 @@ const ProductDetailScreen = () => {
                 const data = await response.json();
                 console.log('API Response:', data);
 
-                // Handle the specific API response format
-                if (data.products && Array.isArray(data.products)) {
+                if (isUserCreated) {
+                    // Find the specific user-created product by ID
+                    const userProduct = data.products.find(p => p.user_product_id.toString() === productId);
+                    if (userProduct) {
+                        const productData = {
+                            id: userProduct.user_product_id,
+                            name: userProduct.name,
+                            fructose_level: userProduct.fructose_level,
+                            lactose_level: userProduct.lactose_level,
+                            fructan_level: userProduct.fructan_level,
+                            mannitol_level: userProduct.mannitol_level,
+                            sorbitol_level: userProduct.sorbitol_level,
+                            gos_level: userProduct.gos_level,
+                            servings: [{
+                                serving_id: 1,
+                                serving_size: userProduct.serving_title || "1 порция",
+                                serving_amount_grams: 0,
+                                fructose_level: userProduct.fructose_level,
+                                lactose_level: userProduct.lactose_level,
+                                fructan_level: userProduct.fructan_level,
+                                mannitol_level: userProduct.mannitol_level,
+                                sorbitol_level: userProduct.sorbitol_level,
+                                gos_level: userProduct.gos_level
+                            }]
+                        };
+                        // Convert FODMAP levels for user-created products
+                        const convertedProductData = convertUserCreatedFodmapLevels(productData);
+                        setProduct(convertedProductData);
+                        setSelectedServing(convertedProductData.servings[0]);
+                    } else {
+                        setError('User-created product not found');
+                    }
+                } else if (data.products && Array.isArray(data.products)) {
                     if (data.products.length > 0) {
                         const productData = data.products[0];
                         setProduct(productData);
@@ -337,36 +406,38 @@ const ProductDetailScreen = () => {
 
     return (
         <div className="product-detail-container">
-            <div className="buttons-row">
-                <button className="icon-button" onClick={handleFavorites} disabled={addingToList}>
-                    <img
-                        src="/icons/back-button.svg"
-                        alt="Add to Favorites"
-                        style={{ filter: productLists.includes(ProductListTypes.FAVORITES) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
-                    />
-                </button>
-                <button className="icon-button" onClick={handlePhase1} disabled={addingToList}>
-                    <img
-                        src="/icons/favorite-button.svg"
-                        alt="Add to Phase 1"
-                        style={{ filter: productLists.includes(ProductListTypes.PHASE1) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
-                    />
-                </button>
-                <button className="icon-button" onClick={handlePhase2} disabled={addingToList}>
-                    <img
-                        src="/icons/share-button.svg"
-                        alt="Add to Phase 2"
-                        style={{ filter: productLists.includes(ProductListTypes.PHASE2) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
-                    />
-                </button>
-                <button className="icon-button" onClick={handlePhase3} disabled={addingToList}>
-                    <img
-                        src="/icons/info-button.svg"
-                        alt="Add to Phase 3"
-                        style={{ filter: productLists.includes(ProductListTypes.PHASE3) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
-                    />
-                </button>
-            </div>
+            {!isUserCreated && (
+                <div className="buttons-row">
+                    <button className="icon-button" onClick={handleFavorites} disabled={addingToList}>
+                        <img
+                            src="/icons/back-button.svg"
+                            alt="Add to Favorites"
+                            style={{ filter: productLists.includes(ProductListTypes.FAVORITES) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
+                        />
+                    </button>
+                    <button className="icon-button" onClick={handlePhase1} disabled={addingToList}>
+                        <img
+                            src="/icons/favorite-button.svg"
+                            alt="Add to Phase 1"
+                            style={{ filter: productLists.includes(ProductListTypes.PHASE1) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
+                        />
+                    </button>
+                    <button className="icon-button" onClick={handlePhase2} disabled={addingToList}>
+                        <img
+                            src="/icons/share-button.svg"
+                            alt="Add to Phase 2"
+                            style={{ filter: productLists.includes(ProductListTypes.PHASE2) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
+                        />
+                    </button>
+                    <button className="icon-button" onClick={handlePhase3} disabled={addingToList}>
+                        <img
+                            src="/icons/info-button.svg"
+                            alt="Add to Phase 3"
+                            style={{ filter: productLists.includes(ProductListTypes.PHASE3) ? 'invert(42%) sepia(93%) saturate(437%) hue-rotate(101deg) brightness(92%) contrast(92%)' : 'none' }}
+                        />
+                    </button>
+                </div>
+            )}
 
             <div className="product-detail-content">
                 {loading ? (
@@ -387,8 +458,8 @@ const ProductDetailScreen = () => {
                         )}
                         <div className="divider2"></div>
 
-                        {/* Display replacement menu if replacement_name exists */}
-                        {product.replacement_name && (
+                        {/* Display replacement menu if replacement_name exists and not a user-created product */}
+                        {!isUserCreated && product.replacement_name && (
                             <ReplacementMenu replacementName={product.replacement_name} />
                         )}
 

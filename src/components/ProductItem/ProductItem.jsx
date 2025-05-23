@@ -1,13 +1,18 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './ProductItem.css';
 
-const ProductItem = ({ id, name, type }) => {
+const ProductItem = ({ id, name, type, isUserCreated }) => {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const handleClick = () => {
+        // For user-created products, we'll pass additional state to indicate it's a user product
         navigate(`/products/${id}`, {
-            state: { productName: name }
+            state: {
+                productName: name,
+                isUserCreated: isUserCreated || location.pathname.includes('/lists/user_created')
+            }
         });
     };
 

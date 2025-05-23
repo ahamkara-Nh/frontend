@@ -14,15 +14,66 @@ const AddProductScreen = () => {
         gos: 0,
         fructans: 0
     });
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
 
     const handleBack = () => {
         navigate(-1);
     };
 
-    const handleSave = () => {
-        // TODO: Implement save functionality
-        console.log('Saving product:', { productName, servingSize, fodmapLevels });
-        navigate(-1);
+    const handleSave = async () => {
+        // Get Telegram user ID
+        const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+
+        if (!telegramId) {
+            setError('User ID not available');
+            return;
+        }
+
+        if (!productName.trim()) {
+            setError('Please enter a product name');
+            return;
+        }
+
+        if (!servingSize.trim()) {
+            setError('Please enter a serving size');
+            return;
+        }
+
+        setLoading(true);
+        setError(null);
+
+        try {
+            const response = await fetch(`/users/${telegramId}/products`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: productName.trim(),
+                    fructose_level: fodmapLevels.fructose,
+                    lactose_level: fodmapLevels.lactose,
+                    fructan_level: fodmapLevels.fructans,
+                    mannitol_level: fodmapLevels.mannitol,
+                    sorbitol_level: fodmapLevels.sorbitol,
+                    gos_level: fodmapLevels.gos,
+                    serving_title: servingSize.trim()
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.message || 'Failed to save product');
+            }
+
+            // Navigate back after successful save
+            navigate(-1);
+        } catch (err) {
+            console.error('Error saving product:', err);
+            setError(err.message || 'Failed to save product. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleFodmapLevelChange = (fodmap, level) => {
@@ -67,6 +118,7 @@ const AddProductScreen = () => {
     return (
         <div className="add-product-screen">
             <div className="add-product-content">
+                {error && <div className="error-message">{error}</div>}
                 <div className="input-group">
                     <input
                         type="text"
@@ -74,6 +126,7 @@ const AddProductScreen = () => {
                         value={productName}
                         onChange={(e) => setProductName(e.target.value)}
                         className="product-input"
+                        disabled={loading}
                     />
                 </div>
                 <div className="divider3" />
@@ -85,6 +138,7 @@ const AddProductScreen = () => {
                         value={servingSize}
                         onChange={(e) => setServingSize(e.target.value)}
                         className="serving-input"
+                        disabled={loading}
                     />
                 </div>
 
@@ -93,7 +147,7 @@ const AddProductScreen = () => {
                 <div className="fodmap-section">
                     <div className="fodmap-header">
                         <h2>FODMAP</h2>
-                        <button className="ai-button" onClick={handleAISearch}>
+                        <button className="ai-button" onClick={handleAISearch} disabled={loading}>
                             Найти с помощью ИИ
                         </button>
                     </div>
@@ -108,6 +162,7 @@ const AddProductScreen = () => {
                                             key={level}
                                             className={`level-button ${level === fodmapLevels[fodmap.id] ? 'active' : ''} level-${level}`}
                                             onClick={() => handleFodmapLevelChange(fodmap.id, level)}
+                                            disabled={loading}
                                         >
                                             {level === fodmapLevels[fodmap.id] && <span className="checkmark">✓</span>}
                                         </button>
@@ -118,17 +173,12 @@ const AddProductScreen = () => {
                     </div>
                 </div>
 
-                <button className="add-serving-button" onClick={handleAddServing}>
-                    <span>Добавить порцию</span>
-                    <span className="plus-icon">+</span>
-                </button>
-
                 <div className="button-group">
-                    <button className="cancel-button" onClick={handleBack}>
+                    <button className="cancel-button" onClick={handleBack} disabled={loading}>
                         Отмена
                     </button>
-                    <button className="save-button2" onClick={handleSave}>
-                        Сохранить
+                    <button className="save-button2" onClick={handleSave} disabled={loading}>
+                        {loading ? 'Сохранение...' : 'Сохранить'}
                     </button>
                 </div>
             </div>

@@ -31,14 +31,27 @@ const ProductListScreen = () => {
             product.gos_level
         ];
 
-        const maxLevel = Math.max(...fodmapLevels);
-
-        if (maxLevel <= 1) {
-            return 'green';
-        } else if (maxLevel === 2) {
-            return 'yellow';
+        if (listType === 'user_created') {
+            // For user-created products, use the lowest level
+            // 0 - high (red), 1 - medium (yellow), 2 - low (green)
+            const minLevel = Math.min(...fodmapLevels);
+            if (minLevel === 0) {
+                return 'red';
+            } else if (minLevel === 1) {
+                return 'yellow';
+            } else {
+                return 'green';
+            }
         } else {
-            return 'red';
+            // For regular products: ≤1 - low (green), 2 - medium (yellow), >2 - high (red)
+            const maxLevel = Math.max(...fodmapLevels);
+            if (maxLevel <= 1) {
+                return 'green';
+            } else if (maxLevel === 2) {
+                return 'yellow';
+            } else {
+                return 'red';
+            }
         }
     };
 
@@ -53,13 +66,40 @@ const ProductListScreen = () => {
                     throw new Error('Telegram user ID not found');
                 }
 
-                const response = await fetch(`/users/${telegramId}/lists/${listType}/items`);
+                let response;
+                if (listType === 'user_created') {
+                    // Use the new endpoint for user-created products
+                    response = await fetch(`/users/${telegramId}/products`);
+                } else {
+                    // Use the existing endpoint for other list types
+                    response = await fetch(`/users/${telegramId}/lists/${listType}/items`);
+                }
+
                 if (!response.ok) {
                     throw new Error('Failed to fetch products');
                 }
 
                 const data = await response.json();
-                setProducts(data.items || []);
+
+                if (listType === 'user_created') {
+                    // Map the user-created products response format
+                    setProducts(data.products.map(product => ({
+                        id: product.user_product_id,
+                        name: product.name,
+                        fructose_level: product.fructose_level,
+                        lactose_level: product.lactose_level,
+                        fructan_level: product.fructan_level,
+                        mannitol_level: product.mannitol_level,
+                        sorbitol_level: product.sorbitol_level,
+                        gos_level: product.gos_level,
+                        serving_title: product.serving_title,
+                        created_at: product.created_at,
+                        updated_at: product.updated_at
+                    })));
+                } else {
+                    // Use existing format for other list types
+                    setProducts(data.items || []);
+                }
             } catch (err) {
                 setError(err.message);
             } finally {
@@ -106,6 +146,7 @@ const ProductListScreen = () => {
                                 id={product.id}
                                 name={product.name}
                                 type={determineFodmapLevel(product)}
+                                isUserCreated={listType === 'user_created'}
                             />
                         ))}
                     </div>
