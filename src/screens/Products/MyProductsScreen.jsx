@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import './MyProductsScreen.css';
@@ -16,6 +16,23 @@ const MyProductsScreen = () => {
         // TODO: Implement add product functionality
         console.log('Add product clicked');
     };
+
+    const handleBack = () => {
+        navigate(-1); // Go back to the previous page
+    };
+
+    // Add Telegram WebApp back button functionality
+    useEffect(() => {
+        if (window.Telegram && window.Telegram.WebApp) {
+            window.Telegram.WebApp.BackButton.show();
+            window.Telegram.WebApp.onEvent('backButtonClicked', handleBack);
+
+            return () => {
+                window.Telegram.WebApp.BackButton.hide();
+                window.Telegram.WebApp.offEvent('backButtonClicked', handleBack);
+            };
+        }
+    }, [navigate]);
 
     const categories = [
         { id: 1, name: 'Список - 1 этап', icon: list1Icon },
