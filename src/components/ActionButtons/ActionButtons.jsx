@@ -10,8 +10,8 @@ const ActionButtons = () => {
         navigate('/food-diary/add');
     };
 
-    const handleSymptomsButtonClick = () => {
-        navigate('/symptoms/add');
+    const handleSymptomsClick = () => {
+        navigate('/symptoms');
     };
 
     return (
@@ -25,7 +25,7 @@ const ActionButtons = () => {
             </button>
             <button
                 className="action-button symptoms-button"
-                onClick={handleSymptomsButtonClick}
+                onClick={handleSymptomsClick}
             >
                 <span className="button-text">Симптомы</span>
                 <img src={plusIcon} alt="Add" className="plus-icon" />

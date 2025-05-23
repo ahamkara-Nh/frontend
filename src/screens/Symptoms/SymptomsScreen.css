@@ -1,0 +1,184 @@
+.symptoms-container {
+    background-color: #222222;
+    min-height: 100vh;
+    padding: 25px 15px;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+}
+
+.symptoms-header {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.symptoms-header span {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.5em;
+}
+
+.symptoms-header .new-record {
+    color: #C4C4C4;
+}
+
+h2 {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.5em;
+    margin-bottom: 10px;
+}
+
+.note-section {
+    margin-bottom: 20px;
+}
+
+.note-input {
+    background-color: #323232;
+    border-radius: 10px;
+    padding: 15px 10px;
+    min-height: 150px;
+}
+
+.note-input textarea {
+    width: 100%;
+    height: 120px;
+    background: transparent;
+    border: none;
+    color: #616161;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.5em;
+    resize: none;
+}
+
+.note-input textarea:focus {
+    outline: none;
+}
+
+.symptoms-section {
+    margin-bottom: 20px;
+}
+
+.symptom-item {
+    margin-bottom: 40px;
+}
+
+.symptom-name {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.symptom-icon {
+    width: 66px;
+    height: 66px;
+    border-radius: 10px;
+    background-color: #323232;
+}
+
+.symptom-name p {
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: -0.04em;
+    line-height: 1.5em;
+    margin-top: auto;
+}
+
+.symptom-slider {
+    margin-top: 10px;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 10px;
+    font-weight: 400;
+    color: #C4C4C4;
+    letter-spacing: -0.04em;
+    line-height: 1.5em;
+    margin-bottom: 10px;
+}
+
+.number-slider {
+    display: flex;
+    gap: 5px;
+    padding: 0;
+    border-radius: 10px;
+    height: 35px;
+}
+
+.number-button {
+    flex: 1;
+    border: none;
+    background-color: #4E4E4E;
+    color: #C4C4C4;
+    font-family: 'Manrope', sans-serif;
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    border-radius: 10px;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.number-button.active {
+    color: #000000;
+}
+
+.number-button.active.yellow {
+    background: linear-gradient(90deg, #EEFF00 0%, #F8F706 14.29%, #F1E00B 28.57%, #EACB10 42.86%, #E3B714 57.14%, #DCA518 71.43%, #D5941C 85.71%, #CE8520 100%);
+}
+
+.number-button.active.red {
+    background: linear-gradient(90deg, #FF0000 0%, #F80624 14.29%, #F10B44 28.57%, #EA1061 42.86%, #E3147B 57.14%, #DC1892 71.43%, #D51CA6 85.71%, #CE20B7 100%);
+}
+
+.number-button.active.green {
+    background: linear-gradient(90deg, #00FF09 0%, #06F825 14.29%, #0BF13E 28.57%, #10EA54 42.86%, #14E368 57.14%, #18DC7A 71.43%, #1CD58A 85.71%, #20CE97 100%);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.action-buttons button {
+    flex: 1;
+    height: 45px;
+    border: none;
+    border-radius: 10px;
+    font-family: 'Manrope', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    cursor: pointer;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.1),
+        0px 13px 13px rgba(0, 0, 0, 0.09),
+        0px 28px 17px rgba(0, 0, 0, 0.05),
+        0px 50px 20px rgba(0, 0, 0, 0.01);
+}
+
+.cancel-button {
+    background-color: #4E4E4E;
+}
+
+.save-button {
+    background-color: #323E5D;
+}
+
+.divider {
+    height: 1px;
+    background-color: #323232;
+    margin: 20px 0;
+    width: 100%;
+}

@@ -24,6 +24,7 @@ import ProfileScreen from './screens/Profile/ProfileScreen';
 import RecipesScreen from './screens/Recipes/RecipesScreen';
 import RecipeDetailScreen from './screens/RecipeDetail/RecipeDetailScreen';
 import { AuthProvider } from './context/AuthContext';
+import SymptomsScreen from './screens/Symptoms/SymptomsScreen';
 
 // Placeholder for where the app navigates after onboarding
 // const HomePagePlaceholder = () => <div style={{ padding: '20px', color: 'white', textAlign: 'center' }}>Welcome to the App! (Homepage Placeholder)</div>;
@@ -57,6 +58,7 @@ function App() {
         <Route path="/info" element={<InfoScreen />} />
         <Route path="/info/:infoId" element={<InfoDetailScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
+        <Route path="/symptoms" element={<SymptomsScreen />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>
