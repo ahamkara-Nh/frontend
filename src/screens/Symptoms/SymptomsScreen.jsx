@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SymptomsScreen.css';
 import symptomIcon from '../../assets/images/symptom_icon.png';
@@ -12,6 +12,29 @@ const SymptomsScreen = () => {
         gas: 0,
         stool: 0
     });
+    const [error, setError] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    const handleCancel = useCallback(() => {
+        navigate(-1);
+    }, [navigate]);
+
+    // Add Telegram WebApp back button functionality
+    useEffect(() => {
+        const tg = window.Telegram?.WebApp;
+        if (tg) {
+            tg.BackButton.show();
+            tg.BackButton.onClick(handleCancel);
+        }
+
+        // Cleanup
+        return () => {
+            if (tg) {
+                tg.BackButton.hide();
+                tg.BackButton.offClick(handleCancel);
+            }
+        };
+    }, [handleCancel]);
 
     const getSeverityColor = (value) => {
         if (value <= 2) return 'green';
@@ -26,14 +49,45 @@ const SymptomsScreen = () => {
         }));
     };
 
-    const handleSave = () => {
-        // TODO: Implement save functionality
-        console.log('Saving symptoms:', { symptoms, note });
-        navigate(-1);
-    };
+    const handleSave = async () => {
+        // Get Telegram user ID
+        const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+        if (!telegramId) {
+            setError('User ID not available');
+            return;
+        }
 
-    const handleCancel = () => {
-        navigate(-1);
+        try {
+            setLoading(true);
+            setError(null);
+
+            const response = await fetch(`/users/${telegramId}/symptoms-diary`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    wind_level: symptoms.gas,
+                    bloat_level: symptoms.bloating,
+                    pain_level: symptoms.pain,
+                    stool_level: symptoms.stool,
+                    notes: note.trim()
+                }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.message || 'Failed to save symptoms');
+            }
+
+            // Navigate back after successful save
+            navigate(-1);
+        } catch (err) {
+            console.error('Error saving symptoms:', err);
+            setError(err.message || 'Failed to save symptoms. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const getCurrentDate = () => {
@@ -43,11 +97,11 @@ const SymptomsScreen = () => {
 
     return (
         <div className="symptoms-container">
+            {error && <div className="error-message">{error}</div>}
             <div className="symptoms-header">
                 <span className="date">{getCurrentDate()}</span>
                 <span className="new-record">новая запись</span>
             </div>
-
 
             <div className="symptoms-section">
                 <h2>Симптомы:</h2>
@@ -168,11 +222,11 @@ const SymptomsScreen = () => {
             </div>
 
             <div className="action-buttons">
-                <button className="cancel-button" onClick={handleCancel}>
+                <button className="cancel-button" onClick={handleCancel} disabled={loading}>
                     Отмена
                 </button>
-                <button className="save-button" onClick={handleSave}>
-                    Сохранить
+                <button className="save-button" onClick={handleSave} disabled={loading}>
+                    {loading ? 'Сохранение...' : 'Сохранить'}
                 </button>
             </div>
         </div>

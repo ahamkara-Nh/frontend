@@ -182,3 +182,17 @@ h2 {
     margin: 20px 0;
     width: 100%;
 }
+
+.error-message {
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 12px;
+    margin: 8px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.save-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
