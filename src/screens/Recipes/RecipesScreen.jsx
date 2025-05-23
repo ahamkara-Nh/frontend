@@ -1,43 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import RecipeCard from '../../components/RecipeCard/RecipeCard';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import './RecipesScreen.css';
 import { useNavigate } from 'react-router-dom';
 
-const MOCK_RECIPES = [
-    {
-        id: 1,
-        title: 'Овсяная каша с бананом',
-        image: '/images/recipes/oatmeal.jpg',
-        duration: '15 мин',
-        difficulty: 'Легко'
-    },
-    {
-        id: 2,
-        title: 'Куриная грудка с овощами',
-        image: '/images/recipes/chicken.jpg',
-        duration: '30 мин',
-        difficulty: 'Средне'
-    },
-    {
-        id: 3,
-        title: 'Салат с киноа и овощами',
-        image: '/images/recipes/quinoa-salad.jpg',
-        duration: '20 мин',
-        difficulty: 'Легко'
-    },
-    {
-        id: 4,
-        title: 'Запеченная рыба с зеленью',
-        image: '/images/recipes/baked-fish.jpg',
-        duration: '35 мин',
-        difficulty: 'Средне'
-    }
-];
-
 const RecipesScreen = () => {
     const navigate = useNavigate();
+    const [recipes, setRecipes] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const tg = window.Telegram?.WebApp;
@@ -50,14 +22,52 @@ const RecipesScreen = () => {
 
             return () => {
                 tg.offEvent('backButtonClicked', handleBackButtonClick);
-                // We conditionally hide the back button in ProductsScreen,
-                // so we should be careful here.
-                // For now, let's assume other screens will manage their own back button visibility.
-                // If this screen is the only one setting it, we could hide it.
-                // tg.BackButton.hide();
             };
         }
     }, [navigate]);
+
+    useEffect(() => {
+        const fetchRecipes = async () => {
+            try {
+                setLoading(true);
+                const response = await fetch('/recipes');
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch recipes');
+                }
+
+                const data = await response.json();
+                setRecipes(data.recipes || []);
+            } catch (err) {
+                console.error('Error fetching recipes:', err);
+                setError('Failed to load recipes. Please try again later.');
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchRecipes();
+    }, []);
+
+    if (loading) {
+        return (
+            <div className="recipes-container">
+                <div className="loading-container">
+                    <LoadingSpinner />
+                </div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="recipes-container">
+                <div className="error-container">
+                    <p>{error}</p>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="recipes-container">
@@ -67,13 +77,13 @@ const RecipesScreen = () => {
             </div>
 
             <div className="recipes-content">
-                {MOCK_RECIPES.map(recipe => (
+                {recipes.map(recipe => (
                     <RecipeCard
-                        key={recipe.id}
-                        title={recipe.title}
-                        image={recipe.image}
-                        duration={recipe.duration}
-                        difficulty={recipe.difficulty}
+                        key={recipe.recipe_id}
+                        title={recipe.name}
+                        image={`/src/assets/recipe_images/${recipe.image_name}.png`}
+                        duration="15 мин" // TODO: Add duration to API response
+                        difficulty="Легко" // TODO: Add difficulty to API response
                     />
                 ))}
             </div>

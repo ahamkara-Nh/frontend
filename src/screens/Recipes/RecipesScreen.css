@@ -105,6 +105,21 @@
     background-color: #222222;
 }
 
+.loading-container,
+.error-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    width: 100%;
+}
+
+.error-container {
+    color: #ff6b6b;
+    text-align: center;
+    padding: 20px;
+}
+
 @media (prefers-color-scheme: light) {
     .recipes-container {
         background-color: #ffffff;
