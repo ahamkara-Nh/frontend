@@ -25,6 +25,7 @@ import RecipesScreen from './screens/Recipes/RecipesScreen';
 import RecipeDetailScreen from './screens/RecipeDetail/RecipeDetailScreen';
 import { AuthProvider } from './context/AuthContext';
 import SymptomsScreen from './screens/Symptoms/SymptomsScreen';
+import AddFoodScreen from './screens/FoodDiary/AddFoodScreen';
 
 // Placeholder for where the app navigates after onboarding
 // const HomePagePlaceholder = () => <div style={{ padding: '20px', color: 'white', textAlign: 'center' }}>Welcome to the App! (Homepage Placeholder)</div>;
@@ -46,6 +47,7 @@ function App() {
         <Route path="/home/phase0" element={<HomePhase0 />} />
         <Route path="/home/phase1" element={<HomePhase1 />} />
         <Route path="/diary" element={<HomePhase1 />} />
+        <Route path="/food-diary/add" element={<AddFoodScreen />} />
         <Route path="/products" element={<ProductsScreen />} />
         <Route path="/products/category/:categoryName" element={<CategoryScreen />} />
         <Route path="/products/:productId" element={<ProductDetailScreen />} />
