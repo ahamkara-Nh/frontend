@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import CategoryCard from '../../components/CategoryCard/CategoryCard';
 import FilterMenu from '../../components/FilterMenu/FilterMenu';
@@ -22,6 +23,7 @@ const CATEGORIES = [
 ];
 
 const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
+    const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
     const [isFilterMenuOpen, setIsFilterMenuOpen] = useState(false);
     const [searchResults, setSearchResults] = useState([]);
@@ -143,11 +145,14 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
         return () => clearTimeout(debounceTimer);
     }, [searchQuery]);
 
-    const handleProductSelect = (product) => {
-        if (onSelectProduct) {
-            onSelectProduct(product);
-        }
-        onClose();
+    const handleProductClick = (product) => {
+        // Navigate to the food product detail screen with the product data
+        navigate(`/food-diary/product/${product.product_id}`, {
+            state: {
+                productName: product.name,
+                onAddProduct: onSelectProduct
+            }
+        });
     };
 
     const handleCategorySelect = async (categoryName, index) => {
@@ -269,7 +274,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                                 key={product.product_id}
                                 name={product.name}
                                 type={determineFodmapLevel(product)}
-                                onClick={() => handleProductSelect(product)}
+                                onClick={() => handleProductClick(product)}
                             />
                         ))}
                     </div>
@@ -285,7 +290,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                                         key={product.product_id}
                                         name={product.name}
                                         type={determineFodmapLevel(product)}
-                                        onClick={() => handleProductSelect(product)}
+                                        onClick={() => handleProductClick(product)}
                                     />
                                 ))}
                             </div>

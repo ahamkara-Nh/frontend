@@ -26,6 +26,7 @@
     padding: 15px;
     align-items: center;
     gap: 10px;
+    justify-content: center;
 }
 
 .back-button {
@@ -38,16 +39,10 @@
 .back-button img {
     width: 24px;
     height: 24px;
-    filter: invert(1);
+    filter: invert(0.5);
+    margin-top: 6px;
 }
 
-.filter-button {
-    background: none;
-    border: none;
-    padding: 8px;
-    cursor: pointer;
-    margin-left: auto;
-}
 
 .filter-icon {
     width: 20px;
