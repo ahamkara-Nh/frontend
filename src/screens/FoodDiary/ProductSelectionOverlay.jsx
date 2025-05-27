@@ -538,9 +538,6 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                             <div className="categories-container-overlay">
                                 {/* My Products Section with same content as MyProductsScreen */}
                                 <div className="overlay-my-products-content">
-                                    <button className="overlay-add-product-button" onClick={handleNavigateToAddProduct}>
-                                        <span>Добавить свой продукт</span>
-                                    </button>
 
                                     <div className="overlay-category-grid">
                                         {myProductsCategories.map((category) => (
