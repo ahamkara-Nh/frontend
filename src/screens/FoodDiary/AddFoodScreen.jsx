@@ -106,7 +106,7 @@ const AddFoodScreen = () => {
             </div>
 
             <div className="note-section">
-                <h2 className="section-header">Рецепт (по желанию):</h2>
+                <h2 className="section-header">Заметка:</h2>
 
                 <div className="note-input">
                     <textarea

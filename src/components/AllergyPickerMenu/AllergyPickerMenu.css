@@ -30,6 +30,7 @@
     transition: transform 0.3s ease-in-out;
     color: #FFFFFF;
     font-family: 'Manrope', sans-serif;
+    letter-spacing: -0.04em;
 }
 
 .allergy-picker-overlay.open .allergy-picker-container {
@@ -64,6 +65,7 @@
     font-family: 'Manrope', sans-serif;
     font-weight: 400;
     font-size: 19px;
+    letter-spacing: -0.04em;
     color: #FFFFFF;
     background: #323E5D;
     border: none;
@@ -95,6 +97,7 @@
     font-family: 'Manrope', sans-serif;
     font-weight: 400;
     font-size: 15px;
+    letter-spacing: -0.04em;
     padding: 11px 30px;
     border: none;
     border-radius: 10px;
