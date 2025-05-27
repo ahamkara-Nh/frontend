@@ -31,6 +31,15 @@ const CATEGORIES = [
     { name: "Хлеб, хлопья, рис, макароны", image_name: "bread" }
 ];
 
+// Categories for My Products section
+const MY_PRODUCTS_CATEGORIES = [
+    { id: 1, name: 'Список - 1 этап', icon: list1Icon, type: 'phase1' },
+    { id: 2, name: 'Список - 2 этап', icon: list2Icon, type: 'phase2' },
+    { id: 3, name: 'Список - 3 этап', icon: list3Icon, type: 'phase3' },
+    { id: 4, name: 'Избранное', icon: favoritesIcon, type: 'favourites' },
+    { id: 5, name: 'Мои продукты', icon: myProductsIcon, type: 'user_created' },
+];
+
 const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = useState('');
@@ -178,6 +187,38 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                 try {
                     // Get Telegram user ID or use a default for development
                     const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+
+                    // Check if it's a user-created product
+                    if (selectedProduct.user_created) {
+                        // For user-created products, we already have the data we need
+                        const productData = {
+                            product_id: selectedProduct.product_id || selectedProduct.id,
+                            name: selectedProduct.name,
+                            fructose_level: selectedProduct.fructose_level,
+                            lactose_level: selectedProduct.lactose_level,
+                            fructan_level: selectedProduct.fructan_level,
+                            mannitol_level: selectedProduct.mannitol_level,
+                            sorbitol_level: selectedProduct.sorbitol_level,
+                            gos_level: selectedProduct.gos_level,
+                            // Create a single serving based on the product data
+                            servings: [{
+                                serving_id: 1,
+                                serving_size: selectedProduct.serving_title || "1 порция",
+                                serving_amount_grams: selectedProduct.serving_amount_grams || 0,
+                                fructose_level: selectedProduct.fructose_level,
+                                lactose_level: selectedProduct.lactose_level,
+                                fructan_level: selectedProduct.fructan_level,
+                                mannitol_level: selectedProduct.mannitol_level,
+                                sorbitol_level: selectedProduct.sorbitol_level,
+                                gos_level: selectedProduct.gos_level
+                            }]
+                        };
+
+                        setProductData(productData);
+                        setSelectedServing(productData.servings[0]);
+                        setLoading(false);
+                        return;
+                    }
 
                     // Fetch product details by name to get all serving sizes
                     const response = await fetch('/products/get-by-name', {
@@ -417,17 +458,66 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
         }
     };
 
-    // Categories for My Products section
-    const myProductsCategories = [
-        { id: 1, name: 'Список - 1 этап', icon: list1Icon, type: 'phase1' },
-        { id: 2, name: 'Список - 2 этап', icon: list2Icon, type: 'phase2' },
-        { id: 3, name: 'Список - 3 этап', icon: list3Icon, type: 'phase3' },
-        { id: 4, name: 'Избранное', icon: favoritesIcon, type: 'favourites' },
-        { id: 5, name: 'Мои продукты', icon: myProductsIcon, type: 'user_created' },
-    ];
+    const handleCategoryClick = async (category) => {
+        setSelectedCategory(category.name);
+        setLoading(true);
+        setError(null);
 
-    const handleCategoryClick = (listType) => {
-        navigate(`/products/lists/${listType}`);
+        try {
+            // Get Telegram user ID or use a default for development
+            const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+
+            let response;
+            let data;
+
+            if (category.type === 'user_created') {
+                // Use the user-created products endpoint
+                response = await fetch(`/users/${telegramId}/products`);
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                data = await response.json();
+
+                // Format user-created products
+                const formattedProducts = (data.products || []).map(product => ({
+                    product_id: product.user_product_id,
+                    id: product.user_product_id, // Add id property for compatibility
+                    name: product.name,
+                    fructose_level: product.fructose_level,
+                    lactose_level: product.lactose_level,
+                    fructan_level: product.fructan_level,
+                    mannitol_level: product.mannitol_level,
+                    sorbitol_level: product.sorbitol_level,
+                    gos_level: product.gos_level,
+                    serving_title: product.serving_title || "1 порция", // Add serving_title
+                    user_created: true // Add flag to identify user-created products
+                }));
+
+                setCategoryProducts(formattedProducts);
+
+                console.log("User-created products:", formattedProducts); // Debug log
+            } else {
+                // Use the list items endpoint for other list types
+                response = await fetch(`/users/${telegramId}/lists/${category.type}/items`);
+
+                if (!response.ok) {
+                    throw new Error(`API request failed with status ${response.status}`);
+                }
+
+                data = await response.json();
+                // The API returns 'items' not 'products' for list items
+                setCategoryProducts(data.items || []);
+
+                console.log("List items:", data.items); // Debug log
+            }
+        } catch (err) {
+            console.error(`Error fetching products for ${category.name}:`, err);
+            setError(`Failed to load products for ${category.name}. Please try again later.`);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleNavigateToAddProduct = () => {
@@ -540,11 +630,11 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                                 <div className="overlay-my-products-content">
 
                                     <div className="overlay-category-grid">
-                                        {myProductsCategories.map((category) => (
+                                        {MY_PRODUCTS_CATEGORIES.map((category) => (
                                             <div
                                                 key={category.id}
                                                 className="overlay-category-button"
-                                                onClick={() => handleCategoryClick(category.type)}
+                                                onClick={() => handleCategoryClick(category)}
                                             >
                                                 <img src={category.icon} alt={category.name} className="overlay-category-icon" />
                                                 <span className="overlay-category-name">{category.name}</span>
