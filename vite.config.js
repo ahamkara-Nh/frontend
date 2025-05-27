@@ -9,7 +9,7 @@ export default defineConfig({
     svgr()
   ],
   server: {
-    allowedHosts: ['tz2nm6-95-161-221-128.ru.tuna.am'],
+    allowedHosts: ['user226046612-d7avxaze.tunnel.vk-apps.com/'],
     proxy: {
       '/auth': {
         target: 'http://127.0.0.1:8000',

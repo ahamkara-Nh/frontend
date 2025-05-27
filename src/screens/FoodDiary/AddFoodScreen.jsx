@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import ProductSelectionOverlay from './ProductSelectionOverlay';
 import './AddFoodScreen.css';
 
 const AddFoodScreen = () => {
@@ -7,6 +8,8 @@ const AddFoodScreen = () => {
     const [foodName, setFoodName] = useState('');
     const [servingSize, setServingSize] = useState('');
     const [recipe, setRecipe] = useState('');
+    const [showProductSelection, setShowProductSelection] = useState(false);
+    const [selectedProducts, setSelectedProducts] = useState([]);
 
     const handleCancel = () => {
         navigate(-1);
@@ -14,18 +17,31 @@ const AddFoodScreen = () => {
 
     const handleSave = () => {
         // Logic to save food entry would go here
-        console.log('Saving food entry:', { foodName, servingSize, recipe });
+        console.log('Saving food entry:', { foodName, servingSize, recipe, selectedProducts });
         navigate(-1);
     };
 
     const handleAddFromList = () => {
-        // Navigate to product list
-        console.log('Add from product list clicked');
+        setShowProductSelection(true);
+    };
+
+    const handleCloseProductSelection = () => {
+        setShowProductSelection(false);
+    };
+
+    const handleSelectProduct = (product) => {
+        setSelectedProducts([...selectedProducts, product]);
+    };
+
+    const handleRemoveProduct = (index) => {
+        const updatedProducts = [...selectedProducts];
+        updatedProducts.splice(index, 1);
+        setSelectedProducts(updatedProducts);
     };
 
     const handleCreateProduct = () => {
         // Navigate to create product screen
-        console.log('Create product clicked');
+        navigate('/products/add', { state: { returnTo: '/food-diary/add' } });
     };
 
     return (
@@ -55,6 +71,22 @@ const AddFoodScreen = () => {
             <div className="food-section">
                 <h2 className="section-header">Состоит из:</h2>
 
+                {selectedProducts.length > 0 && (
+                    <div className="selected-products">
+                        {selectedProducts.map((product, index) => (
+                            <div key={index} className="selected-product-item">
+                                <span>{product.name || 'Выбранный продукт'}</span>
+                                <button
+                                    className="remove-product-button"
+                                    onClick={() => handleRemoveProduct(index)}
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
                 <button className="add-food-button" onClick={handleAddFromList}>
                     <span>Добавить из списка продуктов</span>
                     <div className="plus-icon">+</div>
@@ -82,6 +114,13 @@ const AddFoodScreen = () => {
                     Сохранить
                 </button>
             </div>
+
+            {showProductSelection && (
+                <ProductSelectionOverlay
+                    onClose={handleCloseProductSelection}
+                    onSelectProduct={handleSelectProduct}
+                />
+            )}
         </div>
     );
 };

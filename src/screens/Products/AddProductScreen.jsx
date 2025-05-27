@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import './AddProductScreen.css';
 
 const AddProductScreen = () => {
     const navigate = useNavigate();
+    const location = useLocation();
+    const returnTo = location.state?.returnTo;
     const [productName, setProductName] = useState('');
     const [servingSize, setServingSize] = useState('');
     const [fodmapLevels, setFodmapLevels] = useState({
@@ -18,7 +20,11 @@ const AddProductScreen = () => {
     const [loading, setLoading] = useState(false);
 
     const handleBack = () => {
-        navigate(-1);
+        if (returnTo) {
+            navigate(returnTo);
+        } else {
+            navigate(-1);
+        }
     };
 
     const handleSave = async () => {
@@ -67,7 +73,11 @@ const AddProductScreen = () => {
             }
 
             // Navigate back after successful save
-            navigate(-1);
+            if (returnTo) {
+                navigate(returnTo);
+            } else {
+                navigate(-1);
+            }
         } catch (err) {
             console.error('Error saving product:', err);
             setError(err.message || 'Failed to save product. Please try again.');

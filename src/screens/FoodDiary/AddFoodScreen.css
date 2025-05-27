@@ -49,6 +49,44 @@
     margin-top: 15px;
 }
 
+.selected-products {
+    margin-bottom: 15px;
+}
+
+.selected-product-item {
+    background-color: #323E5D;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.selected-product-item span {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.remove-product-button {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.remove-product-button:hover {
+    opacity: 1;
+}
+
 .add-food-button,
 .create-food-button {
     width: 100%;
