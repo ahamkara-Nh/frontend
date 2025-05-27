@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import CategoryCard from '../../components/CategoryCard/CategoryCard';
 import FilterMenu from '../../components/FilterMenu/FilterMenu';
-import ProductItem from '../../components/ProductItem/ProductItem';
+import ProductItemOverlay from '../../components/ProductItemOverlay/ProductItemOverlay';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import ProductDetailOverlay from './ProductDetailOverlay';
 import './ProductSelectionOverlay.css';
 
 const CATEGORIES = [
@@ -31,6 +32,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
     const [error, setError] = useState(null);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [categoryProducts, setCategoryProducts] = useState([]);
+    const [selectedProduct, setSelectedProduct] = useState(null);
 
     const isSearchActive = searchQuery.trim() !== '';
 
@@ -146,13 +148,8 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
     }, [searchQuery]);
 
     const handleProductClick = (product) => {
-        // Navigate to the food product detail screen with the product data
-        navigate(`/food-diary/product/${product.product_id}`, {
-            state: {
-                productName: product.name,
-                onAddProduct: onSelectProduct
-            }
-        });
+        // Show product detail overlay
+        setSelectedProduct(product);
     };
 
     const handleCategorySelect = async (categoryName, index) => {
@@ -174,7 +171,14 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
             }
 
             const data = await response.json();
-            setCategoryProducts(data.products || []);
+
+            // Add category_id to each product in the response
+            const productsWithCategory = (data.products || []).map(product => ({
+                ...product,
+                category_id: categoryId
+            }));
+
+            setCategoryProducts(productsWithCategory);
         } catch (err) {
             console.error(`Error fetching products for category ${categoryName}:`, err);
             setError(`Failed to load products for ${categoryName}. Please try again later.`);
@@ -240,53 +244,45 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
 
     return (
         <div className="product-selection-overlay">
-            <div className="overlay-header">
-                <button
-                    className="back-button"
-                    onClick={selectedCategory ? handleBackToCategories : onClose}
-                >
-                    <img src="/icons/back-arrow.svg" alt="Back" />
-                </button>
-                <SearchBar
-                    searchQuery={searchQuery}
-                    setSearchQuery={(query) => {
-                        // Limit to 25 characters
-                        if (query.length <= 25) {
-                            setSearchQuery(query);
-                        }
-                    }}
-                    placeholder="Найти продукт ..."
+            {selectedProduct ? (
+                <ProductDetailOverlay
+                    product={selectedProduct}
+                    onClose={() => setSelectedProduct(null)}
+                    onSelectProduct={onSelectProduct}
                 />
-                <button className="filter-button" onClick={toggleFilterMenu}>
-                    <img src="/icons/filter-icon.svg" alt="Filter" className="filter-icon" />
-                </button>
-            </div>
-
-            <div className="overlay-content">
-                {loading ? (
-                    <LoadingSpinner size="medium" />
-                ) : error ? (
-                    <div className="error-message">{error}</div>
-                ) : isSearchActive && searchResults.length > 0 ? (
-                    <div className="search-results">
-                        {searchResults.map(product => (
-                            <ProductItem
-                                key={product.product_id}
-                                name={product.name}
-                                type={determineFodmapLevel(product)}
-                                onClick={() => handleProductClick(product)}
-                            />
-                        ))}
+            ) : (
+                <>
+                    <div className="overlay-header">
+                        <button
+                            className="back-button"
+                            onClick={selectedCategory ? handleBackToCategories : onClose}
+                        >
+                            <img src="/icons/back-arrow.svg" alt="Back" />
+                        </button>
+                        <SearchBar
+                            searchQuery={searchQuery}
+                            setSearchQuery={(query) => {
+                                // Limit to 25 characters
+                                if (query.length <= 25) {
+                                    setSearchQuery(query);
+                                }
+                            }}
+                            placeholder="Найти продукт ..."
+                        />
+                        <button className="filter-button" onClick={toggleFilterMenu}>
+                            <img src="/icons/filter-icon.svg" alt="Filter" className="filter-icon" />
+                        </button>
                     </div>
-                ) : isSearchActive ? (
-                    <div className="empty-search-message">Ничего не найдено</div>
-                ) : selectedCategory ? (
-                    <div className="category-products">
-                        <h2 className="category-title">{selectedCategory}</h2>
-                        {categoryProducts.length > 0 ? (
-                            <div className="product-list">
-                                {categoryProducts.map(product => (
-                                    <ProductItem
+
+                    <div className="overlay-content">
+                        {loading ? (
+                            <LoadingSpinner size="medium" />
+                        ) : error ? (
+                            <div className="error-message">{error}</div>
+                        ) : isSearchActive && searchResults.length > 0 ? (
+                            <div className="search-results">
+                                {searchResults.map(product => (
+                                    <ProductItemOverlay
                                         key={product.product_id}
                                         name={product.name}
                                         type={determineFodmapLevel(product)}
@@ -294,47 +290,65 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                                     />
                                 ))}
                             </div>
+                        ) : isSearchActive ? (
+                            <div className="empty-search-message">Ничего не найдено</div>
+                        ) : selectedCategory ? (
+                            <div className="category-products">
+                                <h2 className="category-title">{selectedCategory}</h2>
+                                {categoryProducts.length > 0 ? (
+                                    <div className="product-list">
+                                        {categoryProducts.map(product => (
+                                            <ProductItemOverlay
+                                                key={product.product_id}
+                                                name={product.name}
+                                                type={determineFodmapLevel(product)}
+                                                onClick={() => handleProductClick(product)}
+                                            />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="empty-category-message">Нет продуктов в этой категории</div>
+                                )}
+                            </div>
                         ) : (
-                            <div className="empty-category-message">Нет продуктов в этой категории</div>
+                            <div className="categories-container-overlay">
+                                {/* Use div with onClick instead of CategoryCard to prevent navigation */}
+                                <div
+                                    className="custom-category-card"
+                                    onClick={handleMyProductsClick}
+                                >
+                                    <div className="category-card-content">
+                                        <div
+                                            className="category-card-bg"
+                                            style={{ backgroundImage: `url(/images/my-foods-bg.svg)` }}
+                                        ></div>
+                                        <div className="category-card-title">Мои продукты</div>
+                                    </div>
+                                </div>
+
+
+                                {CATEGORIES.map((category, index) => (
+                                    <div
+                                        key={index}
+                                        className="custom-category-card"
+                                        onClick={() => handleCategorySelect(category.name, index)}
+                                    >
+                                        <div className="category-card-content">
+                                            <div
+                                                className="category-card-bg"
+                                                style={{ backgroundImage: `url(/images/categories/${category.image_name}.png)` }}
+                                            ></div>
+                                            <div className="category-card-title">{category.name}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
                         )}
                     </div>
-                ) : (
-                    <div className="categories-container-overlay">
-                        {/* Use div with onClick instead of CategoryCard to prevent navigation */}
-                        <div
-                            className="custom-category-card"
-                            onClick={handleMyProductsClick}
-                        >
-                            <div className="category-card-content">
-                                <div
-                                    className="category-card-bg"
-                                    style={{ backgroundImage: `url(/images/my-foods-bg.svg)` }}
-                                ></div>
-                                <div className="category-card-title">Мои продукты</div>
-                            </div>
-                        </div>
 
-
-                        {CATEGORIES.map((category, index) => (
-                            <div
-                                key={index}
-                                className="custom-category-card"
-                                onClick={() => handleCategorySelect(category.name, index)}
-                            >
-                                <div className="category-card-content">
-                                    <div
-                                        className="category-card-bg"
-                                        style={{ backgroundImage: `url(/images/categories/${category.image_name}.png)` }}
-                                    ></div>
-                                    <div className="category-card-title">{category.name}</div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            <FilterMenu isOpen={isFilterMenuOpen} onClose={toggleFilterMenu} />
+                    <FilterMenu isOpen={isFilterMenuOpen} onClose={toggleFilterMenu} />
+                </>
+            )}
         </div>
     );
 };

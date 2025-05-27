@@ -1,0 +1,43 @@
+.product-item-overlay {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background-color: #323232;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.product-item-overlay:hover {
+    background-color: #3a3a3a;
+}
+
+.product-info-overlay {
+    display: flex;
+    flex-direction: column;
+}
+
+.product-name-overlay {
+    color: white;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.product-indicator-overlay {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+}
+
+.product-indicator-overlay.green {
+    background-color: #4CAF50;
+}
+
+.product-indicator-overlay.yellow {
+    background-color: #FFC107;
+}
+
+.product-indicator-overlay.red {
+    background-color: #F44336;
+}
