@@ -11,7 +11,7 @@
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-.category-title {
+.category-title-component {
     color: white;
     font-family: 'Manrope', sans-serif;
     font-size: 18px;

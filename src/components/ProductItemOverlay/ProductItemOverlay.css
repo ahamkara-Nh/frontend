@@ -3,7 +3,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 17px 16px 17px 16px;
+    padding: 17px 0 17px 0;
     border-bottom: 1px solid rgba(128, 128, 128, 0.1);
     cursor: pointer;
     transition: background-color 0.2s ease;
@@ -25,19 +25,22 @@
 }
 
 .product-indicator-overlay {
-    width: 12px;
-    height: 12px;
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
+    min-width: 20px;
+    min-height: 20px;
+    margin-left: 10px;
 }
 
 .product-indicator-overlay.green {
-    background-color: #4CAF50;
+    background: linear-gradient(to right, #00FF09, #06F825, #0BF13E, #10EA54, #14E368, #18DC7A, #1CD58A, #20CE97);
 }
 
 .product-indicator-overlay.yellow {
-    background-color: #FFC107;
+    background: linear-gradient(to right, #EEFF00, #F8F706, #F1E00B, #EACB10, #E3B714, #DCA518, #D5941C, #CE8520);
 }
 
 .product-indicator-overlay.red {
-    background-color: #F44336;
+    background: linear-gradient(to right, #FF0000, #F80624, #F10B44, #EA1061, #E3147B, #DC1892, #D51CA6, #CE20B7);
 }

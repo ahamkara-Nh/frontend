@@ -65,30 +65,34 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
     // Add Telegram WebApp back button functionality
     useEffect(() => {
         if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.BackButton.show();
+            const tg = window.Telegram.WebApp;
 
-            // If in category view, go back to categories on back button
-            if (selectedCategory) {
-                window.Telegram.WebApp.onEvent('backButtonClicked', () => {
-                    setSelectedCategory(null);
-                    setCategoryProducts([]);
-                });
-            } else {
-                window.Telegram.WebApp.onEvent('backButtonClicked', onClose);
-            }
+            // Show the back button
+            tg.BackButton.show();
 
-            return () => {
-                if (selectedCategory) {
-                    window.Telegram.WebApp.offEvent('backButtonClicked', () => {
-                        setSelectedCategory(null);
-                        setCategoryProducts([]);
-                    });
+            // Create a handler for the back button that respects the hierarchy of screens
+            const handleBackButton = () => {
+                if (viewingProductDetails) {
+                    // If viewing product details, go back to the previous screen
+                    handleBackFromProductDetails();
+                } else if (selectedCategory) {
+                    // If in category view, go back to categories
+                    handleBackToCategories();
                 } else {
-                    window.Telegram.WebApp.offEvent('backButtonClicked', onClose);
+                    // If at the main product selection screen, close the overlay
+                    onClose();
                 }
             };
+
+            // Set up the event listener
+            tg.BackButton.onClick(handleBackButton);
+
+            // Cleanup function
+            return () => {
+                tg.BackButton.offClick(handleBackButton);
+            };
         }
-    }, [onClose, selectedCategory]);
+    }, [onClose, selectedCategory, viewingProductDetails]);
 
     const toggleFilterMenu = () => {
         setIsFilterMenuOpen(!isFilterMenuOpen);
@@ -105,27 +109,14 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
             product.gos_level
         ];
 
-        if (product.user_created) {
-            // For user-created products, the scale is reversed:
-            // 0 - high (red), 1 - medium (yellow), 2 - low (green)
-            const minLevel = Math.min(...fodmapLevels);
-            if (minLevel === 0) {
-                return 'red';
-            } else if (minLevel === 1) {
-                return 'yellow';
-            } else {
-                return 'green';
-            }
+        // For all products: ≤1 - low (green), 2 - medium (yellow), >2 - high (red)
+        const maxLevel = Math.max(...fodmapLevels);
+        if (maxLevel <= 1) {
+            return 'green';
+        } else if (maxLevel === 2) {
+            return 'yellow';
         } else {
-            // For regular products: ≤1 - low (green), 2 - medium (yellow), >2 - high (red)
-            const maxLevel = Math.max(...fodmapLevels);
-            if (maxLevel <= 1) {
-                return 'green';
-            } else if (maxLevel === 2) {
-                return 'yellow';
-            } else {
-                return 'red';
-            }
+            return 'red';
         }
     };
 
@@ -219,28 +210,37 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                         );
 
                         if (userProduct) {
+                            // Convert FODMAP levels for user-created products: 
+                            // 0 (high) → 3, 1 (medium) → 2, 2 (low) → 1
+                            const convertFodmapLevel = (level) => {
+                                if (level === 0) return 3;
+                                if (level === 1) return 2;
+                                if (level === 2) return 1;
+                                return level;
+                            };
+
                             // Create product data with correct FODMAP values from the API
                             const productData = {
                                 product_id: userProduct.user_product_id,
                                 name: userProduct.name,
-                                fructose_level: userProduct.fructose_level,
-                                lactose_level: userProduct.lactose_level,
-                                fructan_level: userProduct.fructan_level,
-                                mannitol_level: userProduct.mannitol_level,
-                                sorbitol_level: userProduct.sorbitol_level,
-                                gos_level: userProduct.gos_level,
+                                fructose_level: convertFodmapLevel(userProduct.fructose_level),
+                                lactose_level: convertFodmapLevel(userProduct.lactose_level),
+                                fructan_level: convertFodmapLevel(userProduct.fructan_level),
+                                mannitol_level: convertFodmapLevel(userProduct.mannitol_level),
+                                sorbitol_level: convertFodmapLevel(userProduct.sorbitol_level),
+                                gos_level: convertFodmapLevel(userProduct.gos_level),
                                 user_created: true, // Mark as user-created for FODMAP level determination
                                 // Create a single serving based on the product data
                                 servings: [{
                                     serving_id: 1,
                                     serving_size: userProduct.serving_title || "1 порция",
                                     serving_amount_grams: 0,
-                                    fructose_level: userProduct.fructose_level,
-                                    lactose_level: userProduct.lactose_level,
-                                    fructan_level: userProduct.fructan_level,
-                                    mannitol_level: userProduct.mannitol_level,
-                                    sorbitol_level: userProduct.sorbitol_level,
-                                    gos_level: userProduct.gos_level
+                                    fructose_level: convertFodmapLevel(userProduct.fructose_level),
+                                    lactose_level: convertFodmapLevel(userProduct.lactose_level),
+                                    fructan_level: convertFodmapLevel(userProduct.fructan_level),
+                                    mannitol_level: convertFodmapLevel(userProduct.mannitol_level),
+                                    sorbitol_level: convertFodmapLevel(userProduct.sorbitol_level),
+                                    gos_level: convertFodmapLevel(userProduct.gos_level)
                                 }]
                             };
 
@@ -517,19 +517,30 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                 data = await response.json();
 
                 // Format user-created products
-                const formattedProducts = (data.products || []).map(product => ({
-                    product_id: product.user_product_id,
-                    id: product.user_product_id, // Add id property for compatibility
-                    name: product.name,
-                    fructose_level: product.fructose_level,
-                    lactose_level: product.lactose_level,
-                    fructan_level: product.fructan_level,
-                    mannitol_level: product.mannitol_level,
-                    sorbitol_level: product.sorbitol_level,
-                    gos_level: product.gos_level,
-                    serving_title: product.serving_title || "1 порция", // Add serving_title
-                    user_created: true // Add flag to identify user-created products
-                }));
+                const formattedProducts = (data.products || []).map(product => {
+                    // Convert FODMAP levels for user-created products: 
+                    // 0 (high) → 3, 1 (medium) → 2, 2 (low) → 1
+                    const convertFodmapLevel = (level) => {
+                        if (level === 0) return 3;
+                        if (level === 1) return 2;
+                        if (level === 2) return 1;
+                        return level;
+                    };
+
+                    return {
+                        product_id: product.user_product_id,
+                        id: product.user_product_id, // Add id property for compatibility
+                        name: product.name,
+                        fructose_level: convertFodmapLevel(product.fructose_level),
+                        lactose_level: convertFodmapLevel(product.lactose_level),
+                        fructan_level: convertFodmapLevel(product.fructan_level),
+                        mannitol_level: convertFodmapLevel(product.mannitol_level),
+                        sorbitol_level: convertFodmapLevel(product.sorbitol_level),
+                        gos_level: convertFodmapLevel(product.gos_level),
+                        serving_title: product.serving_title || "1 порция", // Add serving_title
+                        user_created: true // Add flag to identify user-created products
+                    };
+                });
 
                 setCategoryProducts(formattedProducts);
 

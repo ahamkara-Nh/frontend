@@ -23,7 +23,7 @@ const CategoryCard = ({ title, backgroundImage, path }) => {
             style={cardStyle}
             onClick={handleClick}
         >
-            <h3 className="category-title">{title}</h3>
+            <h3 className="category-title-component">{title}</h3>
         </div>
     );
 };

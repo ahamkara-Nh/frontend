@@ -202,11 +202,17 @@ const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
     // Add Telegram WebApp back button functionality
     useEffect(() => {
         if (window.Telegram && window.Telegram.WebApp) {
-            window.Telegram.WebApp.BackButton.show();
-            window.Telegram.WebApp.onEvent('backButtonClicked', onClose);
+            const tg = window.Telegram.WebApp;
 
+            // Show the back button
+            tg.BackButton.show();
+
+            // Set up event listener for back button
+            tg.BackButton.onClick(onClose);
+
+            // Cleanup function
             return () => {
-                window.Telegram.WebApp.offEvent('backButtonClicked', onClose);
+                tg.BackButton.offClick(onClose);
             };
         }
     }, [onClose]);

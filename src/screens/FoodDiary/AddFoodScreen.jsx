@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import ProductSelectionOverlay from './ProductSelectionOverlay';
 import './AddFoodScreen.css';
 
 const AddFoodScreen = () => {
     const navigate = useNavigate();
+    const location = useLocation();
     const [foodName, setFoodName] = useState('');
     const [servingSize, setServingSize] = useState('');
     const [recipe, setRecipe] = useState('');
@@ -14,6 +15,36 @@ const AddFoodScreen = () => {
     const handleCancel = () => {
         navigate(-1);
     };
+
+    // Manage Telegram WebApp back button
+    useEffect(() => {
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+
+            // Create a handler that checks if there's an overlay open first
+            const handleBackButton = () => {
+                if (showProductSelection) {
+                    // If product selection overlay is open, close it instead of going back
+                    setShowProductSelection(false);
+                } else {
+                    // Otherwise navigate back
+                    navigate(-1);
+                }
+            };
+
+            // Show the back button
+            tg.BackButton.show();
+
+            // Set up event listener for back button
+            tg.BackButton.onClick(handleBackButton);
+
+            // Cleanup function
+            return () => {
+                tg.BackButton.hide();
+                tg.BackButton.offClick(handleBackButton);
+            };
+        }
+    }, [navigate, showProductSelection]);
 
     const handleSave = () => {
         // Logic to save food entry would go here
@@ -31,6 +62,7 @@ const AddFoodScreen = () => {
 
     const handleSelectProduct = (product) => {
         setSelectedProducts([...selectedProducts, product]);
+        setShowProductSelection(false);
     };
 
     const handleRemoveProduct = (index) => {
