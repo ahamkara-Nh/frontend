@@ -129,3 +129,81 @@
     margin-top: 30px;
     font-size: 16px;
 }
+
+/* My Products section styles with different class names */
+.overlay-my-products-content {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    grid-column: span 2;
+}
+
+.overlay-add-product-button {
+    background-color: #323E5D;
+    border: none;
+    border-radius: 10px;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    padding: 15px;
+    width: 215px;
+    margin: 0 auto;
+    cursor: pointer;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.1),
+        0px 13px 13px rgba(0, 0, 0, 0.09),
+        0px 28px 17px rgba(0, 0, 0, 0.05),
+        0px 50px 20px rgba(0, 0, 0, 0.01);
+    letter-spacing: -0.04em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.overlay-category-grid {
+    display: flex;
+    gap: 18px;
+    width: 100%;
+    min-width: 300px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.overlay-category-button {
+    background-color: #323232;
+    border-radius: 10px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 20px;
+    width: 80px;
+    height: 80px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.overlay-category-button:active {
+    background-color: #2a2a2a;
+}
+
+.overlay-category-icon {
+    width: 40px;
+    height: 33px;
+    object-fit: contain;
+    margin: 0 auto;
+    filter: brightness(0) invert(1);
+}
+
+.overlay-category-name {
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    text-align: left;
+}

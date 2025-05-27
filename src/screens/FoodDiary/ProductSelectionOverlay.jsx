@@ -6,7 +6,15 @@ import FilterMenu from '../../components/FilterMenu/FilterMenu';
 import ProductItemOverlay from '../../components/ProductItemOverlay/ProductItemOverlay';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import ProductDetailOverlay from './ProductDetailOverlay';
+import ServingInfo from '../../components/ServingInfo/ServingInfo';
 import './ProductSelectionOverlay.css';
+// Import icons for My Products section
+import list1Icon from '../../assets/icons/list-1-icon.svg';
+import list2Icon from '../../assets/icons/list-2-icon.svg';
+import list3Icon from '../../assets/icons/list-3-icon.svg';
+import favoritesIcon from '../../assets/icons/favorites-icon.svg';
+import myProductsIcon from '../../assets/icons/my-products-icon.svg';
+import plusIcon from '../../assets/icons/plus_icon.svg';
 
 const CATEGORIES = [
     { name: "Масла", image_name: "oil" },
@@ -33,6 +41,9 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [categoryProducts, setCategoryProducts] = useState([]);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [productData, setProductData] = useState(null);
+    const [selectedServing, setSelectedServing] = useState(null);
+    const [viewingProductDetails, setViewingProductDetails] = useState(false);
 
     const isSearchActive = searchQuery.trim() !== '';
 
@@ -150,6 +161,170 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
     const handleProductClick = (product) => {
         // Show product detail overlay
         setSelectedProduct(product);
+        setViewingProductDetails(true);
+    };
+
+    const handleBackFromProductDetails = () => {
+        setViewingProductDetails(false);
+        setProductData(null);
+        setSelectedServing(null);
+    };
+
+    useEffect(() => {
+        if (selectedProduct && viewingProductDetails) {
+            const fetchProductDetails = async () => {
+                setLoading(true);
+
+                try {
+                    // Get Telegram user ID or use a default for development
+                    const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+
+                    // Fetch product details by name to get all serving sizes
+                    const response = await fetch('/products/get-by-name', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            name: selectedProduct.name,
+                            telegramId: telegramId
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`API request failed with status ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.products && Array.isArray(data.products) && data.products.length > 0) {
+                        const productData = data.products[0];
+                        setProductData(productData);
+
+                        // Create servings array from all products with the same name
+                        // Filter out duplicates based on serving_title
+                        const uniqueServingTitles = new Set();
+                        const servings = data.products
+                            .filter(prod => {
+                                const servingTitle = prod.serving_title || "1 порция";
+                                if (uniqueServingTitles.has(servingTitle)) {
+                                    return false; // Skip duplicates
+                                }
+                                uniqueServingTitles.add(servingTitle);
+                                return true;
+                            })
+                            .map((prod, index) => ({
+                                serving_id: index + 1,
+                                serving_size: prod.serving_title || "1 порция",
+                                serving_amount_grams: prod.serving_amount_grams || 0,
+                                fructose_level: prod.fructose_level,
+                                lactose_level: prod.lactose_level,
+                                fructan_level: prod.fructan_level,
+                                mannitol_level: prod.mannitol_level,
+                                sorbitol_level: prod.sorbitol_level,
+                                gos_level: prod.gos_level
+                            }))
+                            .sort((a, b) => (a.serving_amount_grams || 0) - (b.serving_amount_grams || 0));
+
+                        // Add servings to the product data
+                        productData.servings = servings;
+
+                        // Set the first (smallest) serving as the selected serving
+                        setSelectedServing(servings[0]);
+                    } else {
+                        // Fallback to direct product fetch if get-by-name doesn't return results
+                        await fetchProductDirectly();
+                    }
+                } catch (err) {
+                    console.error('Error fetching product details:', err);
+                    // Fallback to direct product fetch if get-by-name fails
+                    await fetchProductDirectly();
+                } finally {
+                    setLoading(false);
+                }
+            };
+
+            // Function to fetch product directly by ID
+            const fetchProductDirectly = async () => {
+                try {
+                    const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+                    const response = await fetch(`/products/${selectedProduct.product_id}/${telegramId}`);
+
+                    if (!response.ok) {
+                        throw new Error(`API request failed with status ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    if (data.product) {
+                        const fetchedProductData = data.product;
+                        setProductData(fetchedProductData);
+
+                        // Set the first serving as the selected serving if available
+                        if (fetchedProductData.servings && fetchedProductData.servings.length > 0) {
+                            // Filter out duplicate servings
+                            const uniqueServingTitles = new Set();
+                            const uniqueServings = fetchedProductData.servings
+                                .filter(serving => {
+                                    const servingSize = serving.serving_size || "1 порция";
+                                    if (uniqueServingTitles.has(servingSize)) {
+                                        return false; // Skip duplicates
+                                    }
+                                    uniqueServingTitles.add(servingSize);
+                                    return true;
+                                })
+                                .sort((a, b) => (a.serving_amount_grams || 0) - (b.serving_amount_grams || 0));
+
+                            fetchedProductData.servings = uniqueServings;
+                            setSelectedServing(uniqueServings[0]);
+                        } else {
+                            // Create a serving from the product data if servings array doesn't exist
+                            const serving = {
+                                serving_id: 1,
+                                serving_size: fetchedProductData.serving_title || "1 порция",
+                                serving_amount_grams: fetchedProductData.serving_amount_grams || 0,
+                                fructose_level: fetchedProductData.fructose_level,
+                                lactose_level: fetchedProductData.lactose_level,
+                                fructan_level: fetchedProductData.fructan_level,
+                                mannitol_level: fetchedProductData.mannitol_level,
+                                sorbitol_level: fetchedProductData.sorbitol_level,
+                                gos_level: fetchedProductData.gos_level
+                            };
+
+                            fetchedProductData.servings = [serving];
+                            setSelectedServing(serving);
+                        }
+                    } else {
+                        setError('No product data found');
+                    }
+                } catch (err) {
+                    console.error('Error fetching product directly:', err);
+                    setError('Failed to load product details. Please try again later.');
+                }
+            };
+
+            fetchProductDetails();
+        }
+    }, [selectedProduct, viewingProductDetails]);
+
+    const handleSelectServing = (serving) => {
+        setSelectedServing(serving);
+    };
+
+    const handleAddProduct = () => {
+        if (productData && selectedServing) {
+            // Create a product object with the selected serving data
+            const productToAdd = {
+                ...productData,
+                selected_serving: selectedServing
+            };
+
+            // Call the onSelectProduct function from props
+            onSelectProduct(productToAdd);
+
+            // Close the overlay
+            onClose();
+        }
     };
 
     const handleCategorySelect = async (categoryName, index) => {
@@ -242,14 +417,63 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
         }
     };
 
+    // Categories for My Products section
+    const myProductsCategories = [
+        { id: 1, name: 'Список - 1 этап', icon: list1Icon, type: 'phase1' },
+        { id: 2, name: 'Список - 2 этап', icon: list2Icon, type: 'phase2' },
+        { id: 3, name: 'Список - 3 этап', icon: list3Icon, type: 'phase3' },
+        { id: 4, name: 'Избранное', icon: favoritesIcon, type: 'favourites' },
+        { id: 5, name: 'Мои продукты', icon: myProductsIcon, type: 'user_created' },
+    ];
+
+    const handleCategoryClick = (listType) => {
+        navigate(`/products/lists/${listType}`);
+    };
+
+    const handleNavigateToAddProduct = () => {
+        navigate('/products/add');
+    };
+
     return (
         <div className="product-selection-overlay">
-            {selectedProduct ? (
-                <ProductDetailOverlay
-                    product={selectedProduct}
-                    onClose={() => setSelectedProduct(null)}
-                    onSelectProduct={onSelectProduct}
-                />
+            {viewingProductDetails && selectedProduct ? (
+                <div className="product-detail-overlay">
+                    <div className="product-detail-header">
+                        <button className="back-button-overlay" onClick={handleBackFromProductDetails}>
+                            <img src="/icons/back-arrow.svg" alt="Back" />
+                        </button>
+                        <h1 className="product-name-heading-overlay">
+                            {productData?.name || selectedProduct.name}
+                        </h1>
+                    </div>
+
+                    <div className="product-detail-content-overlay">
+                        {loading ? (
+                            <LoadingSpinner size="medium" />
+                        ) : error ? (
+                            <div className="error-message-overlay">{error}</div>
+                        ) : productData ? (
+                            <>
+                                <ServingInfo
+                                    servings={productData.servings}
+                                    selectedServing={selectedServing}
+                                    onSelectServing={handleSelectServing}
+                                />
+
+                                <div className="divider-overlay"></div>
+
+                                <button
+                                    className="add-product-button-overlay"
+                                    onClick={handleAddProduct}
+                                >
+                                    Добавить продукт
+                                </button>
+                            </>
+                        ) : (
+                            <div className="error-message-overlay">No product data available</div>
+                        )}
+                    </div>
+                </div>
             ) : (
                 <>
                     <div className="overlay-header">
@@ -312,20 +536,25 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                             </div>
                         ) : (
                             <div className="categories-container-overlay">
-                                {/* Use div with onClick instead of CategoryCard to prevent navigation */}
-                                <div
-                                    className="custom-category-card"
-                                    onClick={handleMyProductsClick}
-                                >
-                                    <div className="category-card-content">
-                                        <div
-                                            className="category-card-bg"
-                                            style={{ backgroundImage: `url(/images/my-foods-bg.svg)` }}
-                                        ></div>
-                                        <div className="category-card-title">Мои продукты</div>
+                                {/* My Products Section with same content as MyProductsScreen */}
+                                <div className="overlay-my-products-content">
+                                    <button className="overlay-add-product-button" onClick={handleNavigateToAddProduct}>
+                                        <span>Добавить свой продукт</span>
+                                    </button>
+
+                                    <div className="overlay-category-grid">
+                                        {myProductsCategories.map((category) => (
+                                            <div
+                                                key={category.id}
+                                                className="overlay-category-button"
+                                                onClick={() => handleCategoryClick(category.type)}
+                                            >
+                                                <img src={category.icon} alt={category.name} className="overlay-category-icon" />
+                                                <span className="overlay-category-name">{category.name}</span>
+                                            </div>
+                                        ))}
                                     </div>
                                 </div>
-
 
                                 {CATEGORIES.map((category, index) => (
                                     <div
