@@ -105,14 +105,27 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
             product.gos_level
         ];
 
-        const maxLevel = Math.max(...fodmapLevels);
-
-        if (maxLevel <= 1) {
-            return 'green';
-        } else if (maxLevel === 2) {
-            return 'yellow';
+        if (product.user_created) {
+            // For user-created products, the scale is reversed:
+            // 0 - high (red), 1 - medium (yellow), 2 - low (green)
+            const minLevel = Math.min(...fodmapLevels);
+            if (minLevel === 0) {
+                return 'red';
+            } else if (minLevel === 1) {
+                return 'yellow';
+            } else {
+                return 'green';
+            }
         } else {
-            return 'red';
+            // For regular products: ≤1 - low (green), 2 - medium (yellow), >2 - high (red)
+            const maxLevel = Math.max(...fodmapLevels);
+            if (maxLevel <= 1) {
+                return 'green';
+            } else if (maxLevel === 2) {
+                return 'yellow';
+            } else {
+                return 'red';
+            }
         }
     };
 
@@ -190,32 +203,55 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
 
                     // Check if it's a user-created product
                     if (selectedProduct.user_created) {
-                        // For user-created products, we already have the data we need
-                        const productData = {
-                            product_id: selectedProduct.product_id || selectedProduct.id,
-                            name: selectedProduct.name,
-                            fructose_level: selectedProduct.fructose_level,
-                            lactose_level: selectedProduct.lactose_level,
-                            fructan_level: selectedProduct.fructan_level,
-                            mannitol_level: selectedProduct.mannitol_level,
-                            sorbitol_level: selectedProduct.sorbitol_level,
-                            gos_level: selectedProduct.gos_level,
-                            // Create a single serving based on the product data
-                            servings: [{
-                                serving_id: 1,
-                                serving_size: selectedProduct.serving_title || "1 порция",
-                                serving_amount_grams: selectedProduct.serving_amount_grams || 0,
-                                fructose_level: selectedProduct.fructose_level,
-                                lactose_level: selectedProduct.lactose_level,
-                                fructan_level: selectedProduct.fructan_level,
-                                mannitol_level: selectedProduct.mannitol_level,
-                                sorbitol_level: selectedProduct.sorbitol_level,
-                                gos_level: selectedProduct.gos_level
-                            }]
-                        };
+                        // For user-created products, we need to fetch the full details
+                        const response = await fetch(`/users/${telegramId}/products`);
 
-                        setProductData(productData);
-                        setSelectedServing(productData.servings[0]);
+                        if (!response.ok) {
+                            throw new Error(`API request failed with status ${response.status}`);
+                        }
+
+                        const data = await response.json();
+
+                        // Find the specific product by ID
+                        const userProduct = data.products.find(p =>
+                            p.user_product_id === selectedProduct.product_id ||
+                            p.user_product_id === selectedProduct.id
+                        );
+
+                        if (userProduct) {
+                            // Create product data with correct FODMAP values from the API
+                            const productData = {
+                                product_id: userProduct.user_product_id,
+                                name: userProduct.name,
+                                fructose_level: userProduct.fructose_level,
+                                lactose_level: userProduct.lactose_level,
+                                fructan_level: userProduct.fructan_level,
+                                mannitol_level: userProduct.mannitol_level,
+                                sorbitol_level: userProduct.sorbitol_level,
+                                gos_level: userProduct.gos_level,
+                                user_created: true, // Mark as user-created for FODMAP level determination
+                                // Create a single serving based on the product data
+                                servings: [{
+                                    serving_id: 1,
+                                    serving_size: userProduct.serving_title || "1 порция",
+                                    serving_amount_grams: 0,
+                                    fructose_level: userProduct.fructose_level,
+                                    lactose_level: userProduct.lactose_level,
+                                    fructan_level: userProduct.fructan_level,
+                                    mannitol_level: userProduct.mannitol_level,
+                                    sorbitol_level: userProduct.sorbitol_level,
+                                    gos_level: userProduct.gos_level
+                                }]
+                            };
+
+                            console.log("User product details:", userProduct); // Debug log
+
+                            setProductData(productData);
+                            setSelectedServing(productData.servings[0]);
+                        } else {
+                            throw new Error('User-created product not found');
+                        }
+
                         setLoading(false);
                         return;
                     }
@@ -452,7 +488,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
             setCategoryProducts(data.recipes || data.products || []);
         } catch (err) {
             console.error(`Error fetching recipes:`, err);
-            setError(`Failed to load recipes. Please try again later.`);
+            setError('Failed to load recipes. Please try again later.');
         } finally {
             setLoading(false);
         }
@@ -669,4 +705,4 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
     );
 };
 
-export default ProductSelectionOverlay; 
+export default ProductSelectionOverlay;

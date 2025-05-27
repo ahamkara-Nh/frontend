@@ -17,6 +17,61 @@ const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
                 // Get Telegram user ID or use a default for development
                 const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
 
+                // Check if it's a user-created product
+                if (product.user_created) {
+                    // For user-created products, we need to fetch the full details
+                    const response = await fetch(`/users/${telegramId}/products`);
+
+                    if (!response.ok) {
+                        throw new Error(`API request failed with status ${response.status}`);
+                    }
+
+                    const data = await response.json();
+
+                    // Find the specific product by ID
+                    const userProduct = data.products.find(p =>
+                        p.user_product_id === product.product_id ||
+                        p.user_product_id === product.id
+                    );
+
+                    if (userProduct) {
+                        // Create product data with correct FODMAP values from the API
+                        const productData = {
+                            product_id: userProduct.user_product_id,
+                            name: userProduct.name,
+                            fructose_level: userProduct.fructose_level,
+                            lactose_level: userProduct.lactose_level,
+                            fructan_level: userProduct.fructan_level,
+                            mannitol_level: userProduct.mannitol_level,
+                            sorbitol_level: userProduct.sorbitol_level,
+                            gos_level: userProduct.gos_level,
+                            user_created: true, // Mark as user-created for FODMAP level determination
+                            // Create a single serving based on the product data
+                            servings: [{
+                                serving_id: 1,
+                                serving_size: userProduct.serving_title || "1 порция",
+                                serving_amount_grams: 0,
+                                fructose_level: userProduct.fructose_level,
+                                lactose_level: userProduct.lactose_level,
+                                fructan_level: userProduct.fructan_level,
+                                mannitol_level: userProduct.mannitol_level,
+                                sorbitol_level: userProduct.sorbitol_level,
+                                gos_level: userProduct.gos_level
+                            }]
+                        };
+
+                        console.log("User product details:", userProduct); // Debug log
+
+                        setProductData(productData);
+                        setSelectedServing(productData.servings[0]);
+                    } else {
+                        throw new Error('User-created product not found');
+                    }
+
+                    setLoading(false);
+                    return;
+                }
+
                 // Fetch product details by name to get all serving sizes
                 const response = await fetch('/products/get-by-name', {
                     method: 'POST',
@@ -142,7 +197,7 @@ const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
         };
 
         fetchProductDetails();
-    }, [product.product_id, product.name]);
+    }, [product.product_id, product.name, product.user_created, product.id]);
 
     // Add Telegram WebApp back button functionality
     useEffect(() => {
@@ -162,9 +217,10 @@ const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
 
     const handleAddProduct = () => {
         if (productData && selectedServing) {
-            // Create a product object with the selected serving data
+            // Create a product object with the selected serving data and preserve user_created flag
             const productToAdd = {
                 ...productData,
+                user_created: product.user_created || productData.user_created,
                 selected_serving: selectedServing
             };
 
@@ -175,6 +231,9 @@ const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
             onClose();
         }
     };
+
+    // Check if this is a user-created product
+    const isUserCreated = product.user_created || (productData && productData.user_created);
 
     return (
         <div className="product-detail-overlay">
@@ -198,6 +257,7 @@ const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
                             servings={productData.servings}
                             selectedServing={selectedServing}
                             onSelectServing={handleSelectServing}
+                            isUserCreated={isUserCreated}
                         />
 
                         <div className="divider-overlay"></div>

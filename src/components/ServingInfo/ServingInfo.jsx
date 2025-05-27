@@ -12,16 +12,29 @@ const FODMAP_NAMES = {
 };
 
 // Determine FODMAP level indicator type based on the level value
-const determineFodmapLevelType = (level) => {
+const determineFodmapLevelType = (level, isUserCreated) => {
     // Default to green if level is undefined or null
     if (level === undefined || level === null) return 'green';
 
-    if (level <= 1) {
-        return 'green';
-    } else if (level === 2) {
-        return 'yellow';
+    if (isUserCreated) {
+        // For user-created products, the scale is reversed:
+        // 0 - high (red), 1 - medium (yellow), 2 - low (green)
+        if (level === 0) {
+            return 'red';
+        } else if (level === 1) {
+            return 'yellow';
+        } else {
+            return 'green';
+        }
     } else {
-        return 'red';
+        // For regular products: ≤1 - low (green), 2 - medium (yellow), >2 - high (red)
+        if (level <= 1) {
+            return 'green';
+        } else if (level === 2) {
+            return 'yellow';
+        } else {
+            return 'red';
+        }
     }
 };
 
@@ -30,7 +43,7 @@ const getSafeLevel = (level) => {
     return level === undefined || level === null ? 1 : level;
 };
 
-const ServingInfo = ({ servings, selectedServing, onSelectServing }) => {
+const ServingInfo = ({ servings, selectedServing, onSelectServing, isUserCreated = false }) => {
     if (!servings || servings.length === 0 || !selectedServing) {
         return null;
     }
@@ -53,7 +66,7 @@ const ServingInfo = ({ servings, selectedServing, onSelectServing }) => {
             <div className="fodmap-indicators">
                 {fodmapIndicators.map((fodmap) => (
                     <div className="fodmap-item" key={fodmap.name}>
-                        <div className={`fodmap-indicator ${determineFodmapLevelType(fodmap.level)}`}></div>
+                        <div className={`fodmap-indicator ${determineFodmapLevelType(fodmap.level, isUserCreated)}`}></div>
                         <span className="fodmap-name">{FODMAP_NAMES[fodmap.name]}</span>
                     </div>
                 ))}

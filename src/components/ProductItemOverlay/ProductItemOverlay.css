@@ -1,12 +1,12 @@
 .product-item-overlay {
     display: flex;
+    flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    padding: 15px;
-    background-color: #323232;
-    border-radius: 10px;
+    padding: 17px 16px 17px 16px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.1);
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s ease;
 }
 
 .product-item-overlay:hover {
