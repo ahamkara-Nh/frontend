@@ -78,30 +78,9 @@ const AddFoodScreen = () => {
 
     return (
         <div className="add-food-container">
-            <div className="food-input">
-                <input
-                    type="text"
-                    placeholder="Введите название блюда ...."
-                    value={foodName}
-                    onChange={(e) => setFoodName(e.target.value)}
-                />
-            </div>
-
-            <div className="dividing-line"></div>
-
-            <div className="serving-size-input">
-                <input
-                    type="text"
-                    placeholder="Порция ..."
-                    value={servingSize}
-                    onChange={(e) => setServingSize(e.target.value)}
-                />
-            </div>
-
-            <div className="dividing-line"></div>
 
             <div className="food-section">
-                <h2 className="section-header">Состоит из:</h2>
+                <h2 className="section-header">Питание:</h2>
 
                 {selectedProducts.length > 0 && (
                     <div className="selected-products">

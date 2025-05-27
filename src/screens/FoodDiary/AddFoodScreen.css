@@ -1,6 +1,6 @@
 .add-food-container {
     background-color: #222222;
-    padding: 30px 15px;
+    padding: 15px 15px;
     font-family: 'Manrope', sans-serif;
     color: white;
     display: flex;
@@ -46,7 +46,7 @@
 
 .food-section,
 .note-section {
-    margin-top: 15px;
+    margin-top: 0px;
 }
 
 .selected-products {
@@ -54,7 +54,7 @@
 }
 
 .selected-product-item {
-    background-color: #323E5D;
+    background-color: #325D45;
     border-radius: 8px;
     padding: 12px 15px;
     margin-bottom: 10px;
