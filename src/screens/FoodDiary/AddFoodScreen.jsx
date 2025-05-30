@@ -11,6 +11,8 @@ const AddFoodScreen = () => {
     const [recipe, setRecipe] = useState('');
     const [showProductSelection, setShowProductSelection] = useState(false);
     const [selectedProducts, setSelectedProducts] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
 
     const handleCancel = () => {
         navigate(-1);
@@ -46,10 +48,66 @@ const AddFoodScreen = () => {
         }
     }, [navigate, showProductSelection]);
 
-    const handleSave = () => {
-        // Logic to save food entry would go here
-        console.log('Saving food entry:', { foodName, servingSize, recipe, selectedProducts });
-        navigate(-1);
+    const handleSave = async () => {
+        // Get Telegram user ID
+        const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+
+        try {
+            setLoading(true);
+            setError(null);
+
+            // Format products for the API request
+            const foods = selectedProducts.map(product => {
+                console.log('Processing product:', product);
+                return {
+                    id: product.id || product.product_id,
+                    is_user_product: !!product.user_created
+                };
+            });
+
+            const requestPayload = {
+                memo: recipe.trim(),
+                foods: foods
+            };
+
+            // Log the complete request payload
+            console.log('Sending food-notes request:', {
+                url: `/users/${telegramId}/food-notes`,
+                body: requestPayload,
+                selectedProducts
+            });
+
+            // Make API request
+            const response = await fetch(`/users/${telegramId}/food-notes`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestPayload),
+            });
+
+            // Log response status
+            console.log('Response status:', response.status);
+
+            if (!response.ok) {
+                let errorData;
+                try {
+                    errorData = await response.json();
+                    console.log('Error response:', errorData);
+                } catch (e) {
+                    console.log('Could not parse error response as JSON');
+                }
+                throw new Error(errorData?.message || `Failed to save food entry (status ${response.status})`);
+            }
+
+            // Navigate back after successful save
+            navigate(-1);
+        } catch (err) {
+            console.error('Error saving food entry:', err);
+            setError(err.message || 'Failed to save food entry. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     const handleAddFromList = () => {
@@ -61,6 +119,13 @@ const AddFoodScreen = () => {
     };
 
     const handleSelectProduct = (product) => {
+        console.log('Selected product:', {
+            id: product.id,
+            product_id: product.product_id,
+            user_created: product.user_created,
+            user_product_id: product.user_product_id,
+            fullProduct: product
+        });
         setSelectedProducts([...selectedProducts, product]);
         setShowProductSelection(false);
     };
@@ -117,12 +182,18 @@ const AddFoodScreen = () => {
                 </div>
             </div>
 
+            {error && <div className="error-message">{error}</div>}
+
             <div className="buttons">
                 <button className="cancel-food-button" onClick={handleCancel}>
                     Отмена
                 </button>
-                <button className="save-button" onClick={handleSave}>
-                    Сохранить
+                <button
+                    className="save-button"
+                    onClick={handleSave}
+                    disabled={loading}
+                >
+                    {loading ? 'Сохранение...' : 'Сохранить'}
                 </button>
             </div>
 
