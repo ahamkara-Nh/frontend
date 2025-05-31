@@ -4,8 +4,19 @@
     min-height: 100vh;
 }
 
-.divider {
+.divider-home {
     height: 1px;
     background-color: #323232;
-    margin: 15px 50px;
+    margin-bottom: 0px;
+    margin-top: 20px;
+    margin-left: 50px;
+    margin-right: 50px;
+}
+
+.diary-history-section {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0 15px;
+    margin-bottom: 70px;
+    /* Add space for the fixed bottom nav bar */
 }
