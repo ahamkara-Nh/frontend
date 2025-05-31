@@ -58,19 +58,16 @@ const DiaryHistoryList = ({ telegramId }) => {
     const formatDate = (dateString) => {
         if (!dateString) return '';
 
-        // Parse the UTC date string and convert to local timezone
-        const date = new Date(dateString);
+        // Parse the UTC date string and format in local timezone
+        const date = new Date(dateString + (dateString.includes('Z') ? '' : 'Z'));
 
-        // Format the date in Russian
-        const options = { day: 'numeric', month: 'long', timeZone: 'UTC' };
+        // Format the date in Russian locale
+        const options = { day: 'numeric', month: 'long' };
         try {
-            // First convert UTC to local time
-            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-            return localDate.toLocaleDateString('ru-RU', options);
+            return date.toLocaleDateString('ru-RU', options);
         } catch (error) {
             // Fallback if Russian locale is not available
-            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-            return localDate.toLocaleDateString(undefined, options);
+            return date.toLocaleDateString(undefined, options);
         }
     };
 

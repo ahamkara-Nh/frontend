@@ -26,12 +26,9 @@ const DiaryHistoryNote = ({ entry, showDate = true }) => {
     const formatTime = (dateString) => {
         if (!dateString) return '';
 
-        // Parse the UTC date string and convert to local timezone
-        const date = new Date(dateString);
-
-        // Convert UTC to local time
-        const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
-        return localDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', hour12: false });
+        // Parse the UTC date string and format in local timezone
+        const date = new Date(dateString + (dateString.includes('Z') ? '' : 'Z'));
+        return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', hour12: false });
     };
 
     // Function to determine the color class based on the level (1-10)
@@ -70,20 +67,20 @@ const DiaryHistoryNote = ({ entry, showDate = true }) => {
                         <span className="time-text">{formatTime(entry.created_at)}</span>
                     </div>
                     <div className="symptoms-container-diary">
-                        {entry.wind_level !== undefined && (
-                            <div className="symptom">
-                                <div className={`level-indicator ${getLevelColorClass(entry.wind_level)}`}>
-                                    <span>{entry.wind_level}</span>
-                                </div>
-                                <span className="symptom-name-diary">Газообразование</span>
-                            </div>
-                        )}
                         {entry.bloat_level !== undefined && (
                             <div className="symptom">
                                 <div className={`level-indicator ${getLevelColorClass(entry.bloat_level)}`}>
                                     <span>{entry.bloat_level}</span>
                                 </div>
                                 <span className="symptom-name-diary">Вздутие</span>
+                            </div>
+                        )}
+                        {entry.wind_level !== undefined && (
+                            <div className="symptom">
+                                <div className={`level-indicator ${getLevelColorClass(entry.wind_level)}`}>
+                                    <span>{entry.wind_level}</span>
+                                </div>
+                                <span className="symptom-name-diary">Газообразование</span>
                             </div>
                         )}
                         {entry.pain_level !== undefined && (

@@ -14,6 +14,25 @@ export const usePhaseTracking = (telegramId) => {
                     throw new Error('No telegram ID provided');
                 }
 
+                // First, update the streak with the user's timezone
+                const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                console.log('Updating streak with timezone:', timezone);
+
+                const updateResponse = await fetch(`/users/${telegramId}/phase-tracking/update-streak`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ timezone }),
+                });
+
+                if (!updateResponse.ok) {
+                    console.warn('Failed to update streak, but continuing to fetch data');
+                } else {
+                    console.log('Streak updated successfully');
+                }
+
+                // Then fetch the phase tracking data
                 console.log('Fetching phase tracking for telegramId:', telegramId);
                 const response = await fetch(`/users/${telegramId}/phase-tracking`);
 
