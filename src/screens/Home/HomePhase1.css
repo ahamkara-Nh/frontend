@@ -16,7 +16,7 @@
 .diary-history-section {
     flex: 1;
     overflow-y: auto;
-    padding: 0 15px;
+    padding: 0 6.3vw;
     margin-bottom: 70px;
     /* Add space for the fixed bottom nav bar */
 }

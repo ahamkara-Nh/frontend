@@ -2,26 +2,36 @@ import React from 'react';
 import './DiaryHistoryNote.css';
 import calendarIcon from '../../assets/icons/calendar-icon.svg';
 
-const DiaryHistoryNote = ({ entry }) => {
+const DiaryHistoryNote = ({ entry, showDate = true }) => {
     const formatDate = (dateString) => {
-        // If a date is provided, use it, otherwise use current date
-        const dateToFormat = dateString ? new Date(dateString) : new Date();
+        if (!dateString) return '';
+
+        // Parse the UTC date string and convert to local timezone
+        const date = new Date(dateString);
 
         // Format the date in Russian
-        const options = { day: 'numeric', month: 'long' };
+        const options = { day: 'numeric', month: 'long', timeZone: 'UTC' };
         try {
-            return dateToFormat.toLocaleDateString('ru-RU', options);
+            // First convert UTC to local time
+            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            return localDate.toLocaleDateString('ru-RU', options);
         } catch (error) {
             // Fallback if Russian locale is not available
-            return dateToFormat.toLocaleDateString(undefined, options);
+            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            return localDate.toLocaleDateString(undefined, options);
         }
     };
 
     // Format time from ISO date string (2025-05-31 11:36:42)
     const formatTime = (dateString) => {
         if (!dateString) return '';
+
+        // Parse the UTC date string and convert to local timezone
         const date = new Date(dateString);
-        return date.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', hour12: false });
+
+        // Convert UTC to local time
+        const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+        return localDate.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit', hour12: false });
     };
 
     // Function to determine the color class based on the level (1-10)
@@ -46,10 +56,12 @@ const DiaryHistoryNote = ({ entry }) => {
 
     return (
         <div className="diary-history-note">
-            <div className="note-date">
-                <span className="date-text">{formatDate(entry.created_at)}</span>
-                <img src={calendarIcon} alt="Calendar" className="calendar-icon" />
-            </div>
+            {showDate && (
+                <div className="note-date">
+                    <span className="date-text">{formatDate(entry.created_at)}</span>
+                    <img src={calendarIcon} alt="Calendar" className="calendar-icon" />
+                </div>
+            )}
 
             {isSymptomsEntry && (
                 <div className="symptoms-row">

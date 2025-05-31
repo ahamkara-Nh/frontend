@@ -6,6 +6,35 @@
     padding: 20px 0;
 }
 
+.diary-date-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.diary-date-group .note-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0;
+}
+
+.diary-date-group .date-text {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+}
+
+.diary-date-group .calendar-icon {
+    width: 17px;
+    height: 19px;
+    margin-left: 5px;
+}
+
 .diary-empty-message,
 .diary-error-message {
     font-family: 'Manrope', sans-serif;
@@ -27,8 +56,6 @@
     justify-content: center;
     align-items: center;
     gap: 15px;
-    margin-top: 20px;
-    padding: 10px 0;
 }
 
 .pagination-button {

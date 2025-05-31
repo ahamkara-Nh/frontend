@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DiaryHistoryNote from './DiaryHistoryNote';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import calendarIcon from '../../assets/icons/calendar-icon.svg';
 import './DiaryHistoryList.css';
 
 const DiaryHistoryList = ({ telegramId }) => {
@@ -53,6 +54,48 @@ const DiaryHistoryList = ({ telegramId }) => {
         }
     };
 
+    // Format date with timezone adjustment
+    const formatDate = (dateString) => {
+        if (!dateString) return '';
+
+        // Parse the UTC date string and convert to local timezone
+        const date = new Date(dateString);
+
+        // Format the date in Russian
+        const options = { day: 'numeric', month: 'long', timeZone: 'UTC' };
+        try {
+            // First convert UTC to local time
+            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            return localDate.toLocaleDateString('ru-RU', options);
+        } catch (error) {
+            // Fallback if Russian locale is not available
+            const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+            return localDate.toLocaleDateString(undefined, options);
+        }
+    };
+
+    // Group entries by date
+    const groupEntriesByDate = (entries) => {
+        const groups = {};
+
+        entries.forEach(entry => {
+            // Extract just the date part (YYYY-MM-DD) from the created_at timestamp
+            const dateOnly = entry.created_at.split(' ')[0];
+
+            if (!groups[dateOnly]) {
+                groups[dateOnly] = [];
+            }
+
+            groups[dateOnly].push(entry);
+        });
+
+        // Convert the groups object to an array of objects with date and entries
+        return Object.keys(groups).map(date => ({
+            date,
+            entries: groups[date]
+        }));
+    };
+
     if (loading) {
         return <LoadingSpinner />;
     }
@@ -65,10 +108,32 @@ const DiaryHistoryList = ({ telegramId }) => {
         return <div className="diary-empty-message">Нет записей в дневнике</div>;
     }
 
+    // Group the entries by date
+    const groupedEntries = groupEntriesByDate(diaryEntries);
+
     return (
         <div className="diary-history-list">
-            {diaryEntries.map((entry) => (
-                <DiaryHistoryNote key={`${entry.entry_type}-${entry.entry_id}`} entry={entry} />
+            {groupedEntries.map((group, groupIndex) => (
+                <div key={group.date} className="diary-date-group">
+                    <div className="note-date">
+                        <span className="date-text">
+                            {formatDate(group.date)}
+                        </span>
+                        <img src={calendarIcon} alt="Calendar" className="calendar-icon" />
+                    </div>
+
+                    {group.entries.map((entry, entryIndex) => (
+                        <React.Fragment key={`${entry.entry_type}-${entry.entry_id}`}>
+                            <DiaryHistoryNote
+                                entry={entry}
+                                showDate={false}
+                            />
+                            {entryIndex < group.entries.length - 1 && <div className="divider-diary"></div>}
+                        </React.Fragment>
+                    ))}
+
+                    {groupIndex < groupedEntries.length - 1 && <div className="divider-diary"></div>}
+                </div>
             ))}
 
             {totalPages > 1 && (
