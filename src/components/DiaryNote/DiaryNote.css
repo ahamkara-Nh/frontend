@@ -1,0 +1,50 @@
+.diary-note-container {
+    padding: 10px;
+    margin: 0 4.1vw;
+    height: 250px;
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.note-date {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 45px;
+}
+
+.date-text {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+}
+
+.calendar-icon {
+    width: 17px;
+    height: 19px;
+    margin-left: 5px;
+}
+
+.empty-note-text {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #C4C4C4;
+    text-align: center;
+    max-width: 161px;
+    margin: 0;
+}
+
+.note-content {
+    width: 100%;
+    flex-grow: 1;
+    color: #FFFFFF;
+}

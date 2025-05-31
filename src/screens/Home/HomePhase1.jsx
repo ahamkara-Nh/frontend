@@ -6,6 +6,7 @@ import StoriesCarousel from '../../components/StoriesCarousel/StoriesCarousel';
 import SymptomDaysCounter from '../../components/SymptomDaysCounter/SymptomDaysCounter';
 import ActionButtons from '../../components/ActionButtons/ActionButtons';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
+import DiaryNote from '../../components/DiaryNote/DiaryNote';
 import { usePhaseProgress } from '../../hooks/usePhaseProgress';
 import { usePhaseTracking } from '../../hooks/usePhaseTracking';
 import './HomePhase1.css';
@@ -53,6 +54,7 @@ const HomePhase1 = () => {
             <SymptomDaysCounter completedDays={phase1_streak_days} />
             <ActionButtons />
             <div className="divider"></div>
+            <DiaryNote isEmpty={true} />
             <div style={{ position: "fixed", bottom: 0, left: 0, width: "100%" }}>
                 <BottomNavBar />
             </div>
