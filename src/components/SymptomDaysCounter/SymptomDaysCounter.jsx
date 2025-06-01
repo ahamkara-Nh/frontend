@@ -41,7 +41,7 @@ const SymptomDaysCounter = ({ completedDays }) => {
                     <p className="symptom-days-success-message final-success">
                         Отлично! Можно переходить на следующий этап
                     </p>
-                    <button className="next-phase-button" onClick={handleNextPhase}>
+                    <button className="next-phase-button-counter" onClick={handleNextPhase}>
                         <span>Следующий этап</span>
                         <img src={nextArrowIcon} alt="Next phase" className="next-phase-arrow" />
                     </button>
