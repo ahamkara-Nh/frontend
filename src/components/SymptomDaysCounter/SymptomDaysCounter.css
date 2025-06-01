@@ -109,3 +109,53 @@
     height: 14px;
     margin-left: 10px;
 }
+
+/* Phase 2 specific styles */
+.phase2-counter-container {
+    background-color: #323232;
+    border-radius: 10px;
+    margin-top: 0px;
+    margin-left: 4.1vw;
+    margin-right: 4.1vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    height: 211px;
+}
+
+.phase2-counter-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    text-align: center;
+    padding: 54px 47px;
+    margin: 0;
+}
+
+.phase2-choose-category-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 48px;
+    background-color: #323E5D;
+    border-radius: 0 0 10px 10px;
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    cursor: pointer;
+    margin-top: auto;
+}
+
+.phase2-arrow-icon {
+    width: 8px;
+    height: 14px;
+    margin-left: 10px;
+}

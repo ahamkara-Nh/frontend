@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import axios from 'axios';
 
 export const usePhaseTracking = (telegramId) => {
     const [phaseData, setPhaseData] = useState({
@@ -12,41 +13,37 @@ export const usePhaseTracking = (telegramId) => {
         const fetchPhaseTracking = async () => {
             try {
                 if (!telegramId) {
+                    console.warn('usePhaseTracking - No telegramId provided');
                     throw new Error('No telegram ID provided');
                 }
 
+                console.log('usePhaseTracking - Using telegramId:', telegramId);
+
                 // First, update the streak with the user's timezone
                 const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                console.log('Updating streak with timezone:', timezone);
+                console.log('usePhaseTracking - Updating streak with timezone:', timezone);
 
-                const updateResponse = await fetch(`/users/${telegramId}/phase-tracking/update-streak`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ timezone }),
-                });
-
-                if (!updateResponse.ok) {
-                    console.warn('Failed to update streak, but continuing to fetch data');
-                } else {
-                    console.log('Streak updated successfully');
+                try {
+                    const updateResponse = await axios.put(`/users/${telegramId}/phase-tracking/update-streak`, { timezone });
+                    console.log('usePhaseTracking - Streak update response:', updateResponse.data);
+                } catch (updateError) {
+                    console.warn('usePhaseTracking - Failed to update streak, but continuing to fetch data:', updateError);
                 }
 
                 // Then fetch the phase tracking data
-                console.log('Fetching phase tracking for telegramId:', telegramId);
-                const response = await fetch(`/users/${telegramId}/phase-tracking`);
+                console.log('usePhaseTracking - Fetching phase tracking for telegramId:', telegramId);
+                const response = await axios.get(`/users/${telegramId}/phase-tracking`);
+                console.log('usePhaseTracking - Phase tracking response:', response);
 
-                if (!response.ok) {
-                    throw new Error('Failed to fetch phase tracking data');
+                if (!response.data) {
+                    throw new Error('Empty response data');
                 }
 
-                const data = await response.json();
-                console.log('Phase tracking data:', data);
+                console.log('usePhaseTracking - Phase tracking data:', response.data);
 
                 setPhaseData({
-                    phase1_streak_days: data.phase1_streak_days || 0,
-                    current_phase: data.current_phase || 1,
+                    phase1_streak_days: response.data.phase1_streak_days || 0,
+                    current_phase: response.data.current_phase || 1,
                     loading: false,
                     error: null
                 });
@@ -66,7 +63,8 @@ export const usePhaseTracking = (telegramId) => {
             console.warn('No telegramId provided to usePhaseTracking');
             setPhaseData(prev => ({
                 ...prev,
-                loading: false
+                loading: false,
+                error: 'No telegramId provided'
             }));
         }
     }, [telegramId]);

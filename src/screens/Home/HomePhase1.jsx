@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import CurrentPhaseBar from '../../components/CurrentPhaseBar/CurrentPhaseBar';
@@ -16,8 +16,27 @@ const HomePhase1 = () => {
 
     // Get user ID from Telegram WebApp
     const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
+
+    useEffect(() => {
+        // Store telegramId in localStorage for other components to use
+        if (telegramId) {
+            console.log('HomePhase1 - Storing telegramId in localStorage:', telegramId);
+            localStorage.setItem('telegramId', telegramId);
+        }
+    }, [telegramId]);
+
     const { week, day, loading: progressLoading, error: progressError } = usePhaseProgress(telegramId);
     const { phase1_streak_days, current_phase, loading: trackingLoading, error: trackingError } = usePhaseTracking(telegramId);
+
+    // Debug logs for phase tracking
+    useEffect(() => {
+        console.log('HomePhase1 - Phase tracking data:', {
+            phase1_streak_days,
+            current_phase,
+            loading: trackingLoading,
+            error: trackingError
+        });
+    }, [phase1_streak_days, current_phase, trackingLoading, trackingError]);
 
     // Determine phase name based on current_phase
     const getPhaseNameByPhase = (phase) => {

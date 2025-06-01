@@ -59,8 +59,8 @@ const AppInitializer = () => {
                     if (data.current_phase === 0) {
                         console.log('[AppInitializer] Onboarding complete, phase 0. Navigating to /home/phase0.');
                         navigate('/home/phase0', { replace: true });
-                    } else if (data.current_phase === 1) {
-                        console.log('[AppInitializer] Onboarding complete, phase 1. Navigating to /home/phase1.');
+                    } else if (data.current_phase === 1 || data.current_phase === 2 || data.current_phase === 3) {
+                        console.log(`[AppInitializer] Onboarding complete, phase ${data.current_phase}. Navigating to /home/phase1.`);
                         navigate('/home/phase1', { replace: true });
                     } else {
                         console.warn(`[AppInitializer] Unknown current_phase: ${data.current_phase}. Defaulting to /home/phase0.`);
