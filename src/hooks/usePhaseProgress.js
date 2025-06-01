@@ -33,10 +33,13 @@ export const usePhaseProgress = (telegramId) => {
                         const timingsData = await timingsResponse.json();
                         console.log('Phases timings:', timingsData);
 
-                        if (currentPhase === 1 && timingsData.phase1_date) {
-                            dateToUse = timingsData.phase1_date;
-                        } else if (currentPhase === 2 && timingsData.phase2_date) {
-                            dateToUse = timingsData.phase2_date;
+                        // Extract phases_timings from the nested structure
+                        const phasesTimings = timingsData.phases_timings || timingsData;
+
+                        if (currentPhase === 1 && phasesTimings.phase1_date) {
+                            dateToUse = phasesTimings.phase1_date;
+                        } else if (currentPhase === 2 && phasesTimings.phase2_date) {
+                            dateToUse = phasesTimings.phase2_date;
                         }
                     } else if (timingsResponse.status !== 404) {
                         throw new Error('Failed to fetch phases timings');

@@ -50,6 +50,7 @@ const PhaseSelectionScreen = () => {
 
         setIsUpdating(true);
         try {
+            // Update the phase in phase-tracking
             const response = await fetch(`/users/${telegramId}/phase-tracking`, {
                 method: 'PUT',
                 headers: {
@@ -60,6 +61,45 @@ const PhaseSelectionScreen = () => {
 
             if (!response.ok) {
                 throw new Error(`Failed to update phase to ${newPhase}`);
+            }
+
+            // Additional API calls for phase timing updates
+            if (currentPhase === 1 && newPhase === 2) {
+                // Moving from phase 1 to phase 2
+                const phase2Response = await fetch(`/users/${telegramId}/phases-timings/update-phase2-date`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!phase2Response.ok) {
+                    console.error('Failed to update phase 2 start date');
+                }
+            } else if (currentPhase === 2 && newPhase === 1) {
+                // Moving back from phase 2 to phase 1
+                const phase1Response = await fetch(`/users/${telegramId}/phases-timings/update-phase1-date`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!phase1Response.ok) {
+                    console.error('Failed to update phase 1 start date');
+                }
+            } else if (currentPhase === 3 && newPhase === 2) {
+                // Moving back from phase 3 to phase 2
+                const phase2Response = await fetch(`/users/${telegramId}/phases-timings/update-phase2-date`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (!phase2Response.ok) {
+                    console.error('Failed to update phase 2 start date');
+                }
             }
 
             // Update local state after successful API call
