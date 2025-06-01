@@ -17,7 +17,23 @@ const HomePhase1 = () => {
     // Get user ID from Telegram WebApp
     const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id;
     const { week, day, loading: progressLoading, error: progressError } = usePhaseProgress(telegramId);
-    const { phase1_streak_days, loading: trackingLoading, error: trackingError } = usePhaseTracking(telegramId);
+    const { phase1_streak_days, current_phase, loading: trackingLoading, error: trackingError } = usePhaseTracking(telegramId);
+
+    // Determine phase name based on current_phase
+    const getPhaseNameByPhase = (phase) => {
+        switch (phase) {
+            case 1:
+                return "Этап 1: Исключение";
+            case 2:
+                return "Этап 2: Повторное введение";
+            case 3:
+                return "Этап 3: Персонализация";
+            default:
+                return "Этап 1: Исключение"; // Default fallback
+        }
+    };
+
+    const phaseName = getPhaseNameByPhase(current_phase);
 
     const handleRandomAction = () => {
         // Placeholder for a random action
@@ -30,7 +46,7 @@ const HomePhase1 = () => {
         // Fallback to default values if there's an error
         return (
             <div className="home-container">
-                <CurrentPhaseBar phaseName="Этап 1: Исключение" week={1} day={1} />
+                <CurrentPhaseBar phaseName={getPhaseNameByPhase(1)} week={1} day={1} />
                 <SymptomDaysCounter completedDays={0} />
                 <p>Error loading progress. Using default values.</p>
                 {/* Rest of your component */}
@@ -41,7 +57,7 @@ const HomePhase1 = () => {
     if (progressLoading || trackingLoading) {
         return (
             <div className="home-container">
-                <CurrentPhaseBar phaseName="Этап 1: Исключение" week={1} day={1} />
+                <CurrentPhaseBar phaseName={getPhaseNameByPhase(1)} week={1} day={1} />
                 <LoadingSpinner size="medium" />
             </div>
         );
@@ -49,7 +65,7 @@ const HomePhase1 = () => {
 
     return (
         <div className="home-container">
-            <CurrentPhaseBar phaseName="Этап 1: Исключение" week={week} day={day} />
+            <CurrentPhaseBar phaseName={phaseName} week={week} day={day} />
             <StoriesCarousel />
             <SymptomDaysCounter completedDays={phase1_streak_days} />
             <ActionButtons />

@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 export const usePhaseTracking = (telegramId) => {
     const [phaseData, setPhaseData] = useState({
         phase1_streak_days: 0,
+        current_phase: 1,
         loading: true,
         error: null
     });
@@ -45,6 +46,7 @@ export const usePhaseTracking = (telegramId) => {
 
                 setPhaseData({
                     phase1_streak_days: data.phase1_streak_days || 0,
+                    current_phase: data.current_phase || 1,
                     loading: false,
                     error: null
                 });
