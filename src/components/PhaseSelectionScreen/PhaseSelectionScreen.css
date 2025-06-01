@@ -1,0 +1,86 @@
+.phase-selection-screen {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #222222;
+    padding: 0;
+    margin: 0;
+}
+
+.phases-container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.phase-item {
+    width: 100%;
+    height: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.phase-item.active {
+    background: linear-gradient(90deg, #325D45 0%, #2D594D 14.29%, #2A5552 28.57%, #295156 42.86%, #294D58 57.14%, #2A495B 71.43%, #2D445D 85.71%, #323E5D 100%);
+    box-shadow: -1px 2px 12px 0px rgba(45, 68, 93, 1);
+}
+
+.phase-item.disabled {
+    background-color: #323232;
+}
+
+.phase-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.phase-content h2 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    text-align: center;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.phase-item.disabled h2 {
+    color: #C4C4C4;
+}
+
+.phase-content p {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    text-align: center;
+    color: #FFFFFF;
+    margin: 8px 0 0 0;
+}
+
+.next-phase-button {
+    width: 251px;
+    height: 61px;
+    background-color: #323E5D;
+    border-radius: 10px;
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    margin: 50px auto;
+    padding: 0 20px;
+    cursor: pointer;
+    box-shadow: 0px 3px 7px rgba(0, 0, 0, 0.1),
+        0px 13px 13px rgba(0, 0, 0, 0.09),
+        0px 28px 17px rgba(0, 0, 0, 0.05),
+        0px 50px 20px rgba(0, 0, 0, 0.01);
+}
