@@ -7,17 +7,58 @@ export const usePhaseProgress = (telegramId) => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchCreatedAt = async () => {
+        const fetchProgress = async () => {
             try {
-                console.log('Fetching created_at for telegramId:', telegramId);
-                const response = await fetch(`/users/${telegramId}/preferences/created-at`);
-                if (!response.ok) {
-                    throw new Error('Failed to fetch user preferences');
+                if (!telegramId) {
+                    console.warn('No telegramId provided to usePhaseProgress');
+                    setLoading(false);
+                    return;
                 }
-                const data = await response.json();
-                console.log('API Response:', data);
 
-                const { week, day } = calculateWeekAndDay(data.created_at);
+                // Step 1: Check current phase for the user
+                const phaseResponse = await fetch(`/users/${telegramId}/phase-tracking`);
+                if (!phaseResponse.ok) {
+                    throw new Error('Failed to fetch user phase information');
+                }
+                const phaseData = await phaseResponse.json();
+                const currentPhase = phaseData.current_phase;
+                console.log('Current phase:', currentPhase);
+
+                // Step 2: Try to get phases timing information
+                let dateToUse;
+                try {
+                    const timingsResponse = await fetch(`/users/${telegramId}/phases-timings`);
+
+                    if (timingsResponse.ok) {
+                        const timingsData = await timingsResponse.json();
+                        console.log('Phases timings:', timingsData);
+
+                        if (currentPhase === 1 && timingsData.phase1_date) {
+                            dateToUse = timingsData.phase1_date;
+                        } else if (currentPhase === 2 && timingsData.phase2_date) {
+                            dateToUse = timingsData.phase2_date;
+                        }
+                    } else if (timingsResponse.status !== 404) {
+                        throw new Error('Failed to fetch phases timings');
+                    }
+                } catch (timingsErr) {
+                    console.error('Error fetching phases timings:', timingsErr);
+                    // Continue with fallback logic
+                }
+
+                // Step 3: If no date from phases-timings, fall back to original logic
+                if (!dateToUse) {
+                    console.log('Using fallback created_at date');
+                    const createdAtResponse = await fetch(`/users/${telegramId}/preferences/created-at`);
+                    if (!createdAtResponse.ok) {
+                        throw new Error('Failed to fetch user preferences');
+                    }
+                    const createdAtData = await createdAtResponse.json();
+                    dateToUse = createdAtData.created_at;
+                }
+
+                console.log('Using date for calculation:', dateToUse);
+                const { week, day } = calculateWeekAndDay(dateToUse);
                 console.log('Calculated progress:', { week, day });
                 setProgress({ week, day });
             } catch (err) {
@@ -28,12 +69,7 @@ export const usePhaseProgress = (telegramId) => {
             }
         };
 
-        if (telegramId) {
-            fetchCreatedAt();
-        } else {
-            console.warn('No telegramId provided to usePhaseProgress');
-            setLoading(false);
-        }
+        fetchProgress();
     }, [telegramId]);
 
     return { ...progress, loading, error };
