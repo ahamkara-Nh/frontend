@@ -56,7 +56,7 @@ const StoriesCarousel = () => {
 
     // Phase 2 stories
     const phase2Stories = [
-        { id: 1, title: 'Что значит повторное введеение ?', image: storyBackgroundImage5 },
+        { id: 1, title: 'Что значит повторное введение ?', image: storyBackgroundImage5 },
         { id: 2, title: 'Как выбрать продукты ?', image: storyBackgroundImage2 },
         { id: 3, title: 'Сколько длится этап ?', image: storyBackgroundImage3 },
         { id: 4, title: 'Как вести дневник ?', image: storyBackgroundImage4 },

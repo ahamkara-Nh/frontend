@@ -28,6 +28,7 @@ import { AuthProvider } from './context/AuthContext';
 import SymptomsScreen from './screens/Symptoms/SymptomsScreen';
 import AddFoodScreen from './screens/FoodDiary/AddFoodScreen';
 import PhaseSelectionScreen from './components/PhaseSelectionScreen/PhaseSelectionScreen';
+import CategorySelectionScreen from './screens/CategorySelection/CategorySelectionScreen';
 
 // Placeholder for where the app navigates after onboarding
 // const HomePagePlaceholder = () => <div style={{ padding: '20px', color: 'white', textAlign: 'center' }}>Welcome to the App! (Homepage Placeholder)</div>;
@@ -65,6 +66,7 @@ function App() {
         <Route path="/profile" element={<ProfileScreen />} />
         <Route path="/symptoms" element={<SymptomsScreen />} />
         <Route path="/phase-selection" element={<PhaseSelectionScreen />} />
+        <Route path="/category-selection" element={<CategorySelectionScreen />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </AuthProvider>
