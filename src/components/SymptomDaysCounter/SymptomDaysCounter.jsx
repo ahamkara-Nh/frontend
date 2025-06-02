@@ -6,6 +6,16 @@ import checkmarkWhiteIcon from '../../assets/icons/check-icon.svg';
 import nextArrowIcon from '../../assets/icons/arrow-next.svg';
 import axios from 'axios';
 
+// FODMAP category mapping from English to Russian
+const fodmapCategoryNames = {
+    'fructan': 'Фруктаны',
+    'gos': 'ГОС',
+    'lactose': 'Лактоза',
+    'fructose': 'Фруктоза',
+    'mannitol': 'Маннитол',
+    'sorbitol': 'Сорбитол'
+};
+
 const SymptomDaysCounter = ({ completedDays }) => {
     const totalDays = 7;
     const navigate = useNavigate();
@@ -99,7 +109,11 @@ const SymptomDaysCounter = ({ completedDays }) => {
         // If we have phase 2 tracking data, show the counters
         if (phase2TrackingData) {
             console.log('SymptomDaysCounter - Rendering Phase 2 tracking UI with data:', phase2TrackingData);
-            const currentFodmapCategory = phase2TrackingData.current_fodmap_category || 'Нет данных';
+
+            // Get the current group from the API response and convert to Russian name
+            const currentGroup = phase2TrackingData.current_group || '';
+            const currentFodmapCategory = fodmapCategoryNames[currentGroup] || 'Нет данных';
+
             const reintroductionDays = phase2TrackingData.reintroduction_days || 0;
             const breakDays = phase2TrackingData.break_days || 0;
 
