@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './CategorySelectionScreen.css';
 import radioDot from '../../assets/icons/radio-dot.svg';
+import checkmark from '../../assets/icons/checkmark.svg';
+import cross from '../../assets/icons/cross.svg';
+import completed from '../../assets/icons/completed.svg';
 
 const CategorySelectionScreen = () => {
     const navigate = useNavigate();
@@ -10,6 +13,8 @@ const CategorySelectionScreen = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [disabledCategories, setDisabledCategories] = useState({});
+    const [greenCategories, setGreenCategories] = useState({});
+    const [redCategories, setRedCategories] = useState({});
     const [dataLoading, setDataLoading] = useState(true);
 
     // FODMAP categories for reintroduction
@@ -55,14 +60,25 @@ const CategorySelectionScreen = () => {
                 const response = await axios.get(`/users/${telegramId}/phase2-tracking`);
                 const data = response.data;
 
-                // Process disabled categories
+                // Process categories based on their values
                 const disabled = {};
+                const green = {};
+                const red = {};
+
                 categories.forEach(category => {
-                    if (data[category.id] === 1) {
+                    const value = data[category.id];
+                    if (value === 1) {
                         disabled[category.id] = true;
+                    } else if (value === 2) {
+                        green[category.id] = true;
+                    } else if (value === 3) {
+                        red[category.id] = true;
                     }
                 });
+
                 setDisabledCategories(disabled);
+                setGreenCategories(green);
+                setRedCategories(red);
 
                 // Set current group if exists
                 if (data.current_group) {
@@ -84,8 +100,8 @@ const CategorySelectionScreen = () => {
     }, []);
 
     const handleCategorySelect = (categoryId) => {
-        // Don't allow selecting disabled categories
-        if (disabledCategories[categoryId]) {
+        // Don't allow selecting disabled/completed categories
+        if (disabledCategories[categoryId] || greenCategories[categoryId] || redCategories[categoryId]) {
             return;
         }
         setSelectedCategory(categoryId);
@@ -168,6 +184,18 @@ const CategorySelectionScreen = () => {
         }
     };
 
+    // Helper function to determine category status text
+    const getCategoryStatusText = (categoryId) => {
+        if (disabledCategories[categoryId]) {
+            return ' (завершено)';
+        } else if (greenCategories[categoryId]) {
+            return ' (переносится хорошо)';
+        } else if (redCategories[categoryId]) {
+            return ' (не переносится)';
+        }
+        return '';
+    };
+
     return (
         <div className="category-selection-screen">
             <h1 className="category-selection-header">
@@ -177,23 +205,54 @@ const CategorySelectionScreen = () => {
                 <div className="loading-indicator">Загрузка...</div>
             ) : (
                 <div className="category-selection-list">
-                    {categories.map((category) => (
-                        <div
-                            key={category.id}
-                            className={`category-selection-item ${selectedCategory === category.id ? 'active' : ''} ${disabledCategories[category.id] ? 'disabled' : ''}`}
-                            onClick={() => handleCategorySelect(category.id)}
-                        >
-                            <div className={`category-selection-radio ${selectedCategory === category.id ? 'active' : ''} ${disabledCategories[category.id] ? 'disabled' : ''}`}>
-                                {selectedCategory === category.id && (
-                                    <img src={radioDot} alt="Selected" className="category-selection-radio-dot" />
-                                )}
+                    {categories.map((category) => {
+                        const isGreen = greenCategories[category.id];
+                        const isRed = redCategories[category.id];
+                        const isDisabled = disabledCategories[category.id];
+                        const isInactive = isGreen || isRed || isDisabled;
+
+                        return (
+                            <div
+                                key={category.id}
+                                className={`category-selection-item 
+                                    ${selectedCategory === category.id ? 'active' : ''} 
+                                    ${isDisabled ? 'disabled' : ''} 
+                                    ${isGreen ? 'green' : ''} 
+                                    ${isRed ? 'red' : ''}`}
+                                onClick={() => handleCategorySelect(category.id)}
+                            >
+                                <div className={`category-selection-radio 
+                                    ${selectedCategory === category.id ? 'active' : ''} 
+                                    ${isDisabled ? 'disabled' : ''} 
+                                    ${isGreen ? 'green' : ''} 
+                                    ${isRed ? 'red' : ''}`}
+                                >
+                                    {selectedCategory === category.id && !isInactive && (
+                                        <img src={radioDot} alt="Selected" className="category-selection-radio-dot" />
+                                    )}
+                                    {isGreen && (
+                                        <img src={checkmark} alt="Tolerated well" className="category-selection-icon" />
+                                    )}
+                                    {isRed && (
+                                        <img src={cross} alt="Not tolerated" className="category-selection-icon" />
+                                    )}
+                                    {isDisabled && (
+                                        <img src={completed} alt="Completed" className="category-selection-icon" />
+                                    )}
+                                </div>
+                                <div className="category-selection-name">
+                                    <span>{category.name}</span>
+                                    <span className={`category-status 
+                                        ${isDisabled ? 'disabled' : ''} 
+                                        ${isGreen ? 'green' : ''} 
+                                        ${isRed ? 'red' : ''}`}
+                                    >
+                                        {getCategoryStatusText(category.id)}
+                                    </span>
+                                </div>
                             </div>
-                            <div className="category-selection-name">
-                                <span>{category.name}</span>
-                                {disabledCategories[category.id] && <span className="category-completed"> (завершено)</span>}
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
             )}
             {error && <p className="category-selection-error">{error}</p>}

@@ -46,9 +46,29 @@
     background-color: #325D45;
 }
 
+.category-selection-radio.green {
+    background-color: #325D45;
+    background-image: linear-gradient(to bottom right, #325D45, #4CAF50);
+}
+
+.category-selection-radio.red {
+    background-color: #8B0000;
+    background-image: linear-gradient(to bottom right, #8B0000, #FF5252);
+}
+
+.category-selection-radio.disabled {
+    background-color: #4E4E4E;
+    opacity: 0.7;
+}
+
 .category-selection-radio-dot {
     width: 10px;
     height: 10px;
+}
+
+.category-selection-icon {
+    width: 14px;
+    height: 14px;
 }
 
 .category-selection-name {
@@ -69,12 +89,44 @@
     background-color: #325D45;
 }
 
+.category-selection-item.green .category-selection-name {
+    background-color: #325D45;
+    background-image: linear-gradient(to bottom right, #325D45, #4CAF50);
+}
+
+.category-selection-item.red .category-selection-name {
+    background-color: #8B0000;
+    background-image: linear-gradient(to bottom right, #8B0000, #FF5252);
+}
+
+.category-selection-item.disabled .category-selection-name {
+    opacity: 0.7;
+}
+
 .category-selection-name span {
     font-size: 16px;
     font-weight: 400;
     line-height: 1.5em;
     letter-spacing: -0.04em;
     color: #FFFFFF;
+}
+
+.category-status {
+    margin-left: 5px;
+    font-size: 14px;
+    font-style: italic;
+}
+
+.category-status.green {
+    color: #8EFFB4;
+}
+
+.category-status.red {
+    color: #FFAAAA;
+}
+
+.category-status.disabled {
+    color: #BBBBBB;
 }
 
 .category-selection-buttons {
