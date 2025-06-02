@@ -23,6 +23,8 @@ const SymptomDaysCounter = ({ completedDays }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [phase2TrackingData, setPhase2TrackingData] = useState(null);
+    const [reintroductionDays, setReintroductionDays] = useState(0);
+    const [breakDays, setBreakDays] = useState(0);
 
     useEffect(() => {
         const fetchUserPhase = async () => {
@@ -48,13 +50,39 @@ const SymptomDaysCounter = ({ completedDays }) => {
                     console.log(`SymptomDaysCounter - Setting current phase to: ${response.data.current_phase}`);
                     setCurrentPhase(response.data.current_phase);
 
-                    // If phase is 2, fetch phase2 tracking data
+                    // If phase is 2, fetch both phase2 tracking data and the reintroduction/break days
                     if (response.data.current_phase === 2) {
                         try {
                             console.log(`SymptomDaysCounter - Fetching phase 2 tracking data for user ${telegramId}`);
                             const phase2Response = await axios.get(`/users/${telegramId}/phase2-tracking`);
                             console.log('SymptomDaysCounter - Phase 2 tracking response:', phase2Response.data);
                             setPhase2TrackingData(phase2Response.data);
+
+                            // Update phase2 streak with timezone information
+                            try {
+                                console.log(`SymptomDaysCounter - Updating phase2 streak for user ${telegramId}`);
+                                const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                                await axios.put(`/users/${telegramId}/phase-tracking/update-phase2-streak`, {
+                                    timezone: userTimezone
+                                });
+                                console.log('SymptomDaysCounter - Phase2 streak updated with timezone:', userTimezone);
+                            } catch (updateError) {
+                                console.error('SymptomDaysCounter - Error updating phase2 streak:', updateError);
+                            }
+
+                            // Fetch reintroduction and break days from the specified endpoint
+                            try {
+                                console.log(`SymptomDaysCounter - Fetching reintroduction and break days for user ${telegramId}`);
+                                const daysResponse = await axios.get(`/users/${telegramId}/phase-tracking`);
+                                console.log('SymptomDaysCounter - Reintroduction and break days response:', daysResponse.data);
+
+                                if (daysResponse.data) {
+                                    setReintroductionDays(daysResponse.data.phase2_reintroduction_days || 0);
+                                    setBreakDays(daysResponse.data.phase2_break_days || 0);
+                                }
+                            } catch (daysError) {
+                                console.error('SymptomDaysCounter - Error fetching reintroduction and break days:', daysError);
+                            }
                         } catch (phase2Error) {
                             if (phase2Error.response && phase2Error.response.status === 404) {
                                 console.log('SymptomDaysCounter - No phase 2 tracking data found (404)');
@@ -114,8 +142,8 @@ const SymptomDaysCounter = ({ completedDays }) => {
             const currentGroup = phase2TrackingData.current_group || '';
             const currentFodmapCategory = fodmapCategoryNames[currentGroup] || 'Нет данных';
 
-            const reintroductionDays = phase2TrackingData.reintroduction_days || 0;
-            const breakDays = phase2TrackingData.break_days || 0;
+            // Use the state values from the dedicated endpoint
+            console.log('SymptomDaysCounter - Using reintroduction days:', reintroductionDays, 'and break days:', breakDays);
 
             return (
                 <div className="phase2-counters-container">
