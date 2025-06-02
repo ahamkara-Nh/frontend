@@ -9,7 +9,7 @@ export default defineConfig({
     svgr()
   ],
   server: {
-    allowedHosts: ['user226046612-e7tvvpxx.tunnel.vk-apps.com/'],
+    allowedHosts: ['user226046612-pyp6kl4h.tunnel.vk-apps.com/'],
     proxy: {
       '/auth': {
         target: 'http://127.0.0.1:8000',

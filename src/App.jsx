@@ -11,6 +11,7 @@ import OnboardingLearn6 from './screens/Onboarding/OnboardingLearn6';
 import HomePhase0 from './screens/Home/HomePhase0';
 import HomePhase1 from './screens/Home/HomePhase1';
 import StoryDetailScreen from './screens/StoryDetail/StoryDetailScreen';
+import StoryDetailScreen2 from './screens/StoryDetail/StoryDetailScreen2';
 import OnboardingAllergies from './screens/Onboarding/OnboardingAllergies';
 import ProductsScreen from './screens/Products/ProductsScreen';
 import CategoryScreen from './screens/Products/CategoryScreen';
@@ -58,6 +59,7 @@ function App() {
         <Route path="/products/recipes" element={<RecipesScreen />} />
         <Route path="/products/recipes/:id" element={<RecipeDetailScreen />} />
         <Route path="/story/:storyId" element={<StoryDetailScreen />} />
+        <Route path="/story2/:storyId" element={<StoryDetailScreen2 />} />
         <Route path="/info" element={<InfoScreen />} />
         <Route path="/info/:infoId" element={<InfoDetailScreen />} />
         <Route path="/profile" element={<ProfileScreen />} />
