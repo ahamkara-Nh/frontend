@@ -159,3 +159,78 @@
     height: 14px;
     margin-left: 10px;
 }
+
+/* Phase 2 Tracking Styles */
+.phase2-counters-container {
+    background-color: #323232;
+    border-radius: 10px;
+    padding: 18px;
+    padding-top: 0px;
+    margin-top: 0px;
+    margin-left: 4.1vw;
+    margin-right: 4.1vw;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    box-sizing: border-box;
+    position: relative;
+}
+
+.fodmap-group-counter,
+.break-counter {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.counter-title {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    margin: 0;
+}
+
+.day-box-phase2 {
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.day-box-phase2.completed-phase2 {
+    background-color: #325D45;
+}
+
+.day-box-phase2.pending-phase2 {
+    background-color: #4E4E4E;
+}
+
+.checkmark-icon-phase2 {
+    width: 20px;
+    height: 15px;
+}
+
+.phase2-category-button {
+    width: calc(100% + 36px);
+    height: 48px;
+    background: linear-gradient(to right, #325D45, #2D594D, #2A5552, #295156, #294D58, #2A495B, #2D445D, #323E5D);
+    border-radius: 10px 10px 0 0;
+    border: none;
+    color: #FFFFFF;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    text-align: center;
+    cursor: pointer;
+    margin-left: -18px;
+    margin-right: -18px;
+    margin-bottom: 0px;
+}

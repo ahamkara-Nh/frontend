@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SymptomDaysCounter.css';
 import checkmarkIcon from '../../assets/icons/checkmark.svg';
+import checkmarkWhiteIcon from '../../assets/icons/check-icon.svg';
 import nextArrowIcon from '../../assets/icons/arrow-next.svg';
 import axios from 'axios';
 
@@ -11,6 +12,7 @@ const SymptomDaysCounter = ({ completedDays }) => {
     const [currentPhase, setCurrentPhase] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [phase2TrackingData, setPhase2TrackingData] = useState(null);
 
     useEffect(() => {
         const fetchUserPhase = async () => {
@@ -35,6 +37,23 @@ const SymptomDaysCounter = ({ completedDays }) => {
                 if (response.data && response.data.current_phase !== undefined) {
                     console.log(`SymptomDaysCounter - Setting current phase to: ${response.data.current_phase}`);
                     setCurrentPhase(response.data.current_phase);
+
+                    // If phase is 2, fetch phase2 tracking data
+                    if (response.data.current_phase === 2) {
+                        try {
+                            console.log(`SymptomDaysCounter - Fetching phase 2 tracking data for user ${telegramId}`);
+                            const phase2Response = await axios.get(`/users/${telegramId}/phase2-tracking`);
+                            console.log('SymptomDaysCounter - Phase 2 tracking response:', phase2Response.data);
+                            setPhase2TrackingData(phase2Response.data);
+                        } catch (phase2Error) {
+                            if (phase2Error.response && phase2Error.response.status === 404) {
+                                console.log('SymptomDaysCounter - No phase 2 tracking data found (404)');
+                                setPhase2TrackingData(null);
+                            } else {
+                                console.error('SymptomDaysCounter - Error fetching phase 2 tracking data:', phase2Error);
+                            }
+                        }
+                    }
                 } else {
                     console.warn('SymptomDaysCounter - No current_phase in response data:', response.data);
                     setError('No phase data found');
@@ -76,6 +95,56 @@ const SymptomDaysCounter = ({ completedDays }) => {
 
     if (currentPhase === 2) {
         console.log('SymptomDaysCounter - Rendering Phase 2 UI');
+
+        // If we have phase 2 tracking data, show the counters
+        if (phase2TrackingData) {
+            console.log('SymptomDaysCounter - Rendering Phase 2 tracking UI with data:', phase2TrackingData);
+            const currentFodmapCategory = phase2TrackingData.current_fodmap_category || 'Нет данных';
+            const reintroductionDays = phase2TrackingData.reintroduction_days || 0;
+            const breakDays = phase2TrackingData.break_days || 0;
+
+            return (
+                <div className="phase2-counters-container">
+                    <button className="phase2-category-button">
+                        {currentFodmapCategory}
+                    </button>
+                    <div className="fodmap-group-counter">
+                        <p className="counter-title">Повторное введение:</p>
+                        <div className="days-row">
+                            {[...Array(3)].map((_, index) => (
+                                <div
+                                    key={index}
+                                    className={`day-box-phase2 ${index < reintroductionDays ? 'completed-phase2' : 'pending-phase2'}`}
+                                >
+                                    {index < reintroductionDays && (
+                                        <img src={checkmarkWhiteIcon} alt="Completed" className="checkmark-icon-phase2" />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="break-counter">
+                        <p className="counter-title">Перерыв перед следующей группой:</p>
+                        <div className="days-row">
+                            {[...Array(3)].map((_, index) => (
+                                <div
+                                    key={index}
+                                    className={`day-box-phase2 ${index < breakDays ? 'completed-phase2' : 'pending-phase2'}`}
+                                >
+                                    {index < breakDays && (
+                                        <img src={checkmarkWhiteIcon} alt="Completed" className="checkmark-icon-phase2" />
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                </div>
+            );
+        }
+
+        // If no phase 2 tracking data (404), show the original choose category UI
         return (
             <div className="phase2-counter-container">
                 <p className="phase2-counter-title">
