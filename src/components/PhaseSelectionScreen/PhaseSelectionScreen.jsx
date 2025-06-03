@@ -76,6 +76,19 @@ const PhaseSelectionScreen = () => {
                 if (!phase2Response.ok) {
                     console.error('Failed to update phase 2 start date');
                 }
+
+                // Reset phase 2 tracking with empty current_group
+                const phase2TrackingResponse = await fetch(`/users/${telegramId}/phase2-tracking`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ current_group: "" }),
+                });
+
+                if (!phase2TrackingResponse.ok) {
+                    console.error('Failed to reset phase 2 tracking');
+                }
             } else if (currentPhase === 2 && newPhase === 1) {
                 // Moving back from phase 2 to phase 1
                 const phase1Response = await fetch(`/users/${telegramId}/phases-timings/update-phase1-date`, {
@@ -99,6 +112,19 @@ const PhaseSelectionScreen = () => {
 
                 if (!phase2Response.ok) {
                     console.error('Failed to update phase 2 start date');
+                }
+
+                // Reset phase 2 tracking with empty current_group when moving back from phase 3
+                const phase2TrackingResponse = await fetch(`/users/${telegramId}/phase2-tracking`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ current_group: "" }),
+                });
+
+                if (!phase2TrackingResponse.ok) {
+                    console.error('Failed to reset phase 2 tracking');
                 }
             }
 

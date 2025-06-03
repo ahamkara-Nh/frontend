@@ -24,6 +24,15 @@ export const usePhaseProgress = (telegramId) => {
                 const currentPhase = phaseData.current_phase;
                 console.log('Current phase:', currentPhase);
 
+                // If phase is 3, use updated_at from phase-tracking
+                if (currentPhase === 3 && phaseData.updated_at) {
+                    console.log('Using updated_at for phase 3:', phaseData.updated_at);
+                    const { week, day } = calculateWeekAndDay(phaseData.updated_at);
+                    setProgress({ week, day });
+                    setLoading(false);
+                    return;
+                }
+
                 // Step 2: Try to get phases timing information
                 let dateToUse;
                 try {

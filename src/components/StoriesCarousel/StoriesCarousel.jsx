@@ -8,33 +8,64 @@ import storyBackgroundImage2 from '../../assets/images/stories_food2.png'; // Im
 import storyBackgroundImage3 from '../../assets/images/stories_food3.png'; // Import the image
 import storyBackgroundImage4 from '../../assets/images/stories_food4.png'; // Import the image
 import storyBackgroundImage5 from '../../assets/images/stories_food5.png'; // Import the new image
+import redCircle from '../../assets/images/red_circle.svg'; // Import red circle indicator
 
 const StoriesCarousel = () => {
     const navigate = useNavigate();
     const [currentPhase, setCurrentPhase] = useState(1);
     const [loading, setLoading] = useState(true);
+    const [sensitiveGroups, setSensitiveGroups] = useState([]);
+
+    // Map for translating group names to Russian
+    const groupNameMap = {
+        'fructose': 'Фруктоза',
+        'lactose': 'Лактоза',
+        'mannitol': 'Маннитол',
+        'sorbitol': 'Сорбитол',
+        'gos': 'ГОС',
+        'fructan': 'Фруктаны'
+    };
 
     useEffect(() => {
-        const fetchPhaseData = async () => {
+        const fetchData = async () => {
             try {
                 // Get telegramId from localStorage or Telegram WebApp
                 const telegramId = localStorage.getItem('telegramId') ||
                     window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
 
                 if (telegramId) {
-                    const response = await axios.get(`/users/${telegramId}/phase-tracking`);
-                    if (response.data && response.data.current_phase) {
-                        setCurrentPhase(response.data.current_phase);
+                    // Fetch phase tracking data
+                    const phaseResponse = await axios.get(`/users/${telegramId}/phase-tracking`);
+                    if (phaseResponse.data && phaseResponse.data.current_phase) {
+                        setCurrentPhase(phaseResponse.data.current_phase);
+                    }
+
+                    // If we're in phase 3, fetch phase2-tracking data to get sensitive groups
+                    if (phaseResponse.data?.current_phase === 3) {
+                        const phase2Response = await axios.get(`/users/${telegramId}/phase2-tracking`);
+                        if (phase2Response.data) {
+                            // Check each group and add to sensitiveGroups if value is 3
+                            const sensGroups = [];
+                            const groups = ['fructose', 'lactose', 'mannitol', 'sorbitol', 'gos', 'fructan'];
+
+                            groups.forEach(group => {
+                                if (phase2Response.data[group] === 3) {
+                                    sensGroups.push(group);
+                                }
+                            });
+
+                            setSensitiveGroups(sensGroups);
+                        }
                     }
                 }
             } catch (error) {
-                console.error('Error fetching phase data:', error);
+                console.error('Error fetching data:', error);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchPhaseData();
+        fetchData();
     }, []);
 
     const handleStoryClick = (storyId) => {
@@ -44,6 +75,10 @@ const StoriesCarousel = () => {
         } else {
             navigate(`/story/${storyId}`); // Navigate to phase 1 story detail
         }
+    };
+
+    const handleProductsButtonClick = () => {
+        navigate('/products');
     };
 
     // Phase 1 stories
@@ -69,6 +104,36 @@ const StoriesCarousel = () => {
         return (
             <div className="stories-carousel-container">
                 <LoadingSpinner size="medium" />
+            </div>
+        );
+    }
+
+    // Phase 3 banner content
+    if (currentPhase === 3) {
+        return (
+            <div className="phase3-banner">
+                <h2 className="phase3-banner-header">Так держать !</h2>
+                <div className="phase3-banner-content">
+                    <p className="phase3-banner-text">В предыдущем этапе мы выявили чувствительность к следующим группам:</p>
+
+                    {sensitiveGroups.length > 0 ? (
+                        sensitiveGroups.map((group, index) => (
+                            <div key={index} className="phase3-group-name">
+                                <span className="phase3-group-text">{groupNameMap[group]}</span>
+                                <img src={redCircle} alt="Red indicator" className="phase3-indicator" />
+                            </div>
+                        ))
+                    ) : (
+                        <p className="phase3-banner-text">Чувствительных групп не выявлено</p>
+                    )}
+
+                    <p className="phase3-banner-text">В дальнейшем следует избегать продуктов с высоким содержанием данных групп в рационе.</p>
+                    <p className="phase3-banner-text">Посмотреть рекомендуемые продукты можно в базе продуктов:</p>
+
+                    <button className="phase3-products-button" onClick={handleProductsButtonClick}>
+                        Посмотреть продукты
+                    </button>
+                </div>
             </div>
         );
     }

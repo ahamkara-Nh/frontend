@@ -134,6 +134,12 @@ const SymptomDaysCounter = ({ completedDays }) => {
         return <div className="symptom-days-counter-container">Error: {error}</div>;
     }
 
+    // Return null (component disappears) when currentPhase is 3
+    if (currentPhase === 3) {
+        console.log('SymptomDaysCounter - Phase 3 detected, not rendering component');
+        return null;
+    }
+
     console.log('SymptomDaysCounter - Rendering for phase:', currentPhase);
 
     if (currentPhase === 2) {
