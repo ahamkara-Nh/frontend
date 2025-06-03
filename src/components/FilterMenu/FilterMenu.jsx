@@ -131,16 +131,72 @@ const FilterMenu = ({ isOpen, onClose }) => {
             setLoading(true);
             setError(null);
 
-            // TODO: Implement auto-filter logic based on your requirements
-            // For now, we'll just set all filters to level 1 (green)
-            const newLevels = {
-                fructose: 1,
-                lactose: 1,
-                fructans: 1,
-                mannitol: 1,
-                sorbitol: 1,
-                gos: 1,
+            // Step 1: Check current phase
+            const phaseResponse = await fetch(`/users/${telegramId}/phase-tracking`);
+            if (!phaseResponse.ok) {
+                throw new Error('Failed to fetch user phase');
+            }
+
+            const phaseData = await phaseResponse.json();
+            const currentPhase = phaseData.current_phase;
+
+            let newLevels = {
+                fructose: 0,
+                lactose: 0,
+                fructans: 0,
+                mannitol: 0,
+                sorbitol: 0,
+                gos: 0,
             };
+
+            // Apply filter logic based on current phase
+            if (currentPhase === 0) {
+                // Phase 0: Do nothing, keep all filters at default
+            }
+            else if (currentPhase === 1) {
+                // Phase 1: Set all filters to level 1 (green)
+                newLevels = {
+                    fructose: 1,
+                    lactose: 1,
+                    fructans: 1,
+                    mannitol: 1,
+                    sorbitol: 1,
+                    gos: 1,
+                };
+            }
+            else if (currentPhase === 2) {
+                // Phase 2: Check current_group and set only that group to level 3
+                const phase2Response = await fetch(`/users/${telegramId}/phase2-tracking`);
+                if (!phase2Response.ok) {
+                    throw new Error('Failed to fetch phase 2 tracking data');
+                }
+
+                const phase2Data = await phase2Response.json();
+                const currentGroup = phase2Data.current_group;
+
+                // Set the current test group to level 3, others to 0
+                if (currentGroup && Object.keys(newLevels).includes(currentGroup)) {
+                    newLevels[currentGroup] = 3;
+                }
+            }
+            else if (currentPhase === 3) {
+                // Phase 3: Check each group's value and set level 1 for groups with value 3
+                const phase2Response = await fetch(`/users/${telegramId}/phase2-tracking`);
+                if (!phase2Response.ok) {
+                    throw new Error('Failed to fetch phase 2 tracking data');
+                }
+
+                const phase2Data = await phase2Response.json();
+
+                // For each group that has value 3, set filter to level 1
+                Object.keys(newLevels).forEach(group => {
+                    // Handle the special case for fructans vs fructan naming difference
+                    const apiKey = group === 'fructans' ? 'fructan' : group;
+                    if (phase2Data[apiKey] === 3) {
+                        newLevels[group] = 1;
+                    }
+                });
+            }
 
             // Update local state
             setActiveLevels(newLevels);
@@ -152,12 +208,12 @@ const FilterMenu = ({ isOpen, onClose }) => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    fructose_filter_level: 1,
-                    lactose_filter_level: 1,
-                    fructan_filter_level: 1,
-                    mannitol_filter_level: 1,
-                    sorbitol_filter_level: 1,
-                    gos_filter_level: 1,
+                    fructose_filter_level: newLevels.fructose,
+                    lactose_filter_level: newLevels.lactose,
+                    fructan_filter_level: newLevels.fructans,
+                    mannitol_filter_level: newLevels.mannitol,
+                    sorbitol_filter_level: newLevels.sorbitol,
+                    gos_filter_level: newLevels.gos,
                 }),
             });
 
