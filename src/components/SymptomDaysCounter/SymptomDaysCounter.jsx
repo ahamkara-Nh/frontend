@@ -4,6 +4,7 @@ import './SymptomDaysCounter.css';
 import checkmarkIcon from '../../assets/icons/checkmark.svg';
 import checkmarkWhiteIcon from '../../assets/icons/check-icon.svg';
 import nextArrowIcon from '../../assets/icons/arrow-next.svg';
+import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import axios from 'axios';
 
 // FODMAP category mapping from English to Russian
@@ -121,7 +122,11 @@ const SymptomDaysCounter = ({ completedDays }) => {
     };
 
     if (loading) {
-        return <div className="symptom-days-counter-container">Loading phase data...</div>;
+        return (
+            <div className="symptom-days-counter-container">
+                <LoadingSpinner />
+            </div>
+        );
     }
 
     if (error) {
@@ -134,12 +139,12 @@ const SymptomDaysCounter = ({ completedDays }) => {
     if (currentPhase === 2) {
         console.log('SymptomDaysCounter - Rendering Phase 2 UI');
 
-        // If we have phase 2 tracking data, show the counters
-        if (phase2TrackingData) {
+        // Check if we have phase 2 tracking data AND a current_group
+        if (phase2TrackingData && phase2TrackingData.current_group) {
             console.log('SymptomDaysCounter - Rendering Phase 2 tracking UI with data:', phase2TrackingData);
 
             // Get the current group from the API response and convert to Russian name
-            const currentGroup = phase2TrackingData.current_group || '';
+            const currentGroup = phase2TrackingData.current_group;
             const currentFodmapCategory = fodmapCategoryNames[currentGroup] || 'Нет данных';
 
             // Use the state values from the dedicated endpoint
@@ -147,7 +152,7 @@ const SymptomDaysCounter = ({ completedDays }) => {
 
             return (
                 <div className="phase2-counters-container">
-                    <button className="phase2-category-button">
+                    <button className="phase2-category-button" onClick={handleChooseCategory}>
                         {currentFodmapCategory}
                     </button>
                     <div className="fodmap-group-counter">
@@ -186,7 +191,7 @@ const SymptomDaysCounter = ({ completedDays }) => {
             );
         }
 
-        // If no phase 2 tracking data (404), show the original choose category UI
+        // If no current_group in phase 2 tracking data, show the choose category UI
         return (
             <div className="phase2-counter-container">
                 <p className="phase2-counter-title">
