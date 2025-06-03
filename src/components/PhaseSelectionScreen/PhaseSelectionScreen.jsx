@@ -45,11 +45,61 @@ const PhaseSelectionScreen = () => {
         navigate(-1); // Go back to the previous page
     };
 
+    const checkFodmapGroupsForPhase3 = async () => {
+        try {
+            const response = await fetch(`/users/${telegramId}/phase2-tracking`);
+            if (!response.ok) {
+                throw new Error('Failed to fetch phase 2 tracking data');
+            }
+
+            const data = await response.json();
+            const fodmapGroups = ['fructose', 'lactose', 'mannitol', 'sorbitol', 'gos', 'fructan'];
+
+            // Check if any FODMAP group has less than 2 tests
+            const incompleteFodmaps = fodmapGroups.filter(group => data[group] < 2);
+
+            if (incompleteFodmaps.length > 0) {
+                // Send Telegram notification
+                const notificationResponse = await fetch('/telegram/send-notification', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        telegram_id: telegramId,
+                        message: 'Вы должны протестировать все группы FODMAP в этапе 2 перед переходом на этап 3. Пожалуйста, завершите тестирование следующих групп: ' + incompleteFodmaps.join(', ')
+                    }),
+                });
+
+                if (!notificationResponse.ok) {
+                    console.error('Failed to send Telegram notification');
+                }
+
+                return false;
+            }
+
+            return true;
+        } catch (err) {
+            console.error('Error checking FODMAP groups:', err);
+            return false;
+        }
+    };
+
     const updatePhase = async (newPhase) => {
         if (!telegramId || isUpdating) return;
 
         setIsUpdating(true);
         try {
+            // Check FODMAP groups if moving to phase 3
+            if (currentPhase === 2 && newPhase === 3) {
+                const canProceedToPhase3 = await checkFodmapGroupsForPhase3();
+                if (!canProceedToPhase3) {
+                    alert('Вы должны протестировать все группы FODMAP в этапе 2 перед переходом на этап 3.');
+                    setIsUpdating(false);
+                    return;
+                }
+            }
+
             // Update the phase in phase-tracking
             const response = await fetch(`/users/${telegramId}/phase-tracking`, {
                 method: 'PUT',
