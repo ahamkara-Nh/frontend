@@ -41,10 +41,10 @@ const BottomNavBar = () => {
                 const { current_phase } = response.data;
 
                 // Navigate based on current phase
-                if (current_phase === 1) {
-                    navigate('/home/phase1');
-                } else {
+                if (current_phase === 0) {
                     navigate('/home/phase0');
+                } else {
+                    navigate('/home/phase1');
                 }
             } catch (error) {
                 console.error('Error checking phase:', error);
