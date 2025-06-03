@@ -26,6 +26,8 @@
     /* Inactive text color from Figma */
     flex-grow: 1;
     height: 100%;
+    position: relative;
+    /* Added for loading indicator positioning */
 }
 
 .nav-icon {
@@ -67,4 +69,25 @@
     /* From Figma */
     font-weight: 300;
     /* From Figma */
+}
+
+/* Loading state styles */
+
+.nav-item.loading .nav-icon {
+    opacity: 0.7;
+    animation: pulse 1.2s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 0.4;
+    }
+
+    100% {
+        opacity: 0.7;
+    }
 }

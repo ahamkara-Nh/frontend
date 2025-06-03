@@ -89,6 +89,9 @@ const Onboarding2 = () => {
                             navigate('/onboarding/allergies');
                         } else if (selected === 2) {
                             // handle "Мне только посмотреть"
+                            // Always navigate to ensure user doesn't get stuck
+                            const navigateToHome = () => navigate('/products');
+
                             if (userId) {
                                 const phaseTrackingUrl = `/users/${userId}/phase-tracking`;
                                 const completeOnboardingUrl = `/users/${userId}/complete_onboarding`;
@@ -110,22 +113,20 @@ const Onboarding2 = () => {
                                                 headers: {
                                                     'Content-Type': 'application/json',
                                                 },
-                                                // body: JSON.stringify({}), // Add body if needed
                                             });
                                         } else {
-                                            // Handle phase tracking error
+                                            // Log error but continue with navigation
                                             phaseResponse.text().then(text => {
                                                 console.error('Failed to update phase tracking. Status:', phaseResponse.status, 'Response:', text);
                                             });
-                                            throw new Error('Failed to update phase tracking'); // Propagate error to skip next steps
+                                            return Promise.reject('Failed to update phase tracking');
                                         }
                                     })
                                     .then(onboardingResponse => {
                                         if (onboardingResponse.ok) {
                                             console.log('Onboarding completed successfully.');
-                                            navigate('/home/phase0'); // Navigate after both succeed
                                         } else {
-                                            // Handle onboarding completion error
+                                            // Log error but continue with navigation
                                             onboardingResponse.text().then(text => {
                                                 console.error('Failed to complete onboarding. Status:', onboardingResponse.status, 'Response:', text);
                                             });
@@ -133,12 +134,15 @@ const Onboarding2 = () => {
                                     })
                                     .catch(error => {
                                         console.error('Error during API calls for \"Мне только посмотреть\":', error);
-                                        // Optionally, show a user-friendly error message
+                                    })
+                                    .finally(() => {
+                                        // Always navigate regardless of API success or failure
+                                        navigateToHome();
                                     });
                             } else {
                                 console.error('User ID not available');
-                                // Handle cases where user ID is not available
-                                // Maybe navigate to an error page or show a message
+                                // Still navigate even if user ID is not available
+                                navigateToHome();
                             }
                         }
                     }

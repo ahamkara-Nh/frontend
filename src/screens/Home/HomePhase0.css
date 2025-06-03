@@ -1,0 +1,67 @@
+.home-phase0-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.start-button-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 20px 16px;
+}
+
+.start-diary-button {
+    width: 336px;
+    height: 174px;
+    background: linear-gradient(90deg,
+            #325D45 0%,
+            #2D594D 14.29%,
+            #2A5552 28.57%,
+            #295156 42.86%,
+            #294D58 57.14%,
+            #2A495B 71.43%,
+            #2D445D 85.71%,
+            #323E5D 100%);
+    border-radius: 10px;
+    border: none;
+    box-shadow: -1px 2px 12px 0px rgba(45, 68, 93, 1);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.button-text-0 {
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 1.5em;
+    letter-spacing: -0.04em;
+    color: #FFFFFF;
+    margin-bottom: 20px;
+}
+
+.arrow-icon {
+    width: 14px;
+    height: 26px;
+}
+
+.divider-home-phase0 {
+    height: 1px;
+    background-color: #323232;
+    margin: 20px 50px 0;
+}
+
+.diary-section {
+    flex: 1;
+    padding: 0 6.3vw;
+    margin-bottom: 70px;
+}
+
+.bottom-nav-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+}
