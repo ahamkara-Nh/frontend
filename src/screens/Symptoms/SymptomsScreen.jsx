@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './SymptomsScreen.css';
-import symptomIcon from '../../assets/images/symptom_icon.png';
+import symptomIcon1 from '../../assets/images/symptom1.png';
+import symptomIcon2 from '../../assets/images/symptom2.png';
+import symptomIcon3 from '../../assets/images/symptom3.png';
+import symptomIcon4 from '../../assets/images/symptom4.png';
 
 const SymptomsScreen = () => {
     const navigate = useNavigate();
@@ -109,7 +112,7 @@ const SymptomsScreen = () => {
                 {/* Bloating Symptom */}
                 <div className="symptom-item">
                     <div className="symptom-name">
-                        <img src={symptomIcon} alt="Symptom" className="symptom-icon" />
+                        <img src={symptomIcon1} alt="Symptom" className="symptom-icon" />
                         <p>Насколько сильным было вздутие живота?</p>
                     </div>
                     <div className="symptom-slider">
@@ -135,7 +138,7 @@ const SymptomsScreen = () => {
                 {/* Pain Symptom */}
                 <div className="symptom-item">
                     <div className="symptom-name">
-                        <img src={symptomIcon} alt="Symptom" className="symptom-icon" />
+                        <img src={symptomIcon2} alt="Symptom" className="symptom-icon" />
                         <p>Насколько сильной была боль в животе?</p>
                     </div>
                     <div className="symptom-slider">
@@ -161,7 +164,7 @@ const SymptomsScreen = () => {
                 {/* Gas Symptom */}
                 <div className="symptom-item">
                     <div className="symptom-name">
-                        <img src={symptomIcon} alt="Symptom" className="symptom-icon" />
+                        <img src={symptomIcon3} alt="Symptom" className="symptom-icon" />
                         <p>Насколько выраженным было повышенное газообразование?</p>
                     </div>
                     <div className="symptom-slider">
@@ -187,7 +190,7 @@ const SymptomsScreen = () => {
                 {/* Stool Symptom */}
                 <div className="symptom-item">
                     <div className="symptom-name">
-                        <img src={symptomIcon} alt="Symptom" className="symptom-icon" />
+                        <img src={symptomIcon4} alt="Symptom" className="symptom-icon" />
                         <p>Насколько сильно выражено послабление стула?</p>
                     </div>
                     <div className="symptom-slider">

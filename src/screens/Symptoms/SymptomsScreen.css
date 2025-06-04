@@ -73,6 +73,8 @@ h2 {
     display: flex;
     gap: 10px;
     margin-bottom: 15px;
+    flex-direction: row-reverse;
+    justify-content: space-between;
 }
 
 .symptom-icon {
