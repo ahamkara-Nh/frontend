@@ -12,9 +12,9 @@ const CategoryCard = ({ title, backgroundImage, path }) => {
     };
 
     const cardStyle = {
-        backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.56)), url(${backgroundImage})`,
+        backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0) 15%, rgba(0, 0, 0, 1) 100%), url(${backgroundImage})`,
         backgroundSize: 'cover',
-        backgroundPosition: 'center',
+        backgroundPosition: 'top',
     };
 
     return (
