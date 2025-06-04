@@ -114,6 +114,20 @@ const ProfileScreen = () => {
         }
     };
 
+    const handleDownload = (type) => {
+        // Show Telegram popup notification
+        if (window.Telegram?.WebApp?.showPopup) {
+            window.Telegram.WebApp.showPopup({
+                title: 'Информация',
+                message: 'Функция скоро будет добавлена',
+                buttons: [{ type: 'ok' }]
+            });
+        } else {
+            // Fallback for when Telegram is not available (e.g., in browser)
+            alert('Функция скоро будет добавлена');
+        }
+    };
+
     return (
         <div className="profile-container">
             <div className="profile-content">
@@ -163,8 +177,8 @@ const ProfileScreen = () => {
                 <div className="download-section">
                     <span className="heading">Скачать дневник:</span>
                     <div className="download-buttons">
-                        <button className="download-button">PDF</button>
-                        <button className="download-button">Excel</button>
+                        <button className="download-button" onClick={() => handleDownload('pdf')}>PDF</button>
+                        <button className="download-button" onClick={() => handleDownload('excel')}>Excel</button>
                     </div>
                 </div>
             </div>
