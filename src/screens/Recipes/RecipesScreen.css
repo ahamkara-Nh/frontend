@@ -122,11 +122,14 @@
 
 @media (prefers-color-scheme: light) {
     .recipes-container {
-        background-color: #ffffff;
-        color: #213547;
+        color: rgba(255, 255, 255, 0.87);
     }
 
     .recipes-subtitle {
-        color: rgba(0, 0, 0, 0.6);
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    .bottom-nav-container {
+        background-color: #222222;
     }
 }
