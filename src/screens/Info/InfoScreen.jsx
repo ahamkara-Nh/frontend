@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import InfoCard from '../../components/InfoCard/InfoCard';
@@ -17,6 +17,11 @@ import infoImage9 from '../../assets/images/info_food9.png';
 
 const InfoScreen = () => {
     const navigate = useNavigate();
+
+    // Reset scroll position when component mounts
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
 
     // Sample info cards data
     const infoCards = [

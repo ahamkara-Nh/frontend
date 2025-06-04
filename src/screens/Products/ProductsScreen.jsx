@@ -31,6 +31,11 @@ const ProductsScreen = () => {
 
     const isSearchActive = searchQuery.trim() !== '';
 
+    // Reset scroll position when component mounts
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     // Handle clearing search
     const clearSearch = () => {
         setSearchQuery('');
