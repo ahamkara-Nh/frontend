@@ -80,11 +80,22 @@
 .notification-toggle {
     width: 36px;
     height: 36px;
-    background: #325D45;
+    background: #323232;
     border-radius: 10px;
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.notification-toggle.checked {
+    background: #325D45;
+}
+
+.notification-toggle.updating {
+    opacity: 0.7;
+    cursor: not-allowed;
 }
 
 .check-icon {

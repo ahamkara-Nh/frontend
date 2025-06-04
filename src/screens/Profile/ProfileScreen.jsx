@@ -17,6 +17,11 @@ const ProfileScreen = () => {
     const [currentAllergies, setCurrentAllergies] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [preferences, setPreferences] = useState({
+        daily_reminders: 0,
+        update_notifications: 0
+    });
+    const [updatingNotification, setUpdatingNotification] = useState(null);
 
     // Get Telegram user data
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -28,7 +33,7 @@ const ProfileScreen = () => {
     // Display format: @username if available, otherwise "First Last" or just "First" if no last name
     const displayName = username ? `@${username}` : firstName ? `${firstName}${lastName ? ` ${lastName}` : ''}` : 'default_user';
 
-    const fetchAllergies = async () => {
+    const fetchUserPreferences = async () => {
         if (!telegramId) return;
 
         try {
@@ -37,29 +42,33 @@ const ProfileScreen = () => {
             const response = await fetch(`/users/${telegramId}/preferences`);
 
             if (!response.ok) {
-                throw new Error('Failed to fetch allergies');
+                throw new Error('Failed to fetch preferences');
             }
 
             const data = await response.json();
-            const preferences = data.preferences;
+            const userPreferences = data.preferences;
 
             // Convert preferences back to allergy names
             const allergies = Object.entries(ALLERGY_MAP)
-                .filter(([_, key]) => preferences[key])
+                .filter(([_, key]) => userPreferences[key])
                 .map(([name]) => name);
 
             setCurrentAllergies(allergies);
+            setPreferences({
+                daily_reminders: userPreferences.daily_reminders,
+                update_notifications: userPreferences.update_notifications
+            });
         } catch (err) {
-            console.error('Error fetching allergies:', err);
-            setError('Failed to load allergies');
+            console.error('Error fetching preferences:', err);
+            setError('Failed to load preferences');
         } finally {
             setLoading(false);
         }
     };
 
-    // Fetch current allergies
+    // Fetch user preferences
     useEffect(() => {
-        fetchAllergies();
+        fetchUserPreferences();
     }, [telegramId]);
 
     const handleEditAllergies = () => {
@@ -69,7 +78,40 @@ const ProfileScreen = () => {
     const handleCloseAllergyMenu = () => {
         setIsAllergyMenuOpen(false);
         // Refresh allergies when menu closes
-        fetchAllergies();
+        fetchUserPreferences();
+    };
+
+    const toggleNotification = async (type) => {
+        if (!telegramId) return;
+
+        try {
+            setUpdatingNotification(type);
+
+            // Create updated preferences object with the toggled value
+            const updatedPreferences = { ...preferences };
+            updatedPreferences[type] = preferences[type] === 1 ? 0 : 1;
+
+            const response = await fetch(`/users/${telegramId}/preferences`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(updatedPreferences)
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to update ${type}`);
+            }
+
+            // Update local state with the new values
+            setPreferences(updatedPreferences);
+        } catch (err) {
+            console.error(`Error updating ${type}:`, err);
+            // Revert to previous state if there's an error
+            fetchUserPreferences();
+        } finally {
+            setUpdatingNotification(null);
+        }
     };
 
     return (
@@ -96,14 +138,24 @@ const ProfileScreen = () => {
                     <span className="heading">Уведомления:</span>
                     <div className="notification-row">
                         <span className="notification-text">Ежедневные напоминания о заполнении дневника</span>
-                        <div className="notification-toggle checked">
-                            <img src="/icons/check-icon.svg" alt="Включено" className="check-icon" />
+                        <div
+                            className={`notification-toggle ${preferences.daily_reminders === 1 ? 'checked' : ''} ${updatingNotification === 'daily_reminders' ? 'updating' : ''}`}
+                            onClick={() => updatingNotification === null && toggleNotification('daily_reminders')}
+                        >
+                            {preferences.daily_reminders === 1 && (
+                                <img src="/icons/check-icon.svg" alt="Включено" className="check-icon" />
+                            )}
                         </div>
                     </div>
                     <div className="notification-row">
                         <span className="notification-text">Обновления приложения</span>
-                        <div className="notification-toggle checked">
-                            <img src="/icons/check-icon.svg" alt="Включено" className="check-icon" />
+                        <div
+                            className={`notification-toggle ${preferences.update_notifications === 1 ? 'checked' : ''} ${updatingNotification === 'update_notifications' ? 'updating' : ''}`}
+                            onClick={() => updatingNotification === null && toggleNotification('update_notifications')}
+                        >
+                            {preferences.update_notifications === 1 && (
+                                <img src="/icons/check-icon.svg" alt="Включено" className="check-icon" />
+                            )}
                         </div>
                     </div>
                 </div>
