@@ -5,7 +5,7 @@ import checkmarkIcon from '../../assets/icons/checkmark.svg';
 import checkmarkWhiteIcon from '../../assets/icons/check-icon.svg';
 import nextArrowIcon from '../../assets/icons/arrow-next.svg';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
-import axios from 'axios';
+import api from '../../utils/api';
 
 // FODMAP category mapping from English to Russian
 const fodmapCategoryNames = {
@@ -44,7 +44,7 @@ const SymptomDaysCounter = ({ completedDays }) => {
                 }
 
                 console.log(`SymptomDaysCounter - Fetching phase data for user ${telegramId}`);
-                const response = await axios.get(`/users/${telegramId}/phase-tracking`);
+                const response = await api.get(`/users/${telegramId}/phase-tracking`);
                 console.log('SymptomDaysCounter - Phase tracking response:', response.data);
 
                 if (response.data && response.data.current_phase !== undefined) {
@@ -55,7 +55,7 @@ const SymptomDaysCounter = ({ completedDays }) => {
                     if (response.data.current_phase === 2) {
                         try {
                             console.log(`SymptomDaysCounter - Fetching phase 2 tracking data for user ${telegramId}`);
-                            const phase2Response = await axios.get(`/users/${telegramId}/phase2-tracking`);
+                            const phase2Response = await api.get(`/users/${telegramId}/phase2-tracking`);
                             console.log('SymptomDaysCounter - Phase 2 tracking response:', phase2Response.data);
                             setPhase2TrackingData(phase2Response.data);
 
@@ -63,7 +63,7 @@ const SymptomDaysCounter = ({ completedDays }) => {
                             try {
                                 console.log(`SymptomDaysCounter - Updating phase2 streak for user ${telegramId}`);
                                 const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                                await axios.put(`/users/${telegramId}/phase-tracking/update-phase2-streak`, {
+                                await api.put(`/users/${telegramId}/phase-tracking/update-phase2-streak`, {
                                     timezone: userTimezone
                                 });
                                 console.log('SymptomDaysCounter - Phase2 streak updated with timezone:', userTimezone);
@@ -74,7 +74,7 @@ const SymptomDaysCounter = ({ completedDays }) => {
                             // Fetch reintroduction and break days from the specified endpoint
                             try {
                                 console.log(`SymptomDaysCounter - Fetching reintroduction and break days for user ${telegramId}`);
-                                const daysResponse = await axios.get(`/users/${telegramId}/phase-tracking`);
+                                const daysResponse = await api.get(`/users/${telegramId}/phase-tracking`);
                                 console.log('SymptomDaysCounter - Reintroduction and break days response:', daysResponse.data);
 
                                 if (daysResponse.data) {

@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import AllergyPickerMenu from '../../components/AllergyPickerMenu/AllergyPickerMenu';
 import './ProfileScreen.css';
+import { getBaseUrl } from '../../utils/api';
+
+const baseUrl = getBaseUrl();
 
 const ALLERGY_MAP = {
     'орехи': 'allergy_nuts',
@@ -39,7 +42,7 @@ const ProfileScreen = () => {
         try {
             setLoading(true);
             setError(null);
-            const response = await fetch(`/users/${telegramId}/preferences`);
+            const response = await fetch(`${baseUrl}/users/${telegramId}/preferences`);
 
             if (!response.ok) {
                 throw new Error('Failed to fetch preferences');
@@ -91,7 +94,7 @@ const ProfileScreen = () => {
             const updatedPreferences = { ...preferences };
             updatedPreferences[type] = preferences[type] === 1 ? 0 : 1;
 
-            const response = await fetch(`/users/${telegramId}/preferences`, {
+            const response = await fetch(`${baseUrl}/users/${telegramId}/preferences`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'

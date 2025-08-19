@@ -3,6 +3,9 @@ import { useParams, useNavigate } from 'react-router-dom';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import './RecipeDetailScreen.css';
+import { getBaseUrl } from '../../utils/api';
+
+const baseUrl = getBaseUrl();
 
 const RecipeDetailScreen = () => {
     const { id } = useParams();
@@ -35,7 +38,7 @@ const RecipeDetailScreen = () => {
         const fetchRecipe = async () => {
             try {
                 setLoading(true);
-                const response = await fetch(`/recipes`);
+                const response = await fetch(`${baseUrl}/recipes`);
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch recipes');

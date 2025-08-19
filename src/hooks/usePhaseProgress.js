@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { calculateWeekAndDay } from '../utils/dateUtils';
+import { getBaseUrl } from '../utils/api';
 
+const baseUrl = getBaseUrl();
 export const usePhaseProgress = (telegramId) => {
     const [progress, setProgress] = useState({ week: 1, day: 1 });
     const [error, setError] = useState(null);
@@ -16,7 +18,7 @@ export const usePhaseProgress = (telegramId) => {
                 }
 
                 // Step 1: Check current phase for the user
-                const phaseResponse = await fetch(`/users/${telegramId}/phase-tracking`);
+                const phaseResponse = await fetch(`${baseUrl}/users/${telegramId}/phase-tracking`);
                 if (!phaseResponse.ok) {
                     throw new Error('Failed to fetch user phase information');
                 }
@@ -36,7 +38,7 @@ export const usePhaseProgress = (telegramId) => {
                 // Step 2: Try to get phases timing information
                 let dateToUse;
                 try {
-                    const timingsResponse = await fetch(`/users/${telegramId}/phases-timings`);
+                    const timingsResponse = await fetch(`${baseUrl}/users/${telegramId}/phases-timings`);
 
                     if (timingsResponse.ok) {
                         const timingsData = await timingsResponse.json();
@@ -61,7 +63,7 @@ export const usePhaseProgress = (telegramId) => {
                 // Step 3: If no date from phases-timings, fall back to original logic
                 if (!dateToUse) {
                     console.log('Using fallback created_at date');
-                    const createdAtResponse = await fetch(`/users/${telegramId}/preferences/created-at`);
+                    const createdAtResponse = await fetch(`${baseUrl}/users/${telegramId}/preferences/created-at`);
                     if (!createdAtResponse.ok) {
                         throw new Error('Failed to fetch user preferences');
                     }

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import './FilterMenu.css';
+import { getBaseUrl } from '../../utils/api';
 
+const baseUrl = getBaseUrl();
 const FilterMenu = ({ isOpen, onClose }) => {
     // console.log('[FilterMenu] Props received - isOpen:', isOpen);
     const [activeLevels, setActiveLevels] = useState({}); // State to track active level per category
@@ -34,7 +36,7 @@ const FilterMenu = ({ isOpen, onClose }) => {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await fetch(`/users/${telegramId}/preferences`);
+                const response = await fetch(`${baseUrl}/users/${telegramId}/preferences`);
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch preferences');
@@ -96,7 +98,7 @@ const FilterMenu = ({ isOpen, onClose }) => {
             };
 
             // Send update to backend
-            const response = await fetch(`/users/${telegramId}/preferences/fodmap`, {
+            const response = await fetch(`${baseUrl}/users/${telegramId}/preferences/fodmap`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -132,7 +134,7 @@ const FilterMenu = ({ isOpen, onClose }) => {
             setError(null);
 
             // Step 1: Check current phase
-            const phaseResponse = await fetch(`/users/${telegramId}/phase-tracking`);
+            const phaseResponse = await fetch(`${baseUrl}/users/${telegramId}/phase-tracking`);
             if (!phaseResponse.ok) {
                 throw new Error('Failed to fetch user phase');
             }
@@ -166,7 +168,7 @@ const FilterMenu = ({ isOpen, onClose }) => {
             }
             else if (currentPhase === 2) {
                 // Phase 2: Check current_group and set only that group to level 3
-                const phase2Response = await fetch(`/users/${telegramId}/phase2-tracking`);
+                const phase2Response = await fetch(`${baseUrl}/users/${telegramId}/phase2-tracking`);
                 if (!phase2Response.ok) {
                     throw new Error('Failed to fetch phase 2 tracking data');
                 }
@@ -181,7 +183,7 @@ const FilterMenu = ({ isOpen, onClose }) => {
             }
             else if (currentPhase === 3) {
                 // Phase 3: Check each group's value and set level 1 for groups with value 3
-                const phase2Response = await fetch(`/users/${telegramId}/phase2-tracking`);
+                const phase2Response = await fetch(`${baseUrl}/users/${telegramId}/phase2-tracking`);
                 if (!phase2Response.ok) {
                     throw new Error('Failed to fetch phase 2 tracking data');
                 }
@@ -202,7 +204,7 @@ const FilterMenu = ({ isOpen, onClose }) => {
             setActiveLevels(newLevels);
 
             // Send update to backend
-            const response = await fetch(`/users/${telegramId}/preferences/fodmap`, {
+            const response = await fetch(`${baseUrl}/users/${telegramId}/preferences/fodmap`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

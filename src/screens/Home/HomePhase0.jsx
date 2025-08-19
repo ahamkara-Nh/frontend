@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import { DiaryNote } from '../../components/DiaryNote';
 import './HomePhase0.css';
@@ -28,7 +28,7 @@ const HomePhase0 = () => {
             console.log(`Updating phase tracking for user ${telegramId}`);
 
             // Update the user's phase to 1
-            await axios.put(`/users/${telegramId}/phase-tracking`, {
+            await api.put(`/users/${telegramId}/phase-tracking`, {
                 current_phase: 1
             });
 

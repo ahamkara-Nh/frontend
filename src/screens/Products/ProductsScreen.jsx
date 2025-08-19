@@ -6,6 +6,9 @@ import FilterMenu from '../../components/FilterMenu/FilterMenu';
 import ProductItem from '../../components/ProductItem/ProductItem';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import './ProductsScreen.css';
+import { getBaseUrl } from '../../utils/api';
+
+const baseUrl = getBaseUrl();
 
 const CATEGORIES = [
     { name: "Масла", image_name: "oil" },
@@ -104,7 +107,7 @@ const ProductsScreen = () => {
             // Get Telegram user ID or use a default for development
             const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
 
-            const response = await fetch(`/products/search/${telegramId}`, {
+            const response = await fetch(`${baseUrl}/products/search/${telegramId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

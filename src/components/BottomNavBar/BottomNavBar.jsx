@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import './BottomNavBar.css';
+import api from '../../utils/api';
 
 // Import SVG icons as React components
 import DiaryIcon from '../../assets/icons/diary_icon.svg?react';
@@ -37,7 +37,7 @@ const BottomNavBar = () => {
                 }
 
                 // Check the user's current phase
-                const response = await axios.get(`/users/${telegramId}/phase-tracking`);
+                const response = await api.get(`/users/${telegramId}/phase-tracking`);
                 const { current_phase } = response.data;
 
                 // Navigate based on current phase

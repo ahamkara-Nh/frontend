@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './AllergyPickerMenu.css';
+import { getBaseUrl } from '../../utils/api';
 
 const ALLERGY_OPTIONS = [
     'орехи', 'арахис', 'глютен', 'яйца', 'рыба', 'соя'
@@ -55,7 +56,8 @@ const AllergyPickerMenu = ({ isOpen, onClose }) => {
             try {
                 setLoading(true);
                 setError(null);
-                const response = await fetch(`/users/${telegramId}/preferences`);
+                const baseUrl = getBaseUrl();
+                const response = await fetch(`${baseUrl}/users/${telegramId}/preferences`);
 
                 if (!response.ok) {
                     throw new Error('Failed to fetch allergies');
@@ -104,7 +106,8 @@ const AllergyPickerMenu = ({ isOpen, onClose }) => {
                 return acc;
             }, {});
 
-            const response = await fetch(`/users/${telegramId}/preferences`, {
+            const baseUrl = getBaseUrl();
+            const response = await fetch(`${baseUrl}/users/${telegramId}/preferences`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

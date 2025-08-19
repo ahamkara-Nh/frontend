@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import ServingInfo from '../../components/ServingInfo/ServingInfo';
 import './ProductDetailOverlay.css';
+import { getBaseUrl } from '../../utils/api';
 
+const baseUrl = getBaseUrl();
 const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -20,7 +22,7 @@ const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
                 // Check if it's a user-created product
                 if (product.user_created) {
                     // For user-created products, we need to fetch the full details
-                    const response = await fetch(`/users/${telegramId}/products`);
+                    const response = await fetch(`${baseUrl}/users/${telegramId}/products`);
 
                     if (!response.ok) {
                         throw new Error(`API request failed with status ${response.status}`);
@@ -73,7 +75,7 @@ const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
                 }
 
                 // Fetch product details by name to get all serving sizes
-                const response = await fetch('/products/get-by-name', {
+                const response = await fetch(`${baseUrl}/products/get-by-name`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -141,7 +143,7 @@ const ProductDetailOverlay = ({ product, onClose, onSelectProduct }) => {
         const fetchProductDirectly = async () => {
             try {
                 const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
-                const response = await fetch(`/products/${product.product_id}/${telegramId}`);
+                const response = await fetch(`${baseUrl}/products/${product.product_id}/${telegramId}`);
 
                 if (!response.ok) {
                     throw new Error(`API request failed with status ${response.status}`);

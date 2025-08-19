@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import './AddProductScreen.css';
+import { getBaseUrl } from '../../utils/api';
 
+const baseUrl = getBaseUrl();
 const AddProductScreen = () => {
     const navigate = useNavigate();
     const location = useLocation();
@@ -50,7 +52,7 @@ const AddProductScreen = () => {
         setError(null);
 
         try {
-            const response = await fetch(`/users/${telegramId}/products`, {
+            const response = await fetch(`${baseUrl}/users/${telegramId}/products`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

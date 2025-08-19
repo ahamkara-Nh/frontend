@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import './Onboarding.css';
 import { useNavigate } from 'react-router-dom';
+import { getBaseUrl } from '../../utils/api';
 
+const baseUrl = getBaseUrl();
 const options = [
     {
         title: 'Изучить',
@@ -93,8 +95,8 @@ const Onboarding2 = () => {
                             const navigateToHome = () => navigate('/products');
 
                             if (userId) {
-                                const phaseTrackingUrl = `/users/${userId}/phase-tracking`;
-                                const completeOnboardingUrl = `/users/${userId}/complete_onboarding`;
+                                const phaseTrackingUrl = `${baseUrl}/users/${userId}/phase-tracking`;
+                                const completeOnboardingUrl = `${baseUrl}/users/${userId}/complete_onboarding`;
 
                                 // First, update phase tracking
                                 fetch(phaseTrackingUrl, {

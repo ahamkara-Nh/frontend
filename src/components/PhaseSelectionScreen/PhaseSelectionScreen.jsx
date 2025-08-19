@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { usePhaseProgress } from '../../hooks/usePhaseProgress';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import './PhaseSelectionScreen.css';
+import { getBaseUrl } from '../../utils/api';
+
+const baseUrl = getBaseUrl();
 
 const PhaseSelectionScreen = () => {
     const navigate = useNavigate();
@@ -24,7 +27,7 @@ const PhaseSelectionScreen = () => {
             }
 
             try {
-                const response = await fetch(`/users/${telegramId}/phase-tracking`);
+                const response = await fetch(`${baseUrl}/users/${telegramId}/phase-tracking`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch user phase information');
                 }
@@ -47,7 +50,7 @@ const PhaseSelectionScreen = () => {
 
     const checkFodmapGroupsForPhase3 = async () => {
         try {
-            const response = await fetch(`/users/${telegramId}/phase2-tracking`);
+            const response = await fetch(`${baseUrl}/users/${telegramId}/phase2-tracking`);
             if (!response.ok) {
                 throw new Error('Failed to fetch phase 2 tracking data');
             }
@@ -60,7 +63,7 @@ const PhaseSelectionScreen = () => {
 
             if (incompleteFodmaps.length > 0) {
                 // Send Telegram notification
-                const notificationResponse = await fetch('/telegram/send-notification', {
+                const notificationResponse = await fetch('${baseUrl}/telegram/send-notification', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -101,7 +104,7 @@ const PhaseSelectionScreen = () => {
             }
 
             // Update the phase in phase-tracking
-            const response = await fetch(`/users/${telegramId}/phase-tracking`, {
+            const response = await fetch(`${baseUrl}/users/${telegramId}/phase-tracking`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -116,7 +119,7 @@ const PhaseSelectionScreen = () => {
             // Additional API calls for phase timing updates
             if (currentPhase === 1 && newPhase === 2) {
                 // Moving from phase 1 to phase 2
-                const phase2Response = await fetch(`/users/${telegramId}/phases-timings/update-phase2-date`, {
+                const phase2Response = await fetch(`${baseUrl}/users/${telegramId}/phases-timings/update-phase2-date`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -128,7 +131,7 @@ const PhaseSelectionScreen = () => {
                 }
 
                 // Reset phase 2 tracking with empty current_group
-                const phase2TrackingResponse = await fetch(`/users/${telegramId}/phase2-tracking`, {
+                const phase2TrackingResponse = await fetch(`${baseUrl}/users/${telegramId}/phase2-tracking`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -141,7 +144,7 @@ const PhaseSelectionScreen = () => {
                 }
             } else if (currentPhase === 2 && newPhase === 1) {
                 // Moving back from phase 2 to phase 1
-                const phase1Response = await fetch(`/users/${telegramId}/phases-timings/update-phase1-date`, {
+                const phase1Response = await fetch(`${baseUrl}/users/${telegramId}/phases-timings/update-phase1-date`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -153,7 +156,7 @@ const PhaseSelectionScreen = () => {
                 }
             } else if (currentPhase === 3 && newPhase === 2) {
                 // Moving back from phase 3 to phase 2
-                const phase2Response = await fetch(`/users/${telegramId}/phases-timings/update-phase2-date`, {
+                const phase2Response = await fetch(`${baseUrl}/users/${telegramId}/phases-timings/update-phase2-date`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
@@ -165,7 +168,7 @@ const PhaseSelectionScreen = () => {
                 }
 
                 // Reset phase 2 tracking with empty current_group when moving back from phase 3
-                const phase2TrackingResponse = await fetch(`/users/${telegramId}/phase2-tracking`, {
+                const phase2TrackingResponse = await fetch(`${baseUrl}/users/${telegramId}/phase2-tracking`, {
                     method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
+import { getBaseUrl } from '../../utils/api';
 import './ReplacementMenu.css';
 
 // Determine FODMAP level indicator type based on the highest FODMAP value
@@ -70,9 +71,10 @@ const ReplacementMenu = ({ replacementName }) => {
             try {
                 // Get Telegram user ID or use a default for development
                 const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
+                const baseUrl = getBaseUrl();
 
                 // Fetch replacement product data
-                const response = await fetch('/products/get-by-name', {
+                const response = await fetch(`${baseUrl}/products/get-by-name`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

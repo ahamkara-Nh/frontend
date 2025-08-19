@@ -3,6 +3,9 @@ import DiaryHistoryNote from './DiaryHistoryNote';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import calendarIcon from '../../assets/icons/calendar-icon.svg';
 import './DiaryHistoryList.css';
+import { getBaseUrl } from '../../utils/api';
+
+const baseUrl = getBaseUrl();
 
 const DiaryHistoryList = ({ telegramId }) => {
     const [diaryEntries, setDiaryEntries] = useState([]);
@@ -24,7 +27,7 @@ const DiaryHistoryList = ({ telegramId }) => {
 
         try {
             setLoading(true);
-            const response = await fetch(`/users/${telegramId}/diary-history?page=${currentPage}`);
+            const response = await fetch(`${baseUrl}/users/${telegramId}/diary-history?page=${currentPage}`);
 
             if (!response.ok) {
                 throw new Error(`Failed to fetch diary history: ${response.status}`);

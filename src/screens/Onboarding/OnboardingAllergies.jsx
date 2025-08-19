@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import './Onboarding.css'; // Assuming common styles are here
 import { useNavigate } from 'react-router-dom';
+import { getBaseUrl } from '../../utils/api';
+
+const baseUrl = getBaseUrl();
 
 const ALLERGY_OPTIONS = [
     'орехи', 'арахис', 'глютен', 'яйца', 'рыба', 'соя'
@@ -78,9 +81,9 @@ const OnboardingAllergies = () => {
             return acc;
         }, {});
 
-        const preferencesRequestUrl = `/users/${telegram_id}/preferences`;
-        const phaseTrackingRequestUrl = `/users/${telegram_id}/phase-tracking`;
-        const completeOnboardingRequestUrl = `/users/${telegram_id}/complete_onboarding`;
+        const preferencesRequestUrl = `${baseUrl}/users/${telegram_id}/preferences`;
+        const phaseTrackingRequestUrl = `${baseUrl}/users/${telegram_id}/phase-tracking`;
+        const completeOnboardingRequestUrl = `${baseUrl}/users/${telegram_id}/complete_onboarding`;
 
         try {
             // First, update preferences
@@ -155,8 +158,8 @@ const OnboardingAllergies = () => {
             return;
         }
 
-        const phaseTrackingRequestUrl = `/users/${telegram_id}/phase-tracking`;
-        const completeOnboardingRequestUrl = `/users/${telegram_id}/complete_onboarding`;
+        const phaseTrackingRequestUrl = `${baseUrl}/users/${telegram_id}/phase-tracking`;
+        const completeOnboardingRequestUrl = `${baseUrl}/users/${telegram_id}/complete_onboarding`;
 
         try {
             // First, update phase tracking

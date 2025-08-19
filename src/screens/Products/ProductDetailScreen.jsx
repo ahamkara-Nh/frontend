@@ -4,8 +4,11 @@ import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import ServingInfo from '../../components/ServingInfo/ServingInfo';
 import ReplacementMenu from '../../components/ReplacementMenu/ReplacementMenu';
+import { getBaseUrl } from '../../utils/api';
 import './ProductDetailScreen.css';
 
+
+const baseUrl = getBaseUrl();
 const ProductListTypes = {
     FAVORITES: 'favourites',
     PHASE1: 'phase1',
@@ -68,7 +71,7 @@ const ProductDetailScreen = () => {
             const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
             const productIdToUse = productData.id || productData.product_id || productId;
 
-            const response = await fetch(`/users/${telegramId}/lists/check-product`, {
+            const response = await fetch(`${baseUrl}/users/${telegramId}/lists/check-product`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -97,15 +100,14 @@ const ProductDetailScreen = () => {
             try {
                 // Get Telegram user ID or use a default for development
                 const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
-
                 let response;
 
                 if (isUserCreated) {
                     // Use the user-created products endpoint
-                    response = await fetch(`/users/${telegramId}/products`);
+                    response = await fetch(`${baseUrl}/users/${telegramId}/products`);
                 } else if (productName) {
                     // If we have the product name, use the POST /products/get-by-name endpoint
-                    response = await fetch('/products/get-by-name', {
+                    response = await fetch(`${baseUrl}/products/get-by-name`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -117,7 +119,7 @@ const ProductDetailScreen = () => {
                     });
                 } else {
                     // Fallback to fetch by ID if name is not available
-                    response = await fetch(`/products/${productId}/${telegramId}`);
+                    response = await fetch(`${baseUrl}/products/${productId}/${telegramId}`);
                 }
 
                 if (!response.ok) {
@@ -324,7 +326,7 @@ const ProductDetailScreen = () => {
                     ]
                 }, async (buttonId) => {
                     if (buttonId === 'delete') {
-                        const response = await fetch(`/users/${telegramId}/products/${encodeURIComponent(product.name)}`, {
+                        const response = await fetch(`${baseUrl}/users/${telegramId}/products/${encodeURIComponent(product.name)}`, {
                             method: 'DELETE',
                         });
 
@@ -366,7 +368,7 @@ const ProductDetailScreen = () => {
             const endpoint = isInList ? 'remove-product' : 'add-product';
             const method = isInList ? 'DELETE' : 'POST';
 
-            const response = await fetch(`/users/${telegramId}/lists/${endpoint}`, {
+            const response = await fetch(`${baseUrl}/users/${telegramId}/lists/${endpoint}`, {
                 method: method,
                 headers: {
                     'Content-Type': 'application/json',

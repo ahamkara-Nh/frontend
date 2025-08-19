@@ -5,7 +5,9 @@ import symptomIcon1 from '../../assets/images/symptom1.png';
 import symptomIcon2 from '../../assets/images/symptom2.png';
 import symptomIcon3 from '../../assets/images/symptom3.png';
 import symptomIcon4 from '../../assets/images/symptom4.png';
+import { getBaseUrl } from '../../utils/api';
 
+const baseUrl = getBaseUrl();
 const SymptomsScreen = () => {
     const navigate = useNavigate();
     const [note, setNote] = useState('');
@@ -64,7 +66,7 @@ const SymptomsScreen = () => {
             setLoading(true);
             setError(null);
 
-            const response = await fetch(`/users/${telegramId}/symptoms-diary`, {
+            const response = await fetch(`${baseUrl}/users/${telegramId}/symptoms-diary`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

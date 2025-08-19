@@ -4,7 +4,9 @@ import BottomNavBar from '../../components/BottomNavBar/BottomNavBar';
 import ProductItem from '../../components/ProductItem/ProductItem';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import './ProductListScreen.css';
+import { getBaseUrl } from '../../utils/api';
 
+const baseUrl = getBaseUrl();
 const ProductListScreen = () => {
     const { listType } = useParams();
     const navigate = useNavigate();
@@ -69,10 +71,10 @@ const ProductListScreen = () => {
                 let response;
                 if (listType === 'user_created') {
                     // Use the new endpoint for user-created products
-                    response = await fetch(`/users/${telegramId}/products`);
+                    response = await fetch(`${baseUrl}/users/${telegramId}/products`);
                 } else {
                     // Use the existing endpoint for other list types
-                    response = await fetch(`/users/${telegramId}/lists/${listType}/items`);
+                    response = await fetch(`${baseUrl}/users/${telegramId}/lists/${listType}/items`);
                 }
 
                 if (!response.ok) {

@@ -2,8 +2,10 @@
  * Authentication service for Telegram Mini App
  */
 
-// Base API URL - Using Vite's proxy
-const API_URL = '';  // Empty string to use the proxy configured in vite.config.js
+import { getBaseUrl } from '../utils/api';
+
+// Base API URL - Using environment variables or falling back to proxy
+const API_URL = getBaseUrl();
 
 /**
  * Authenticates a user with Telegram WebApp data
@@ -27,8 +29,8 @@ export const authenticateTelegram = async () => {
         }
 
         console.log('[AuthService] Sending authentication request to backend at /auth/telegram');
-        // Send authentication request to backend through proxy
-        const response = await fetch(`/auth/telegram`, {
+        // Send authentication request to backend
+        const response = await fetch(`${API_URL}/auth/telegram`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

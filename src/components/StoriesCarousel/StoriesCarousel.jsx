@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import './StoriesCarousel.css';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import storyBackgroundImage1 from '../../assets/images/stories_food.png'; // Import the image
@@ -35,14 +35,14 @@ const StoriesCarousel = () => {
 
                 if (telegramId) {
                     // Fetch phase tracking data
-                    const phaseResponse = await axios.get(`/users/${telegramId}/phase-tracking`);
+                    const phaseResponse = await api.get(`/users/${telegramId}/phase-tracking`);
                     if (phaseResponse.data && phaseResponse.data.current_phase) {
                         setCurrentPhase(phaseResponse.data.current_phase);
                     }
 
                     // If we're in phase 3, fetch phase2-tracking data to get sensitive groups
                     if (phaseResponse.data?.current_phase === 3) {
-                        const phase2Response = await axios.get(`/users/${telegramId}/phase2-tracking`);
+                        const phase2Response = await api.get(`/users/${telegramId}/phase2-tracking`);
                         if (phase2Response.data) {
                             // Check each group and add to sensitiveGroups if value is 3
                             const sensGroups = [];

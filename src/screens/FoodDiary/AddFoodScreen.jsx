@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import ProductSelectionOverlay from './ProductSelectionOverlay';
 import './AddFoodScreen.css';
+import { getBaseUrl } from '../../utils/api';
+
 
 const AddFoodScreen = () => {
     const navigate = useNavigate();
@@ -78,7 +80,8 @@ const AddFoodScreen = () => {
             });
 
             // Make API request
-            const response = await fetch(`/users/${telegramId}/food-notes`, {
+            const baseUrl = getBaseUrl();
+            const response = await fetch(`${baseUrl}/users/${telegramId}/food-notes`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

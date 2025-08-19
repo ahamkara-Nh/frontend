@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 
 export const usePhaseTracking = (telegramId) => {
     const [phaseData, setPhaseData] = useState({
@@ -24,7 +24,7 @@ export const usePhaseTracking = (telegramId) => {
                 console.log('usePhaseTracking - Updating streak with timezone:', timezone);
 
                 try {
-                    const updateResponse = await axios.put(`/users/${telegramId}/phase-tracking/update-streak`, { timezone });
+                    const updateResponse = await api.put(`/users/${telegramId}/phase-tracking/update-streak`, { timezone });
                     console.log('usePhaseTracking - Streak update response:', updateResponse.data);
                 } catch (updateError) {
                     console.warn('usePhaseTracking - Failed to update streak, but continuing to fetch data:', updateError);
@@ -32,7 +32,7 @@ export const usePhaseTracking = (telegramId) => {
 
                 // Then fetch the phase tracking data
                 console.log('usePhaseTracking - Fetching phase tracking for telegramId:', telegramId);
-                const response = await axios.get(`/users/${telegramId}/phase-tracking`);
+                const response = await api.get(`/users/${telegramId}/phase-tracking`);
                 console.log('usePhaseTracking - Phase tracking response:', response);
 
                 if (!response.data) {

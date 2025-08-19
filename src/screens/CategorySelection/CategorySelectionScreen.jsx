@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../../utils/api';
 import './CategorySelectionScreen.css';
 import radioDot from '../../assets/icons/radio-dot.svg';
 import checkmark from '../../assets/icons/checkmark.svg';
 import cross from '../../assets/icons/cross.svg';
 import completed from '../../assets/icons/completed.svg';
+
 
 const CategorySelectionScreen = () => {
     const navigate = useNavigate();
@@ -57,7 +58,7 @@ const CategorySelectionScreen = () => {
                     return;
                 }
 
-                const response = await axios.get(`/users/${telegramId}/phase2-tracking`);
+                const response = await api.get(`/users/${telegramId}/phase2-tracking`);
                 const data = response.data;
 
                 // Process categories based on their values
@@ -153,7 +154,7 @@ const CategorySelectionScreen = () => {
         }
 
         try {
-            const response = await axios.get(`/users/${telegramId}/phase2-tracking`);
+            const response = await api.get(`/users/${telegramId}/phase2-tracking`);
             return response.data.current_group || null;
         } catch (err) {
             return null;
@@ -170,7 +171,7 @@ const CategorySelectionScreen = () => {
         setLoading(true);
         try {
             // Save the selected category to the backend
-            await axios.put(`/users/${telegramId}/phase2-tracking`, {
+            await api.put(`/users/${telegramId}/phase2-tracking`, {
                 current_group: selectedCategory
             });
 

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext'; // Adjust path if AuthContext is elsewhere
 import LoadingSpinner from '../components/LoadingSpinner/LoadingSpinner';
+import { getBaseUrl } from '../utils/api';
 
 const AppInitializer = () => {
     const { user, isAuthenticated, loading: authLoading, error: authError } = useAuth();
@@ -46,8 +47,9 @@ const AppInitializer = () => {
 
         const fetchOnboardingStatus = async () => {
             try {
+                const baseUrl = getBaseUrl();
                 // Ensure this URL is correct for your environment
-                const response = await fetch(`/users/${telegramId}/onboarding_status`);
+                const response = await fetch(`${baseUrl}/users/${telegramId}/onboarding_status`);
                 if (!response.ok) {
                     const errorText = await response.text();
                     throw new Error(`Failed to fetch onboarding status. Status: ${response.status} ${response.statusText}. Body: ${errorText}`);

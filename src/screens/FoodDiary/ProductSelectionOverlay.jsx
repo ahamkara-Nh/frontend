@@ -15,7 +15,9 @@ import list3Icon from '../../assets/icons/list-3-icon.svg';
 import favoritesIcon from '../../assets/icons/favorites-icon.svg';
 import myProductsIcon from '../../assets/icons/my-products-icon.svg';
 import plusIcon from '../../assets/icons/plus_icon.svg';
+import { getBaseUrl } from '../../utils/api';
 
+const baseUrl = getBaseUrl();
 const CATEGORIES = [
     { name: "Масла", image_name: "oil" },
     { name: "Молочные продукты", image_name: "milk" },
@@ -134,7 +136,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
             // Get Telegram user ID or use a default for development
             const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
 
-            const response = await fetch(`/products/search/${telegramId}`, {
+            const response = await fetch(`${baseUrl}/products/search/${telegramId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -195,7 +197,8 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                     // Check if it's a user-created product
                     if (selectedProduct.user_created) {
                         // For user-created products, we need to fetch the full details
-                        const response = await fetch(`/users/${telegramId}/products`);
+                        const baseUrl = getBaseUrl();
+                        const response = await fetch(`${baseUrl}/users/${telegramId}/products`);
 
                         if (!response.ok) {
                             throw new Error(`API request failed with status ${response.status}`);
@@ -257,7 +260,8 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                     }
 
                     // Fetch product details by name to get all serving sizes
-                    const response = await fetch('/products/get-by-name', {
+                    const baseUrl = getBaseUrl();
+                    const response = await fetch(`${baseUrl}/products/get-by-name`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -325,7 +329,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
             const fetchProductDirectly = async () => {
                 try {
                     const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
-                    const response = await fetch(`/products/${selectedProduct.product_id}/${telegramId}`);
+                    const response = await fetch(`${baseUrl}/products/${selectedProduct.product_id}/${telegramId}`);
 
                     if (!response.ok) {
                         throw new Error(`API request failed with status ${response.status}`);
@@ -416,7 +420,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
             // Get Telegram user ID or use a default for development
             const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
 
-            const response = await fetch(`/categories/${categoryId}/products/${telegramId}`);
+            const response = await fetch(`${baseUrl}/categories/${categoryId}/products/${telegramId}`);
 
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
@@ -453,7 +457,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
             // Get Telegram user ID or use a default for development
             const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
 
-            const response = await fetch(`/products/my-products/${telegramId}`);
+            const response = await fetch(`${baseUrl}/products/my-products/${telegramId}`);
 
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
@@ -478,7 +482,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
             // Get Telegram user ID or use a default for development
             const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
 
-            const response = await fetch(`/products/recipes/${telegramId}`);
+            const response = await fetch(`${baseUrl}/products/recipes/${telegramId}`);
 
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
@@ -508,7 +512,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
 
             if (category.type === 'user_created') {
                 // Use the user-created products endpoint
-                response = await fetch(`/users/${telegramId}/products`);
+                response = await fetch(`${baseUrl}/users/${telegramId}/products`);
 
                 if (!response.ok) {
                     throw new Error(`API request failed with status ${response.status}`);
@@ -547,7 +551,7 @@ const ProductSelectionOverlay = ({ onClose, onSelectProduct }) => {
                 console.log("User-created products:", formattedProducts); // Debug log
             } else {
                 // Use the list items endpoint for other list types
-                response = await fetch(`/users/${telegramId}/lists/${category.type}/items`);
+                response = await fetch(`${baseUrl}/users/${telegramId}/lists/${category.type}/items`);
 
                 if (!response.ok) {
                     throw new Error(`API request failed with status ${response.status}`);

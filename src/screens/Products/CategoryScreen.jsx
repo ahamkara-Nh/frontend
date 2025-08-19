@@ -5,6 +5,9 @@ import FilterMenu from '../../components/FilterMenu/FilterMenu';
 import ProductItem from '../../components/ProductItem/ProductItem';
 import LoadingSpinner from '../../components/LoadingSpinner/LoadingSpinner';
 import './CategoryScreen.css';
+import { getBaseUrl } from '../../utils/api';
+
+const baseUrl = getBaseUrl();
 
 // Map of category names to their respective IDs
 const CATEGORY_IDS = {
@@ -62,7 +65,7 @@ const CategoryScreen = () => {
             // Get Telegram user ID or use a default for development
             const telegramId = window.Telegram?.WebApp?.initDataUnsafe?.user?.id || 'default_user';
 
-            const response = await fetch(`/categories/${categoryId}/products/${telegramId}`);
+            const response = await fetch(`${baseUrl}/categories/${categoryId}/products/${telegramId}`);
 
             if (!response.ok) {
                 throw new Error(`API request failed with status ${response.status}`);
