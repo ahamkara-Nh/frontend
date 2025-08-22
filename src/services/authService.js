@@ -36,7 +36,6 @@ export const authenticateTelegram = async () => {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ initData: webAppData }),
-            credentials: 'include' // Include cookies if needed
         });
 
         const responseText = await response.text(); // Get raw response text
